@@ -23,6 +23,8 @@ src/re_employee_manager/.gradle/
 src/re_employee_manager/.settings/
 src/re_employee_manager/build/
 
+src/com-res_system-commons-dao/
+
 doc/work/
 src/work/
 build/work/
