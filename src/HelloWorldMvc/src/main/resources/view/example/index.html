@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"  lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Cache-Control" content="no-cache" />
+  <title>HelloWorld Mvc</title>
+</head>
+<body>
+  <a href="javascript:void(0)" th:href="@{/example}">リロード</a>
+  <p th:text="${form.message}">...</p>
+
+  <form action="/HelloWorldMvc/example/html_response_post" method="post" >
+    <input type="text" name="message" th:value="${form.message}" style="width:500px;"/>
+    <br />
+    <input type="submit" value="画面データ受取確認" style="width:300px;"/>
+  </form>
+
+  <form action="/HelloWorldMvc/example/reload" method="post" >
+    <input type="submit" value="CDIのスコープ確認" style="width:300px;"/>
+  </form>
+
+  <form action="/HelloWorldMvc/example/find" method="post" >
+    <input type="submit" value="DBアクセス確認(取得)." style="width:300px;"/>
+  </form>
+
+  <form action="/HelloWorldMvc/example/update" method="post" >
+    <input type="text" name="message" th:value="${form.message}" style="width:500px;"/>
+    <br />
+    <input type="submit" value="DBアクセス確認(更新)." style="width:300px;"/>
+  </form>
+
+  <form action="/HelloWorldMvc/example/json_post" method="post" >
+    <input type="submit" value="JSONレスポンス確認" style="width:300px;"/>
+  </form>
+
+  <form action="/HelloWorldMvc/example/exception_post" method="post" >
+    <input type="submit" value="例外マッピング確認" style="width:300px;"/>
+  </form>
+
+  <form action="/HelloWorldMvc/example/redirect_post" method="post" >
+    <input type="submit" value="Redirect確認(crud)" style="width:300px;"/>
+  </form>
+
+  <form action="/HelloWorldMvc/example/html_post" method="post" >
+    <input type="submit" value="HTMLテキストレスポンス確認"  style="width:300px;"/>
+  </form>
+
+</body>
+</html>

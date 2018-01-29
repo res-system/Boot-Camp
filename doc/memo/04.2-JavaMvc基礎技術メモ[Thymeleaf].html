@@ -1,0 +1,425 @@
+<!-- ※使用時は「markdowmemo_data」フォルダと同じ階層のフォルダで使用してください。-->
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8"><link rel="stylesheet" href="_markdowmemo_data/markdowmemo.css?v=1.0.0"><title>
+JavaMvc開発環境構築メモ[Thymeleaf]
+</title></head><body><div id="memo_body" -- Markdow Memo Start -- >
+
+# JavaMvc基礎技術メモ[Thymeleaf]
+--------------------------------------------------------------------------------
+<br />
+
+
+## Thymeleaf Webアプリケーション構築(動的 Web プロジェクト)
+-------------------------------------------------------------------------------
+
+1. プロジェクト「HelloWorldThymeleaf」を作成する。
+  1. 【eclipseメニュー】＞「ファイル」＞「新規」＞「動的 Web プロジェクト」で作成する。
+
+  2. 【動的 Web プロジェクト】の「プロジェクト名」に『HelloWorldThymeleaf』を入力。
+  
+  3. 【ビルド・パス上のソース・フォルダー】を『src』(削除)→『src/main/java』に変更し、次へ。
+
+  4. 「web.xmlデプロイメント記述子の生成」をチェックし、
+    「コンテンツ・ディレクトリー」を『WebContent』→『src/main/webapp』に変更して、完了。
+
+
+2. Gradleプロジェクトへ変換
+  1. build.gradleファイルを作成する.
+```build.gradle
+apply plugin: 'java'
+apply plugin: 'war'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    jcenter()
+}
+
+/*
+  war化する際に梱包されたくない(参照のみ)ライブラリは、providedCompileで指定.
+*/
+dependencies {
+    // servlet.
+    providedCompile('javax.servlet:javax.servlet-api:3.+')
+    // JAX-RS実装(jersey).
+    compile("org.glassfish.jersey.containers:jersey-container-servlet:2.+")
+    compile("org.glassfish.jersey.inject:jersey-hk2:2.+")
+    // JAX-RS実装(jersey(json拡張)).
+    compile("org.glassfish.jersey.media:jersey-media-json-jackson:2.+")
+    // Thymeleaf
+    compile("org.thymeleaf:thymeleaf:3.+")
+
+    // junit
+    testCompile 'junit:junit:4.+'
+}
+```
+
+  2. 【プロジェクト右クリックメニュー】＞「構成」＞「Convert to Gradle(STS) Project」を選択します。
+  
+  3. Gradleのリフレッシュ
+
+
+3. web.xmlの作成。
+```/src/main/webapp/WEB-INF/web.xml(servlet部分)
+  <!-- Jerseyの設定. -->
+  <servlet>
+    <servlet-name>Hello World Thymeleaf</servlet-name>
+    <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+    <init-param>
+      <param-name>jersey.config.server.provider.packages</param-name>
+      <!-- 対象となるパッケージを指定する. -->
+      <param-value>sample</param-value>
+    </init-param>
+  </servlet>
+
+  <!-- 対象となるURLパターンを設定する. -->
+  <servlet-mapping>
+    <servlet-name>Hello World Thymeleaf</servlet-name>
+    <url-pattern>/restful/*</url-pattern>
+  </servlet-mapping>
+```
+
+
+4. Servlet(sample.Example)の作成。
+```/src/main/java/sample/Example.java
+package sample;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+
+@Path("/hello")
+public class Example {
+
+    @Context
+    private HttpServletRequest request;
+    @Context
+    private HttpServletResponse response;
+    @Context
+    private ServletContext servletContext;
+
+    @GET
+    @Path("/html")
+    @Produces(MediaType.TEXT_HTML)
+    public String html() {
+        ClassLoaderTemplateResolver resolver = new ClassLoaderTemplateResolver();
+        resolver.setTemplateMode("HTML");
+        TemplateEngine templateEngine = new TemplateEngine();
+        templateEngine.setTemplateResolver(resolver);
+
+        // htmlに渡すパラメタ設定.
+        WebContext context = new WebContext(request, response, servletContext);
+        context.setVariable("test", "hello Thymeleaf");
+
+        // テンプレートとパラメタを指定してHTMLファイルを作成.
+        return templateEngine.process("/test.html", context);
+    }
+
+}
+```
+
+
+5. HTML(/src/main/resources/test.html)の作成。
+```/src/main/resources/test.html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <p th:text="${test}">...</p>
+    </body>
+</html>
+```
+
+
+6. 実行する。
+  1. 【Gradleタスクウィンドウ】を開く。
+  
+  2. プロジェクトを「HelloWorldThymeleaf」に設定。
+
+  3. 「build」をクリック。
+
+  4. /build/libs/HelloWorldThymeleaf.warが作成されているので、
+    /opt/lampp/tomcat8/webapps/へwarをコピーする。
+
+  5. Tomcat起動。
+
+  6. サーバの起動後、ブラウザで確認する
+    - http://localhost:8080/HelloWorldThymeleaf/restful/hello/html
+
+
+
+## Thymeleaf(MessageBodyWriter使用) Webアプリケーション構築(動的 Web プロジェクト)
+-------------------------------------------------------------------------------
+
+1. プロジェクト「HelloWorldThymeleafMessageBodyWriter」を作成する。
+  1. 【eclipseメニュー】＞「ファイル」＞「新規」＞「動的 Web プロジェクト」で作成する。
+
+  2. 【動的 Web プロジェクト】の「プロジェクト名」に『HelloWorldThymeleafMessageBodyWriter』を入力。
+  
+  3. 【ビルド・パス上のソース・フォルダー】を『src』(削除)→『src/main/java』に変更し、次へ。
+
+  4. 「web.xmlデプロイメント記述子の生成」をチェックし、
+    「コンテンツ・ディレクトリー」を『WebContent』→『src/main/webapp』に変更して、完了。
+
+
+2. Gradleプロジェクトへ変換
+  1. build.gradleファイルを作成する.
+    HelloWorldThymeleafと同じ。
+
+  2. 【プロジェクト右クリックメニュー】＞「構成」＞「Convert to Gradle(STS) Project」を選択します。
+
+  3. Gradleのリフレッシュ
+
+
+3. web.xmlの作成。
+    HelloWorldThymeleafと同じ。
+
+
+4. 必要なクラスの作成。
+```/src/main/java/sample/HtmlResponse.java
+package sample;
+
+/**
+ * Html Response クラス.
+ * @author res.
+ */
+public class HtmlResponse {
+
+    /** テンプレート. */
+    private String templateName;
+    /** テンプレートに渡すデータ. */
+    private Object model;
+
+    // setter / getter.
+    public String getTemplateName() { return templateName; }
+    public void setTemplateName(String templateName) { this.templateName = templateName; }
+    public Object getModel() { return model; }
+    public void setModel(Object model) { this.model = model; }
+
+    /**
+     * コンストラクタ.
+     * @param templateName テンプレート.
+     * @param model テンプレートに渡すデータ.
+     */
+    public HtmlResponse(String templateName, Object model) {
+        this.templateName = templateName;
+        this.model = model;
+    }
+
+    /**
+     * コンストラクタ.
+     * @param templateName テンプレート.
+     */
+    public HtmlResponse(String templateName) {
+        this(templateName, null);
+    }
+
+}
+```
+
+```/src/main/java/sample/HtmlResponseMessageBodyWriter.java
+package sample.response;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.ext.MessageBodyWriter;
+import javax.ws.rs.ext.Provider;
+
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+
+/**
+ * Html Response クラスが指定された場合のMessageBodyWriterクラス.
+ * @author res.
+ */
+@Provider
+@Produces(MediaType.TEXT_HTML)
+public class HtmlResponseMessageBodyWriter implements MessageBodyWriter<HtmlResponse> {
+
+    @Context
+    private HttpServletRequest httpRequest;
+    @Context
+    private HttpServletResponse httpResponse;
+    @Context
+    private ServletContext servletContext;
+
+
+    private static ClassLoaderTemplateResolver resolver;
+    static {
+        resolver = new ClassLoaderTemplateResolver();
+        resolver.setTemplateMode("HTML");
+        resolver.setPrefix("/view/");
+        resolver.setSuffix(".html");
+    }
+
+    @Override
+    public void writeTo(
+            HtmlResponse response,
+            Class<?> type,
+            Type genericType,
+            Annotation[] annotations,
+            MediaType mediaType,
+            MultivaluedMap<String, Object> httpHeaders,
+            OutputStream entityStream
+            ) throws IOException, WebApplicationException {
+
+        TemplateEngine templateEngine = new TemplateEngine();
+        templateEngine.setTemplateResolver(resolver);
+
+        // パラメタを設定します.
+        WebContext context = new WebContext(httpRequest, httpResponse, servletContext);
+        context.setVariable("model", response.getModel());
+
+        // HTMLを作成し、レスポンスに設定します.
+        Writer writer = new OutputStreamWriter(entityStream);
+        templateEngine.process(response.getTemplateName(), context, writer);
+        writer.flush();
+
+    }
+
+    @Override
+    public long getSize(HtmlResponse arg0, Class<?> arg1, Type arg2, Annotation[] arg3, MediaType arg4) {
+        return -1;
+    }
+
+    @Override
+    public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+        return HtmlResponse.class.isAssignableFrom(type);
+    }
+
+}
+```
+
+```/src/main/java/sample/ExampleForm.java
+package sample;
+
+import javax.ws.rs.FormParam;
+
+/**
+ * フォームクラス(画面とデータを遣り取りするクラス).
+ * @author res.
+ */
+public class ExampleForm {
+
+    /** メッセージ. */
+    @FormParam("message")
+    private String message;
+
+    // setter / getter.
+    public String getMessage() { return message; }
+    public void setMessage(String message) { this.message = message; }
+
+    /**
+     * コンストラクタ.
+     * @param message メッセージ.
+     */
+    public ExampleForm(String message) {
+        super();
+        this.message = message;
+    }
+
+}
+```
+
+```/src/main/java/sample/Example.java
+package sample;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.MultivaluedMap;
+
+/**
+ * コントローラークラス.
+ * @author res.
+ */
+@Path("/hello")
+public class Example {
+
+    /**
+     * 画面表示.
+     * @return HTMLレスポンス.
+     */
+    @GET
+    @Path("/html")
+    public HtmlResponse html() {
+        return new HtmlResponse("example1/test", new ExampleForm("hello Thymeleaf"));
+    }
+
+    /**
+     * POSTデータ受け取り.
+     * @param params
+     * @return
+     */
+    @POST
+    @Path("/htmlpost")
+    public HtmlResponse getPost(MultivaluedMap<String, String> params) {
+        ExampleForm form = new ExampleForm(params.getFirst("message"));
+        return new HtmlResponse("example1/test", form);
+    }
+
+}
+```
+
+5. HTML(/src/main/resources/view/example1/test.html)の作成。
+```/src/main/resources/view/example1/test.html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Cache-Control" content="no-cache" />
+  <title>HelloWorld Thymeleaf MessageBodyWriter</title>
+</head>
+<body>
+  <form action="/HelloWorldThymeleafMessageBodyWriter/restful/hello/htmlpost" method="post" >
+    <p th:text="${model.message}">...</p>
+    <input type="text" name="message" th:value="${model.message}" />
+    <input type="submit" value="送信" />
+  </form>
+</body>
+</html>
+```
+
+
+6. 実行する。
+  1. 【Gradleタスクウィンドウ】を開く。
+  
+  2. プロジェクトを「HelloWorldThymeleafMessageBodyWriter」に設定。
+
+  3. 「build」をクリック。
+
+  4. /build/libs/HelloWorldThymeleafMessageBodyWriter.warが作成されているので、
+    /opt/lampp/tomcat8/webapps/へwarをコピーする。
+
+  5. Tomcat起動。
+
+  6. サーバの起動後、ブラウザで確認する
+    - http://localhost:8080/HelloWorldThymeleafMessageBodyWriter/restful/hello/html
+
+
+
+</div -- Markdow Memo End   -- ><script src="_markdowmemo_data/markdownmemo.js?v=1.0.1"></script></body></html>

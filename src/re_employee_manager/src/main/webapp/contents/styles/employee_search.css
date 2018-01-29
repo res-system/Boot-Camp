@@ -1,0 +1,19 @@
+/* 
+  employee_search.css 
+ */
+#employee_list th:nth-child(1),
+#employee_list td:nth-child(1){ width:10%; }
+#employee_list th:nth-child(2),
+#employee_list td:nth-child(2){ width:25%; }
+#employee_list th:nth-child(3),
+#employee_list td:nth-child(3){ width:10%; }
+#employee_list th:nth-child(4),
+#employee_list td:nth-child(4){ width:10%; }
+#employee_list th:nth-child(5),
+#employee_list td:nth-child(5){ width:10%; }
+#employee_list th:nth-child(6),
+#employee_list td:nth-child(6){ width:10%; }
+#employee_list th:nth-child(7),
+#employee_list td:nth-child(7){ width:18%; }
+#employee_list th:nth-child(8),
+#employee_list td:nth-child(8){ width:7%; }

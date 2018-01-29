@@ -1,0 +1,333 @@
+<!-- ※使用時は「markdowmemo_data」フォルダと同じ階層のフォルダで使用してください。-->
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8"><link rel="stylesheet" href="_markdowmemo_data/markdowmemo.css?v=1.0.0"><title>
+JavaMvc開発環境構築メモ[CDI]
+</title></head><body><div id="memo_body" -- Markdow Memo Start -- >
+
+# JavaMvc基礎技術メモ[CDI]
+--------------------------------------------------------------------------------
+<br />
+
+
+## CDI Webアプリケーション構築(動的 Web プロジェクト)
+-------------------------------------------------------------------------------
+1. プロジェクト「HelloWorldCDI」を作成する。
+  1. 【eclipseメニュー】＞「ファイル」＞「新規」＞「動的 Web プロジェクト」で作成する。
+
+  2. 【動的 Web プロジェクト】の「プロジェクト名」に『HelloWorldCDI』を入力。
+  
+  3. 【ビルド・パス上のソース・フォルダー】を『src』(削除)→『src/main/java』に変更し、次へ。
+
+  4. 「web.xmlデプロイメント記述子の生成」をチェックし、
+    「コンテンツ・ディレクトリー」を『WebContent』→『src/main/webapp』に変更して、完了。
+
+  
+2. Gradleプロジェクトへ変換
+  1. build.gradleファイルを作成する.
+```build.gradle
+apply plugin: 'java'
+apply plugin: 'war'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    jcenter()
+}
+
+/*
+  war化する際に梱包されたくない(参照のみ)ライブラリは、providedCompileで指定.
+*/
+dependencies {
+    // servlet.
+    providedCompile('javax.servlet:javax.servlet-api:3.+')
+    // JAX-RS実装(jersey).
+    compile("org.glassfish.jersey.containers:jersey-container-servlet:2.+")
+    compile("org.glassfish.jersey.inject:jersey-hk2:2.+")
+    // JAX-RS実装(jersey(json拡張)).
+    compile("org.glassfish.jersey.media:jersey-media-json-jackson:2.+")
+    // CDI実装(Weld)
+    compile("org.jboss.weld.servlet:weld-servlet-core:3.+")
+    compile("org.glassfish.jersey.ext.cdi:jersey-cdi1x-servlet:2.+")
+
+    // ./main/lib配下の全てのjarファイルをコンパイル時のクラスパスに追加
+    compile fileTree(dir: './src/main/webapp/WEB-INF/lib', includes: ['*.jar'])
+
+    // junit
+    testCompile 'junit:junit:4.+'
+}
+```
+
+  2. 【プロジェクト右クリックメニュー】＞「構成」＞「Convert to Gradle(STS) Project」を選択します。
+
+  3. Gradleのリフレッシュ
+
+
+3. web.xmlの作成。
+```/src/main/webapp/WEB-INF/web.xml(追加分)
+  <!-- Jerseyの設定. -->
+  <servlet>
+    <servlet-name>Hello World Jersey</servlet-name>
+    <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+    <init-param>
+      <param-name>jersey.config.server.provider.packages</param-name>
+      <!-- 対象となるパッケージを指定する. -->
+      <param-value>sample</param-value>
+    </init-param>
+  </servlet>
+
+  <!-- 対象となるURLパターンを設定する. -->
+  <servlet-mapping>
+    <servlet-name>Hello World Jersey</servlet-name>
+    <url-pattern>/restful/*</url-pattern>
+  </servlet-mapping>
+
+  <!-- Weldを設定する. -->
+  <listener>
+    <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
+  </listener>
+  <resource-env-ref>
+    <resource-env-ref-name>BeanManager</resource-env-ref-name>
+    <resource-env-ref-type>javax.enterprise.inject.spi.BeanManager</resource-env-ref-type>
+  </resource-env-ref>
+```
+
+
+4. beans.xmlの作成。
+```/src/main/webapp/WEB-INF/beans.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://java.sun.com/xml/ns/javaee"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+            http://java.sun.com/xml/ns/javaee
+            http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
+</beans>
+```
+
+5. context.xmlの作成。
+```/src/main/webapp/META-INF/context.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+<Context>
+  <Resource name="BeanManager"
+            auth="Container"
+            type="javax.enterprise.inject.spi.BeanManager"
+            factory="org.jboss.weld.resources.ManagerObjectFactory"/>
+  <WatchedResource>WEB-INF/web.xml</WatchedResource>
+  <WatchedResource>META-INF/context.xml</WatchedResource>
+</Context>
+```
+
+
+6. 必要なクラスの作成。
+  1. Inject対象のBeanクラス.
+```/src/main/java/sample/ExampleBean.java
+package sample;
+
+public class ExampleBean {
+    public String getName() {
+        return "(" + this.getClass().hashCode() + ")";
+    }
+}
+```
+
+  2. Interceptorインターフェース＆クラス.
+```/src/main/java/sample/Logged.java
+package sample;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import javax.interceptor.InterceptorBinding;
+
+@Inherited
+@InterceptorBinding
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.TYPE})
+public @interface Logged {}
+```
+
+```/src/main/java/sample/LoggedInterceptor.java
+package sample;
+
+import java.io.Serializable;
+
+import javax.annotation.Priority;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
+
+@Logged
+@Interceptor
+@Priority(Interceptor.Priority.LIBRARY_BEFORE)
+@SuppressWarnings("serial")
+public class LoggedInterceptor implements Serializable {
+    @AroundInvoke
+    public Object logMethodEntry(InvocationContext ic) throws Exception {
+        System.out.println("$$Logged Interceptor, before: "
+                + ic.getMethod().getName() + " in class "
+                + ic.getMethod().getDeclaringClass().getName());
+        Object obj = ic.proceed();
+        System.out.println("$$Logged Interceptor, after: "
+                + ic.getMethod().getName() + " in class "
+                + ic.getMethod().getDeclaringClass().getName());
+        return obj;
+    }
+}
+```
+
+  3. Jax-RSリソースクラス.
+```/src/main/java/sample/Example.java
+package sample;
+
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+@Path("hello")
+public class Example {
+
+    @Inject
+    ExampleBean reqBean;
+
+    @Logged
+    @GET
+    @Produces({MediaType.TEXT_PLAIN})
+    public String sayHello() {
+        return "hello cdi, ExampleReqBean" + reqBean.getName() + "!";
+    }
+
+}
+```
+
+
+7. 実行する。
+  1. 【Gradleタスクウィンドウ】を開く。
+  
+  2. プロジェクトを「HelloWorldCDI」に設定。
+
+  3. 「build」をクリック。
+
+  4. /build/libs/HelloWorldCDI.warが作成されているので、
+    /opt/lampp/tomcat8/webapps/へwarをコピーする。
+
+  5. Tomcat起動。
+
+  6. サーバの起動後、ブラウザで確認する
+    - http://localhost:8080/HelloWorldCDI/restful/hello
+    ※Interceptorの実行結果は下記のログに出力される。
+      /opt/lampp/tomcat8/logs/catalina.out
+
+
+
+## CDI でUNITテストを行う。
+-------------------------------------------------------------------------------
+DeltaSpikeを使用してCDIのUNITテストを行います.
+[参考](https://tanoseam.wordpress.com/2015/10/31/cdi-test-1/ "参考")
+1. テスト用のフォルダを作成します。
+  /src/test/java/
+  /src/test/resources/META-INF/
+
+2. Dbuild.gradleにDeltaSpikeの設定を追加します。
+
+```build.gradle (追加部分のみ)
+…省略…
+test {
+    // build時にUnitテストを除外.
+    exclude '*'
+}
+…省略…
+dependencies {
+…省略…
+    // CDI UNITテスト(deltaspike)
+    testCompile 'org.apache.deltaspike.modules:deltaspike-test-control-module-api:1.+'
+    testCompile 'org.apache.deltaspike.modules:deltaspike-test-control-module-impl:1.+'
+    testCompile 'org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld:1.+'
+    testCompile 'org.jboss.weld.se:weld-se-core:3.+'
+…省略…
+}
+```
+
+3. 「/src/test/resources/META-INF/」にbeans.xmlを追加します。
+```/src/main/webapp/WEB-INF/beans.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+          http://xmlns.jcp.org/xml/ns/javaee 
+          http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd"
+       version="1.1"
+       bean-discovery-mode="annotated">
+</beans>
+```
+
+3. Unitテストクラスを作成し、JUnitを実行します。
+  例）
+```/src/test/java/com/res_system/re_employee_manager/commons/model/CheckerModelTest.java
+package com.res_system.re_employee_manager.commons.model;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.res_system.re_employee_manager.commons.model.data.Message;
+
+/**
+ *
+ * CheckerModel テストクラス.
+ *
+ * @author res.
+ *
+ */
+@RunWith(CdiTestRunner.class)
+public class CheckerModelTest {
+
+    @Inject
+    private CheckerModel target;
+
+
+    // ------------------------------------------------------------------------------------------------------------------------
+    // Test.
+    /**
+     * checkSmallerNum() テスト
+     *
+     * @throws Exception
+     */
+    @Test
+    public void checkSmallerNumTest() throws Exception {
+        String testinfo = "[ CheckerModel Test ] checkSmallerNum() テスト:";
+        System.out.println(testinfo + "** Start ****************");
+        String title = "数値の大小チェックを行います.（小さい数値）";
+        {
+            String msg = title + "[ 11:10 ]";
+            List<Message> messageList = new ArrayList<>();
+            target.setMessageList(messageList);
+            // テスト.
+            boolean result = target.checkSmallerNum("11", "10", "数値1", "数値2");
+            assertEquals(msg, false, result);
+            assertEquals(msg, 1, messageList.size());
+            assertEquals(msg, "E00035", messageList.get(0).getCode());
+            System.out.println(msg + " -OK- :" + messageList.get(0).getText());
+        }
+        System.out.println(testinfo + "**   End ****************");
+    }
+
+
+}
+```
+
+
+
+</div -- Markdow Memo End   -- ><script src="_markdowmemo_data/markdownmemo.js?v=1.0.1"></script></body></html>

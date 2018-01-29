@@ -1,0 +1,98 @@
+<!--/* ////////////////////////////////////////////////// */-->
+<!--/*                                                    */-->
+<!--/* password_change/index.html */-->
+<!--/*                                                    */-->
+<!--/* ////////////////////////////////////////////////// */-->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+
+<!--/* ページヘッダー */-->
+<head th:replace="_layout/default_layout::common_header(${title},~{::link.target})">
+  <!--/* レイアウト確認用設定. */-->
+  <meta charset="utf-8" />
+  <title>password_change/index</title>
+  <link rel="stylesheet" href="../contents/styles/bootstrap/css/bootstrap.min.css" re-th:uqhref="@{/contents/styles/bootstrap/css/bootstrap.min.css}" />
+  <link rel="stylesheet" href="../contents/styles/bootstrap/css/bootstrap-datepicker.min.css" re-th:uqhref="@{/contents/styles/bootstrap/css/bootstrap-datepicker.min.css}" />
+  <link rel="stylesheet" href="../contents/styles/commons.css" re-th:uqhref="@{/contents/styles/commons.css}" />
+  <link rel="stylesheet" href="../contents/styles/re_employee_manager.css" re-th:uqhref="@{/contents/styles/re_employee_manager.css}" />
+  <!--/* 画面固有 スタイル設定. */-->
+  <link class="target" />
+</head>
+<body>
+
+<!--/* コンテンツヘッダー. */-->
+<div th:replace="_layout/default_layout::common_system_title('container','パスワード変更',@{/password_change},@{/main_menu})" th:remove="tag"></div>
+
+<!--/* -------------------------------------------------- */-->
+<!--/* メインコンテンツ. */-->
+<div th:replace="_layout/default_layout::common_contents('container',~{::div#main_contents})" th:remove="tag">
+  <div id="main_contents" class="container" th:remove="tag">
+
+    <!--/* メッセージ. */-->
+    <div th:replace="_layout/default_layout::common_message()" ></div>
+
+    <!--/* メインフォーム. */-->
+    <form class="form-horizontal" id="myform">
+      <div class="row">
+        <div class="col-sm-1 col-md-2 col-lg-3"></div>
+        <div class="col-sm-10 col-md-8 col-lg-6 p-4">
+          <div class="card card-container p-4">
+
+            <div class="form-group row">
+              <label for="password" class="control-label required col-12">旧パスワード</label>
+              <div class="col-12">
+                <input type="password" class="form-control" placeholder="旧パスワード" re-th:input="form,password" size="20" />
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="new_password" class="control-label required col-12">新パスワード</label>
+              <div class="col-12">
+                <input type="password" class="form-control" placeholder="新パスワード" re-th:input="form,new_password" size="20" />
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="confirmation_password" class="control-label required col-12">確認用パスワード</label>
+              <div class="col-12">
+                <input type="password" class="form-control" placeholder="確認用パスワード" re-th:input="form,confirmation_password" size="20" />
+              </div>
+            </div>
+
+            <div class="form-group row"><div class="col-12">　</div></div>
+
+            <div class="form-group row">
+              <div class="col-12">
+                <button type="button" class="btn btn-lg btn-primary w-100" id="btn_update" th:classappend="(${login_permission_kbn}!='0')? 'display-none'">
+                  <img src="../contents/images/commons/icon_search_w.png" re-th:uqsrc="@{/contents/images/commons/icon_save_w.png}" width="16" height="16" />
+                  <span>変更を反映する</span>
+                </button><!--/* 更新系のボタン. */-->
+              </div>
+            </div>
+
+          </div><!-- /card-container -->
+        </div><!-- /col -->
+      </div><!-- /row -->
+
+    </form>
+
+  </div>
+</div>
+<!--/* メインコンテンツ. */-->
+<!--/* -------------------------------------------------- */-->
+
+<!--/* -------------------------------------------------- */-->
+<!--/* コンテンツフッター */-->
+<div th:replace="_layout/default_layout::common_footers('container',~{::#main_footer},~{::div.modals},~{::script.target})" th:remove="tag">
+  <!--/* 画面固有 フッター設定. */-->
+  <div id="main_footer" th:remove="tag"></div>
+  <!--/* 画面固有 ダイアログ設定. */-->
+  <div class="modals" th:remove="tag"></div>
+  <!--/* 画面固有 スクリプト設定. */-->
+  <script type="text/javascript" src="../contents/scripts/password_change.js" re-th:uqsrc="@{/contents/scripts/password_change.js}" class="target" ></script>
+</div>
+<!--/* コンテンツフッター */-->
+<!--/* -------------------------------------------------- */-->
+
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!--/* ////////////////////////////////////////////////// */-->
+<!--/*                                                    */-->
+<!--/* employee_search/index.html */-->
+<!--/*                                                    */-->
+<!--/* ////////////////////////////////////////////////// */-->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+
+<!--/* ページヘッダー */-->
+<head th:replace="_layout/default_layout::common_header(${title},~{::link.target})">
+  <!--/* レイアウト確認用設定. */-->
+  <meta charset="utf-8" />
+  <title>employee_search/index</title>
+  <link rel="stylesheet" href="../contents/styles/bootstrap/css/bootstrap.min.css" re-th:uqhref="@{/contents/styles/bootstrap/css/bootstrap.min.css}" />
+  <link rel="stylesheet" href="../contents/styles/bootstrap/css/bootstrap-datepicker.min.css" re-th:uqhref="@{/contents/styles/bootstrap/css/bootstrap-datepicker.min.css}" />
+  <link rel="stylesheet" href="../contents/styles/commons.css" re-th:uqhref="@{/contents/styles/commons.css}" />
+  <link rel="stylesheet" href="../contents/styles/re_employee_manager.css" re-th:uqhref="@{/contents/styles/re_employee_manager.css}" />
+  <!--/* 画面固有 スタイル設定. */-->
+  <link rel="stylesheet" href="../contents/styles/employee_search.css" re-th:uqhref="@{/contents/styles/employee_search.css}" class="target" />
+</head>
+<body>
+
+<!--/* コンテンツヘッダー. */-->
+<div th:replace="_layout/default_layout::common_system_title('container','社員情報検索[ 一覧 ]',@{/employee_search},@{/main_menu})" th:remove="tag"></div>
+
+<!--/* -------------------------------------------------- */-->
+<!--/* メインコンテンツ. */-->
+<div th:replace="_layout/default_layout::common_contents('container',~{::div#main_contents})" th:remove="tag">
+  <div id="main_contents" class="container" th:remove="tag">
+
+    <!--/* メッセージ. */-->
+    <div th:replace="_layout/default_layout::common_message()" ></div>
+
+    <!--/* メインフォーム. */-->
+    <form class="form-horizontal" id="myform">
+
+      <div class="row">
+        <div class="col-12">
+          <p>社員番号 または 社員名等のキーワードで絞り込みます。</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-9 col-sm-9 col-md-10 col-lg-10">
+          <input type="text" class="form-control" placeholder="検索キーワード" re-th:input="form,data,keyword" >
+        </div>
+        <div class="col-3 col-sm-3 col-md-2 col-lg-2">
+          <button type="button" class="btn btn-primary w-100" id="btn_search">
+            <img src="../contents/images/commons/icon_search_w.png" re-th:uqsrc="@{/contents/images/commons/icon_search_w.png}" width="16" height="16" />
+            <span>検索</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <label class="checkbox">
+            <input type="checkbox" class="form-control" re-th:checkbox="form,data,is_all,1" /><span class="indicator">全ての状態の社員を表示する。</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-9 col-sm-9 col-md-10 col-lg-10"></div>
+        <div class="col-3 col-sm-3 col-md-2 col-lg-2">
+          <button type="button" class="btn btn-primary w-100" id="btn_add" th:classappend="(${login_permission_kbn}!='0')? 'display-none'">
+            <span> 新規追加 </span>
+          </button>
+        </div>
+      </div>
+
+      <!--/* 一覧. */-->
+      <div class="row">
+        <div class="col-12">
+          <table class="table table-striped table-hover" id="employee_list">
+          <thead>
+            <tr>
+              <th>社員番号</th>
+              <th>社員名</th>
+              <th>役職</th>
+              <th>状態</th>
+              <th>入社日</th>
+              <th>退社日</th>
+              <th>所属グループ</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+          </table>
+        </div>
+        <div class="col-12">
+          <nav class="row float-right">
+            <div class="pagination-title p-2">
+              <span class="pagination-title-page"></span><span> / </span>
+              <span class="pagination-title-total-page"></span><span> ページ </span>
+              <span> [ </span><span class="pagination-title-total-size"></span><span> 件 ] </span>
+            </div>
+            <ul class="pagination" id="employee_search_pagination"></ul>
+          </nav>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="offset-12 offset-sm-4 offset-md-4 offset-lg-4  col-12 col-sm-6 col-md-4 col-lg-4">
+          <button type="button" class="btn btn-primary w-100 display-none" id="btn_update">
+            <img src="../contents/images/commons/icon_search_w.png" re-th:uqsrc="@{/contents/images/commons/icon_save_w.png}" width="16" height="16" />
+            <span>変更を反映する</span>
+          </button><!--/* 更新系のボタン. */-->
+        </div>
+      </div>
+      <br />
+
+      <!--/* hidden. */-->
+      <input type="hidden" re-th:listSize="form,list" />
+      <input type="hidden" re-th:input="form,data,page" />
+      <input type="hidden" re-th:input="form,data,total_page" />
+      <input type="hidden" re-th:input="form,data,total_size" />
+      <input type="hidden" re-th:input="form,data,selected_employee_id" />
+      <input type="text" name="dummy" style="display:none;" value=""/><!--/* 自動サブミット防止 */-->
+
+      <!--/* data. */-->
+      <script type="text/javascript">
+      <!-- 
+        var EmployeeSearch = {};
+        EmployeeSearch.groupListText = '[(${#h.json(form.groupItemlist)})]';
+      -->
+      </script>
+
+    </form>
+
+  </div>
+</div>
+<!--/* メインコンテンツ. */-->
+<!--/* -------------------------------------------------- */-->
+
+<!--/* -------------------------------------------------- */-->
+<!--/* コンテンツフッター */-->
+<div th:replace="_layout/default_layout::common_footers('container',~{::#main_footer},~{::div.modals},~{::script.target})" th:remove="tag">
+  <!--/* 画面固有 フッター設定. */-->
+  <div id="main_footer" th:remove="tag"></div>
+  <!--/* 画面固有 ダイアログ設定. */-->
+  <div class="modals" th:remove="tag"></div>
+  <!--/* 画面固有 スクリプト設定. */-->
+  <script type="text/javascript" src="../contents/scripts/employee_search.js" re-th:uqsrc="@{/contents/scripts/employee_search.js}" class="target" ></script>
+</div>
+<!--/* コンテンツフッター */-->
+<!--/* -------------------------------------------------- */-->
+
+</body>
+</html>

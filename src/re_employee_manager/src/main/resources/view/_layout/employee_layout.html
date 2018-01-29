@@ -1,0 +1,37 @@
+<!--/* ////////////////////////////////////////////////// */-->
+<!--/*                                                    */-->
+<!--/* _layout/employee_layout.html */-->
+<!--/*                                                    */-->
+<!--/* ////////////////////////////////////////////////// */-->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<!--/* レイアウト確認用ヘッダー. */-->
+<head>
+ <meta charset="utf-8" />
+  <title>employee_layout</title>
+  <link rel="stylesheet" href="../contents/styles/bootstrap/css/bootstrap.min.css" re-th:uqhref="@{/contents/styles/bootstrap/css/bootstrap.min.css}" />
+  <link rel="stylesheet" href="../contents/styles/bootstrap/css/bootstrap-datepicker.min.css" re-th:uqhref="@{/contents/styles/bootstrap/css/bootstrap-datepicker.min.css}" />
+  <link rel="stylesheet" href="../contents/styles/commons.css" re-th:uqhref="@{/contents/styles/commons.css}" />
+  <link rel="stylesheet" href="../contents/styles/re_employee_manager.css" re-th:uqhref="@{/contents/styles/re_employee_manager.css}" />
+</head>
+<body>
+
+  <!--/* -------------------------------------------------- */-->
+  <!--/* 社員情報タブ. */-->
+  <div id="main_tab" class="container" th:fragment="common_employee_tab(select,menuDataList)" th:remove="tag">
+    <div th:if="${#h.isNotEmpty(menuDataList)}" th:remove="tag"><!--/* IF */-->
+    <ul class="nav nav-tabs">
+    <span th:each="menuData,ix:${menuDataList}" th:remove="tag"><!--/* LOOP */-->
+      <li class="nav-item">
+        <a href="javascript:void(0)" data-toggle="tab" class="change_screenlink nav-link small text-uppercase" th:classappend="${((select==menuData.key) ? 'active' : '')}" th:id="${menuData.key}" th:text="${menuData.name}">xxx</a>
+        <input type="hidden" name="data_action" th:value="@{${menuData.url}}"/>
+      </li>
+    </span ><!--/* /LOOP */-->
+    </ul>
+    </div><!--/* /IF */-->
+  </div>
+  <!--/* 社員情報タブ. */-->
+  <!--/* -------------------------------------------------- */-->
+
+</body>
+</html>

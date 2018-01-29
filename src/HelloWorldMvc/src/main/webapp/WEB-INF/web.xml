@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns="http://java.sun.com/xml/ns/javaee" 
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
+    id="WebApp_ID" 
+    version="3.0">
+
+  <display-name>HelloWorldMvc</display-name>
+
+  <!-- JAX-RS(Jersey)の設定. -->
+  <filter>
+    <filter-name>JerseySettingFilter</filter-name>
+    <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
+    <init-param>
+      <param-name>jersey.config.server.provider.packages</param-name>
+      <!-- 対象となるパッケージを指定する. (複数の場合は「;(セミコロン)」で区切る) -->
+      <!-- 
+        com.res_system.commons.mvc.controller                 (com-res_system-commons-mvcで使用するパッケージ)
+        com.res_system.helloworldmvc.commons.controller       (HelloWorldMvc共通処理で使用するパッケージ)
+        com.res_system.helloworldmvc.controller               (コントローラー処理で使用するパッケージ)
+      -->
+      <param-value>
+          com.res_system.commons.mvc.controller;
+          com.res_system.helloworldmvc.commons.controller;
+          com.res_system.helloworldmvc.controller
+      </param-value>
+    </init-param>
+    <!-- 静的ファイルパターン. -->
+    <!-- js,css,画像等、静的なファイルのパターン(格納場所[/src/main/webapp/contents/])を指定します. -->
+    <init-param>
+      <param-name>jersey.config.servlet.filter.staticContentRegex</param-name>
+      <param-value>/contents/.*</param-value>
+    </init-param>
+  </filter>
+  <!-- 動的ファイルパターン. -->
+  <filter-mapping>
+    <filter-name>JerseySettingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>    
+
+  <!-- CDI(Weld)を設定する. -->
+  <listener>
+    <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
+  </listener>
+  <resource-env-ref>
+    <resource-env-ref-name>BeanManager</resource-env-ref-name>
+    <resource-env-ref-type>javax.enterprise.inject.spi.BeanManager</resource-env-ref-type>
+  </resource-env-ref>
+
+</web-app>

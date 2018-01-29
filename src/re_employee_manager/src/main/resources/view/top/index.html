@@ -1,0 +1,117 @@
+<!--/* ////////////////////////////////////////////////// */-->
+<!--/*                                                    */-->
+<!--/* top/index.html */-->
+<!--/*                                                    */-->
+<!--/* ////////////////////////////////////////////////// */-->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+
+<!--/* ページヘッダー */-->
+<head th:replace="_layout/default_layout::common_header(${title},~{::link.target})">
+  <!--/* レイアウト確認用設定. */-->
+  <meta charset="utf-8" />
+  <title>top/index</title>
+  <link rel="stylesheet" href="../contents/styles/bootstrap/css/bootstrap.min.css" re-th:uqhref="@{/contents/styles/bootstrap/css/bootstrap.min.css}" />
+  <link rel="stylesheet" href="../contents/styles/bootstrap/css/bootstrap-datepicker.min.css" re-th:uqhref="@{/contents/styles/bootstrap/css/bootstrap-datepicker.min.css}" />
+  <link rel="stylesheet" href="../contents/styles/commons.css" re-th:uqhref="@{/contents/styles/commons.css}" />
+  <link rel="stylesheet" href="../contents/styles/re_employee_manager.css" re-th:uqhref="@{/contents/styles/re_employee_manager.css}" />
+  <!--/* 画面固有 スタイル設定. */-->
+  <link class="target" />
+</head>
+<body>
+
+<!--/* コンテンツヘッダー. */-->
+<div th:replace="_layout/default_layout::common_title('container',@{/})" th:remove="tag"></div>
+
+<!--/* -------------------------------------------------- */-->
+<!--/* メインコンテンツ. */-->
+<div th:replace="_layout/default_layout::common_contents('container',~{::div#main_contents})" th:remove="tag">
+  <div id="main_contents" class="container" th:remove="tag">
+
+    <!--/* メッセージ. */-->
+    <div th:replace="_layout/default_layout::common_message()" ></div>
+
+    <!--/* メインフォーム. */-->
+    <form class="form-horizontal" id="myform">
+      <div class="row">
+        <div class="col-sm-1 col-md-2 col-lg-3"></div>
+        <div class="col-sm-10 col-md-8 col-lg-6 p-4">
+          <div class="card card-container p-4">
+
+            <p>社員管理システムへログインします。 </p>
+
+            <div class="form-group row">
+              <label for="login_id" class="control-label col-12">ログインID</label>
+              <div class="col-12">
+                <input type="text" class="form-control" placeholder="ログインID" re-th:input="form,login_id" size="20" autofocus />
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="password" class="control-label col-12">パスワード</label>
+              <div class="col-12">
+                <input type="password" class="form-control" placeholder="パスワード" re-th:input="form,password" size="20" />
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-12"></div>
+              <div class="col-12">
+                <label class="checkbox">
+                  <input type="checkbox" class="form-control" value="1" re-th:checkbox="form,save,1" checked="true" />
+                  <span class="indicator">ログイン状態を保持します。</span>
+                </label><!--/* checkbox */-->
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-12"></div>
+              <div class="col-12">
+                <button type="button" class="btn btn-lg btn-primary w-100" id="btn_login">
+                  <span>ログイン</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-12">
+                <a class="change_screenlink" href="javascript:void(0)" id="forgot_password">パスワードをお忘れの場合…</a>
+                <input type="hidden" name="data_action" th:value="@{/}" />
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-12">
+                <a class="change_screenlink" href="javascript:void(0)" id="sign_up">新規登録の方は…</a>
+                <input type="hidden" name="data_action" th:value="@{/}" />
+              </div>
+            </div>
+
+          </div><!-- /card-container -->
+        </div><!-- /col -->
+      </div><!-- /row -->
+
+      <!--/* hidden. */-->
+      <input type="hidden" re-th:input="form,next" />
+    </form>
+
+  </div>
+</div>
+<!--/* メインコンテンツ. */-->
+<!--/* -------------------------------------------------- */-->
+
+<!--/* -------------------------------------------------- */-->
+<!--/* コンテンツフッター */-->
+<div th:replace="_layout/default_layout::common_footers('container',~{::#main_footer},~{::div.modals},~{::script.target})" th:remove="tag">
+  <!--/* 画面固有 フッター設定. */-->
+  <div id="main_footer" th:remove="tag"></div>
+  <!--/* 画面固有 ダイアログ設定. */-->
+  <div class="modals" th:remove="tag"></div>
+  <!--/* 画面固有 スクリプト設定. */-->
+  <script type="text/javascript" src="../contents/scripts/top.js" re-th:uqsrc="@{/contents/scripts/top.js}" class="target" ></script>
+</div>
+<!--/* コンテンツフッター */-->
+<!--/* -------------------------------------------------- */-->
+
+</body>
+</html>

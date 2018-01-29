@@ -1,0 +1,9 @@
+com.res_system.commons.mvc
+com.res_system.commons.mvc.controller.response
+com.res_system.commons.mvc.model
+com.res_system.commons.mvc.model.form
+com.res_system.commons.mvc.model.kind
+com.res_system.commons.mvc.view
+com.res_system.commons.mvc.view.dialect
+com.res_system.commons.mvc.view.thexpressionobjects
+com.res_system.commons.mvc.view.thprocessors
