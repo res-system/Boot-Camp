@@ -30,3 +30,5 @@ src/work/
 build/work/
 boot-camp-work/
 
+.DS_Store
+
