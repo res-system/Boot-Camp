@@ -73,15 +73,27 @@
 
 * [build]     …  buildした生成物を格納しています。
 
-    - [com-res_system-commons]          … 共通処理ライブラリ(com-res_system-commons)のjarとjavadocを格納しています。
-
-    - [com-res_system-commons-dao]      … データアクセス処理ライブラリ(com-res_system-commons-dao)のjarとjavadocを格納しています。
-
-    - [com-res_system-commons-mvc]      … MVC処理ライブラリ(com-res_system-commons-mvc)のjarとjavadocを格納しています。
-
-    - [HelloWorldMvc]                   … MVCアプリケーションサンプル(HelloWorldMvc)のwarを格納しています。
-
-    - [re_employee_manager]            … Boot-Camp学習プログラム「社員管理システム」(re_employee_manager)のwarとjavadocを格納しています。
-
-
+    - [com-res_system-commons]
+            
+            共通処理ライブラリ(com-res_system-commons)のjarとjavadocを格納しています。
+            
+            
+    - [com-res_system-commons-dao]
+    
+            データアクセス処理ライブラリ(com-res_system-commons-dao)のjarとjavadocを格納しています。
+            
+            
+    - [com-res_system-commons-mvc]
+    
+            MVC処理ライブラリ(com-res_system-commons-mvc)のjarとjavadocを格納しています。
+            
+            
+    - [HelloWorldMvc]
+    
+            MVCアプリケーションサンプル(HelloWorldMvc)のwarを格納しています。
+            
+            
+    - [re_employee_manager]
+    
+            Boot-Camp学習プログラム「社員管理システム」(re_employee_manager)のwarとjavadocを格納しています。
 
