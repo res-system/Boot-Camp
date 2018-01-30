@@ -1,5 +1,5 @@
 
-# Boot-Camp README.txt
+# Boot-Camp README
 
 -------------------------------------------------------------------------------
 
@@ -47,14 +47,26 @@
         ソースを格納しています。
 
 
-    - [com-res_system-commons]         … 共通処理ライブラリ(com-res_system-commons)のソースを格納しています。
-
-    - [com-res_system-commons-mvc]      … MVC処理ライブラリ(com-res_system-commons-mvc)のソースを格納しています。
-
-    - [HelloWorldMvc]                   … MVCアプリケーションサンプル(HelloWorldMvc)のソースを格納しています。
-
-    - [re_employee_manager]             … Boot-Camp学習プログラム「社員管理システム」(re_employee_manager)のソースを格納しています。
-
+    - [com-res_system-commons] 
+    
+            共通処理ライブラリ(com-res_system-commons)のソースを格納しています。
+            
+            
+    - [com-res_system-commons-mvc] 
+    
+            MVC処理ライブラリ(com-res_system-commons-mvc)のソースを格納しています。
+            
+            
+    - [HelloWorldMvc]
+    
+            MVCアプリケーションサンプル(HelloWorldMvc)のソースを格納しています。
+            
+            
+    - [re_employee_manager]
+    
+            Boot-Camp学習プログラム「社員管理システム」(re_employee_manager)のソースを格納しています。
+            
+            
       ※ com-res_system-commons-daoはソースを公開しておりません。
 
 
