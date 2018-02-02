@@ -1,29 +1,36 @@
-html,body {
-  font-family: "ƒqƒ‰ƒMƒmŠpƒS Pro W3", ƒƒCƒŠƒI, Osaka, Arial, Verdana, "‚l‚r ‚oƒSƒVƒbƒN", sans-serif;
-  color: #282828;
+html { 
+  overflow-y:scroll; margin: 0 auto;
+  min-width:480px; max-width:1280px;
 }
-h1,h2,h3,h4,h5,h6 {
-  margin-top: 4px;
-  margin-bottom: 0px;
-  color: #383848;
+body {
+  font-family: ŸàƒSƒVƒbƒN‘Ì, 'Yu Gothic', YuGothic, 'ƒqƒ‰ƒMƒmŠpƒSƒVƒbƒN Pro', 'Hiragino Kaku Gothic Pro', ƒƒCƒŠƒI, Meiryo, Osaka, '‚l‚r ‚oƒSƒVƒbƒN', 'MS PGothic', sans-serif;
+  font-size:1rem; font-weight:normal; color:#404040;
+  background:#ffffff; margin:2rem;
 }
-hr { 
-  margin: 2px; padding: 0px;  
-  border: 0px; border-top: 2px solid #696969;
-}
+
+strong  { font-size:1.0rem; font-weight:bold; color:#ff3300; }
+.strong { font-size:1.0rem; font-weight:bold; color:#ff3300; }
+.notes  { font-size:0.7rem; }
+
+hr { margin-top:2px; padding: 0px; border: 0px; border-top: 1px solid #a0a0a0; }
+h1,h2,h3,h4,h5,h6 { margin-bottom: 0px; }
+h1,h2 { margin-top:4rem; }
+h3,h4 { margin-top:2rem; }
+h5,h6 { margin-top:1rem; }
+
 table { border-collapse: collapse; }
-th { background:#d0d0d0; }
-th, td { 
-  border:1px solid #999; 
-  padding:2px 5px; 
-}
+th { background:#e0e0e0; }
+th, td { border:1px solid #606060; padding:2px 5px; }
+
 pre.code-style { 
   padding: 8px; 
-  background: #f9f9f9;
-  border: 1px solid #4169e1;
+  background: #808080;
+  color:#fefefe;
+  border: 1px solid #e0e0e0;
 }
+
 blockquote { 
   margin-left: 16px;
   padding:8px 8px;
-  border-left: 8px solid #f7f7f7;
+  border-left: 8px solid #e0e0e0;
 }

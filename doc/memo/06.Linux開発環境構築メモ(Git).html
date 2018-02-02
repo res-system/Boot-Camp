@@ -1,76 +1,96 @@
 <!-- ※使用時は「markdowmemo_data」フォルダと同じ階層のフォルダで使用してください。-->
-<!DOCTYPE html>
-<html lang="ja"><head><meta charset="utf-8"><link rel="stylesheet" href="_markdowmemo_data/markdowmemo.css?v=1.0.0"><title>
-Linux 開発環境構築メモ (xfce RedHat系)
-</title></head><body><div id="memo_body" -- Markdow Memo Start -- >
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><link rel="stylesheet" href="_markdowmemo_data/markdowmemo.css?v=1.0.0"><title>
+Linux開発環境構築メモ(Git)
+</title></head></head><body><div id="memo_body" -- Markdow Memo Start -- >
 
 # Linux開発環境構築メモ(Git)
 
+
+
+
 ## GITのインストール
 -------------------------------------------------------------------------------
-  [参考](https://git-scm.com/book/ja/v1/%E4%BD%BF%E3%81%84%E5%A7%8B%E3%82%81%E3%82%8B-Git%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB)
-  [参考](https://qiita.com/noraworld/items/8546c44d1ec6d739493f)
 
-1．念の為、既存のGITを削除。
-```
-$ sudo yum -y remove git
-```
+[参考(Gitのインストール1)](https://git-scm.com/book/ja/v1/%E4%BD%BF%E3%81%84%E5%A7%8B%E3%82%81%E3%82%8B-Git%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB)
+[参考(Gitのインストール2)](https://qiita.com/noraworld/items/8546c44d1ec6d739493f)
 
-2.必要なライブラリをインストール。
-```
-$ sudo yum -y install curl-devel expat-devel gettext-devel openssl-devel perl-devel zlib-devel autoconf asciidoc xmlto docbook2X
-$ sudo yum -y install  tcl tcl-devel tk tk-devel
-$ sudo ln -s /usr/bin/db2x_docbook2texi /usr/bin/docbook2x-texi
-```
+1. 念の為、既存のGITを削除。
 
-3.GITのソースをダウンロードし、インストールする。
-※バージョンは下記で確認する。（下記は2018.01.25時点の最新）
-[最新版チェック](https://github.com/git/git/releases)
-```
-$ wget https://github.com/git/git/archive/v2.16.1.tar.gz
-$ tar -zxf v2.16.1.tar.gz
-$ cd git-2.16.1
-$ make configure
-$ ./configure --prefix=/usr
-$ make all doc info
-$ sudo make install install-doc install-html install-info
-```
+    ```(terminal)
+    $ sudo yum -y remove git
+    ```
 
-4.確認する。
-```
-$ git --version
-```
 
-5.バージョンアップ。（上記で最新版の場合、必要なし）
-```
-$ git clone git://git.kernel.org/pub/scm/git/git.git
-```
+2. 必要なライブラリをインストール。
+
+    ```(terminal)
+    $ sudo yum -y install curl-devel expat-devel gettext-devel openssl-devel perl-devel zlib-devel autoconf asciidoc xmlto docbook2X
+    $ sudo yum -y install  tcl tcl-devel tk tk-devel
+    $ sudo ln -s /usr/bin/db2x_docbook2texi /usr/bin/docbook2x-texi
+    ```
+
+
+3. GITのソースをダウンロードし、インストールする。
+
+    ※バージョンは下記で確認する。（下記は2018.01.25時点の最新）
+    [最新版チェック](https://github.com/git/git/releases)
+
+    ```(terminal)
+    $ wget https://github.com/git/git/archive/v2.16.1.tar.gz
+    $ tar -zxf v2.16.1.tar.gz
+    $ cd git-2.16.1
+    $ make configure
+    $ ./configure --prefix=/usr
+    $ make all doc info
+    $ sudo make install install-doc install-html install-info
+    ```
+
+
+4. 確認する。
+
+    ```(terminal)
+    $ git --version
+    ```
+
+
+5. バージョンアップ。（上記で最新版の場合、必要なし）
+
+    ```(terminal)
+    $ git clone git://git.kernel.org/pub/scm/git/git.git
+    ```
+
+
 
 ## GIT GUIの起動
+
 https://www8.atwiki.jp/git_jp/pages/34.html
 http://commte.net/blog/archives/5251
 
-1.起動
-$ git gui
+1. 起動
 
-2.「既存リポジトリを複製する」を選択。
+    $ git gui
 
-3.「ソースの位置」にリポジトリのＵＲＬを
-  「先ディレクトリ」にリポジトリの内容を格納するローカルフォルダを設定し、
-  「複製」ボタンを押下する。
 
-  例）
-  ソースの位置：https://github.com/res-system/Boot-Camp
-  先ディレクトリ：/home/res/work/Git-Boot-Camp
+2. 「既存リポジトリを複製する」を選択。
+
+
+3. 「ソースの位置」にリポジトリのＵＲＬを
+    「先ディレクトリ」にリポジトリの内容を格納するローカルフォルダを設定し、
+    「複製」ボタンを押下する。
+
+    例）
+    ソースの位置：https://github.com/res-system/Boot-Camp
+    先ディレクトリ：/home/res/work/Git-Boot-Camp
 
 
 
 
 ## ソースとeclipseのworkspaceとの紐づけ
 
-1.「/home/res/work/Git-Boot-Camp/src」をworkspaceに設定する。
+1. 「/home/res/work/Git-Boot-Camp/src」をworkspaceに設定する。
 
-2.【eclipseメニュー】＞「ウィンドウ」＞「設定」でworkspaceの設定を行う。
+2. 【eclipseメニュー】＞「ウィンドウ」＞「設定」でworkspaceの設定を行う。
+
 
 
 -------------------------------------------------------------------------------
