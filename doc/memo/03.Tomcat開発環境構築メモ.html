@@ -80,72 +80,35 @@ Tomcat開発環境構築メモ
 3.  起動スクリプトを作成
 
     ```(terminal)
-    $ sudo vi /etc/rc.d/init.d/tomcat
+    $ sudoedit /etc/systemd/system/tomcat.service
     ```
 
     ↓
 
-    ```/etc/rc.d/init.d/tomcat
-    #!/bin/bash
+    ```/etc/systemd/system/tomcat.service
+    [Unit]
+    Description=Apache Tomcat 8
+    After=syslog.target network.target
 
-    # Tomcat: Start/Stop Tomcat 8.0.35
-    #
-    # chkconfig: - 90 10
-    # description: Tomcat is a Java application Server.
+    [Service]
+    User=res
+    Group=res
+    Type=oneshot
+    PIDFile=/opt/lampp/tomcat8/tomcat.pid
+    RemainAfterExit=yes
 
-    . /etc/init.d/functions
-    . /etc/sysconfig/network
+    ExecStart=/opt/lampp/tomcat8/bin/startup.sh
+    ExecStop=/opt/lampp/tomcat8/bin/shutdown.sh
 
-    CATALINA_HOME=/opt/lampp/tomcat8
-    TOMCAT_USER=res
-
-    LOCKFILE=/var/lock/subsys/tomcat
-
-    RETVAL=0
-
-    start(){
-        echo "Starting Tomcat: "
-        su - $TOMCAT_USER -c "$CATALINA_HOME/bin/startup.sh"
-        RETVAL=$?
-        echo
-        [ $RETVAL -eq 0 ] && touch $LOCKFILE
-        return $RETVAL
-    }
-
-    stop(){
-        echo "Shutting down Tomcat: "
-        $CATALINA_HOME/bin/shutdown.sh
-        RETVAL=$?
-        echo
-        [ $RETVAL -eq 0 ] && rm -f $LOCKFILE
-        return $RETVAL
-    }
-
-    case "$1" in
-        start)
-            start
-            ;;
-        stop)
-            stop
-            ;;
-        restart)
-            stop
-            sleep 8000
-            start
-            ;;
-        *)
-            echo $"Usage: $0 {start|stop|restart}"
-            exit 1
-            ;;
-    esac
-    exit $?
+    [Install]
+    WantedBy=multi-user.target
     ```
     
     ↓
 
     [権限変更]
     ```(terminal)
-    $ sudo chmod 755 /etc/rc.d/init.d/tomcat
+    $ sudo chmod 755 /etc/systemd/system/tomcat.service
     ```
 
 
@@ -172,7 +135,7 @@ Tomcat開発環境構築メモ
 6. 実行
 
     ```(terminal)
-    $ sudo /etc/rc.d/init.d/tomcat start
+    $ sudo systemctl start tomcat.service
     ```
 
 
@@ -184,7 +147,7 @@ Tomcat開発環境構築メモ
 8. 停止
 
     ```(terminal)
-    $ sudo /etc/rc.d/init.d/tomcat stop
+    $ sudo systemctl stop tomcat.service
     ```
 
 
@@ -204,7 +167,7 @@ Tomcat開発環境構築メモ
 * Tomcat起動
 
     - コマンド
-        sudo /etc/rc.d/init.d/tomcat start
+        sudo systemctl start tomcat.service
 
     - 「ターミナルで実行する」をチェック
 
@@ -212,7 +175,7 @@ Tomcat開発環境構築メモ
 * Tomcat停止
   
     - コマンド
-        sudo /etc/rc.d/init.d/tomcat stop
+        sudo systemctl stop tomcat.service
 
     - 「ターミナルで実行する」をチェック
 

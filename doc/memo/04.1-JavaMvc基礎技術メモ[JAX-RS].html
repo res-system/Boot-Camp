@@ -1,149 +1,171 @@
 <!-- ※使用時は「markdowmemo_data」フォルダと同じ階層のフォルダで使用してください。-->
-<!DOCTYPE html>
-<html lang="ja"><head><meta charset="utf-8"><link rel="stylesheet" href="_markdowmemo_data/markdowmemo.css?v=1.0.0"><title>
-JavaMvc開発環境構築メモ[JAX-RS]
-</title></head><body><div id="memo_body" -- Markdow Memo Start -- >
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><link rel="stylesheet" href="_markdowmemo_data/markdowmemo.css?v=1.0.0"><title>
+JavaMvc基礎技術メモ[JAX-RS]
+</title></head></head><body><div id="memo_body" -- Markdow Memo Start -- >
 
 # JavaMvc基礎技術メモ[JAX-RS]
---------------------------------------------------------------------------------
-<br />
 
 
-## JAX-RS 2.0 (Jersey2) Webアプリケーション構築(動的 Web プロジェクト)
+
+
+## JAX-RS 2.0 (Jersey2) Webアプリケーション構築
 -------------------------------------------------------------------------------
 
 1. プロジェクト「HelloWorldJersey」を作成する。
-  1. 【eclipseメニュー】＞「ファイル」＞「新規」＞「動的 Web プロジェクト」で作成する。
 
-  2. 【動的 Web プロジェクト】の「プロジェクト名」に『HelloWorldJersey』を入力。
-  
-  3. 【ビルド・パス上のソース・フォルダー】を『src』(削除)→『src/main/java』に変更し、次へ。
+    1. 【eclipseメニュー】＞「ファイル」＞「新規」＞「動的 Web プロジェクト」で作成する。
 
-  4. 「web.xmlデプロイメント記述子の生成」をチェックし、
-    「コンテンツ・ディレクトリー」を『WebContent』→『src/main/webapp』に変更して、完了。
+
+    2. 【動的 Web プロジェクト】の「プロジェクト名」に『HelloWorldJersey』を入力。
+    
+
+    3. 【ビルド・パス上のソース・フォルダー】を『src』(削除)→『src/main/java』に変更し、次へ。
+
+    4. 「web.xmlデプロイメント記述子の生成」をチェックし、
+        「コンテンツ・ディレクトリー」を『WebContent』→『src/main/webapp』に変更して、完了。
+
 
 
 2. Gradleプロジェクトへ変換
-  1. build.gradleファイルを作成する.
-```build.gradle
-apply plugin: 'java'
-apply plugin: 'war'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+    1. build.gradleファイルを作成する.
 
-repositories {
-    jcenter()
-}
+        ```build.gradle
+        apply plugin: 'java'
+        apply plugin: 'war'
 
-/*
-  war化する際に梱包されたくない(参照のみ)ライブラリは、providedCompileで指定.
-*/
-dependencies {
-    // servlet.
-    providedCompile('javax.servlet:javax.servlet-api:3.+')
-    // JAX-RS実装(jersey).
-    compile("org.glassfish.jersey.containers:jersey-container-servlet:2.+")
-    compile("org.glassfish.jersey.inject:jersey-hk2:2.+")
-    // JAX-RS実装(jersey(json拡張)).
-    compile("org.glassfish.jersey.media:jersey-media-json-jackson:2.+")
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
 
-    // ./main/lib配下の全てのjarファイルをコンパイル時のクラスパスに追加
-    compile fileTree(dir: './src/main/webapp/WEB-INF/lib', includes: ['*.jar'])
+        repositories {
+            jcenter()
+        }
 
-    // junit
-    testCompile 'junit:junit:4.+'
-}
-```
+        /*
+          war化する際に梱包されたくない(参照のみ)ライブラリは、providedCompileで指定.
+        */
+        dependencies {
+            // servlet.
+            providedCompile('javax.servlet:javax.servlet-api:3.+')
+            // JAX-RS実装(jersey).
+            compile("org.glassfish.jersey.containers:jersey-container-servlet:2.+")
+            compile("org.glassfish.jersey.inject:jersey-hk2:2.+")
+            // JAX-RS実装(jersey(json拡張)).
+            compile("org.glassfish.jersey.media:jersey-media-json-jackson:2.+")
 
-  2. 【プロジェクト右クリックメニュー】＞「構成」＞「Convert to Gradle(STS) Project」を選択します。
+            // ./main/lib配下の全てのjarファイルをコンパイル時のクラスパスに追加
+            compile fileTree(dir: './src/main/webapp/WEB-INF/lib', includes: ['*.jar'])
+
+            // junit
+            testCompile 'junit:junit:4.+'
+        }
+        ```
+
+
+    2. 【プロジェクト右クリックメニュー】＞「構成」＞「Convert to Gradle(STS) Project」を選択します。
   
-  3. Gradleのリフレッシュ
-    * 【プロジェクト右クリックメニュー】＞「Gradle(STS)」＞「依存関係のリフレッシュ」を選択します。
-    * 【プロジェクト右クリックメニュー】＞「Gradle(STS)」＞「すべてリフレッシュ」を選択します。
+
+    3. Gradleのリフレッシュ
+
+        * 【プロジェクト右クリックメニュー】＞「Gradle(STS)」＞「依存関係のリフレッシュ」を選択します。
+
+        * 【プロジェクト右クリックメニュー】＞「Gradle(STS)」＞「すべてリフレッシュ」を選択します。
+
 
 
 3. web.xmlの作成。
-```/src/main/webapp/WEB-INF/web.xml
-<?xml version="1.0" encoding="UTF-8"?>
-<web-app 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xmlns="http://java.sun.com/xml/ns/javaee" 
-    xsi:schemaLocation="
-        http://java.sun.com/xml/ns/javaee 
-        http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
-    id="WebApp_ID" 
-    version="3.0">
 
-  <display-name>Hello World Jersey</display-name>
+    ```/src/main/webapp/WEB-INF/web.xml
+    <?xml version="1.0" encoding="UTF-8"?>
+    <web-app 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xmlns="http://java.sun.com/xml/ns/javaee" 
+        xsi:schemaLocation="
+            http://java.sun.com/xml/ns/javaee 
+            http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
+        id="WebApp_ID" 
+        version="3.0">
 
-  <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-    <welcome-file>index.htm</welcome-file>
-    <welcome-file>index.jsp</welcome-file>
-    <welcome-file>default.html</welcome-file>
-    <welcome-file>default.htm</welcome-file>
-    <welcome-file>default.jsp</welcome-file>
-  </welcome-file-list>
+      <display-name>Hello World Jersey</display-name>
 
-  <!-- Jerseyの設定. -->
-  <servlet>
-    <servlet-name>Hello World Jersey</servlet-name>
-    <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-    <init-param>
-      <param-name>jersey.config.server.provider.packages</param-name>
-      <!-- 対象となるパッケージを指定する. -->
-      <param-value>sample</param-value>
-    </init-param>
-  </servlet>
+      <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+        <welcome-file>index.htm</welcome-file>
+        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>default.html</welcome-file>
+        <welcome-file>default.htm</welcome-file>
+        <welcome-file>default.jsp</welcome-file>
+      </welcome-file-list>
 
-  <!-- 対象となるURLパターンを設定する. -->
-  <servlet-mapping>
-    <servlet-name>Hello World Jersey</servlet-name>
-    <url-pattern>/restful/*</url-pattern>
-  </servlet-mapping>
+      <!-- Jerseyの設定. -->
+      <servlet>
+        <servlet-name>Hello World Jersey</servlet-name>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+        <init-param>
+          <param-name>jersey.config.server.provider.packages</param-name>
+          <!-- 対象となるパッケージを指定する. -->
+          <param-value>sample</param-value>
+        </init-param>
+      </servlet>
 
-</web-app>
-```
+      <!-- 対象となるURLパターンを設定する. -->
+      <servlet-mapping>
+        <servlet-name>Hello World Jersey</servlet-name>
+        <url-pattern>/restful/*</url-pattern>
+      </servlet-mapping>
+
+    </web-app>
+    ```
+
 
 
 4. Servlet(sample.Example)の作成。
-```/src/main/java/sample/Example.java
-package sample;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+    ```/src/main/java/sample/Example.java
+    package sample;
 
-@Path("hello/{name}")
-public class Example {
+    import javax.ws.rs.GET;
+    import javax.ws.rs.Path;
+    import javax.ws.rs.PathParam;
+    import javax.ws.rs.Produces;
+    import javax.ws.rs.core.MediaType;
 
-    @GET
-    @Produces({MediaType.TEXT_PLAIN})
-    public String sayHello(@PathParam("name") String name) {
-        return "hello," + name + "!";
+    @Path("hello/{name}")
+    public class Example {
+
+        @GET
+        @Produces({MediaType.TEXT_PLAIN})
+        public String sayHello(@PathParam("name") String name) {
+            return "hello," + name + "!";
+        }
+
     }
+    ```
 
-}
-```
 
 
 5. 実行する。
-  1. 【Gradleタスクウィンドウ】を開く。
-  
-  2. プロジェクトを「HelloWorldJersey」に設定。
 
-  3. 「build」をクリック。
+    1. 【Gradleタスクウィンドウ】を開く。
 
-  4. /build/libs/HelloWorldJersey.warが作成されているので、
-    /opt/lampp/tomcat8/webapps/へwarをコピーする。
-  
-  5. Tomcat起動。
-  
-  6. サーバの起動後、ブラウザで確認する
-    - http://localhost:8080/HelloWorldJersey/restful/hello/Jersey
+    
+    2. プロジェクトを「HelloWorldJersey」に設定。
+
+
+    3. 「build」をクリック。
+
+
+    4. /build/libs/HelloWorldJersey.warが作成されているので、
+        /opt/lampp/tomcat8/webapps/へwarをコピーする。
+    
+
+    5. Tomcat起動。
+    
+
+    6. サーバの起動後、ブラウザで確認する
+    
+        - http://localhost:8080/HelloWorldJersey/restful/hello/Jersey
+
 
 
 
