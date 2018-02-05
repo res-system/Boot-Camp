@@ -1,11 +1,9 @@
-<!-- ※使用時は「markdowmemo_data」フォルダと同じ階層のフォルダで使用してください。-->
-<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><link rel="stylesheet" href="_markdowmemo_data/markdowmemo.css?v=1.0.0"><title>
+<!-- ※「_markdownmemo_data」フォルダと同じ階層でご使用ください。-->
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><link rel="stylesheet" href="_markdownmemo_data/markdownmemo.css?v=1.0.2"><title>
 Linux開発環境構築メモ(Git)
-</title></head></head><body><div id="memo_body" -- Markdow Memo Start -- >
+</title></head></head><body><textarea id="memo_body" style="display:none;" title="Markdow Memo" >
 
 # Linux開発環境構築メモ(Git)
-
-※コードの表示がおかしい場合は、ソースの表示でコードを確認してください。
 
 
 
@@ -18,7 +16,7 @@ Linux開発環境構築メモ(Git)
 
 1. 念の為、既存のGITを削除。
 
-    ```(terminal)
+    ```terminal
     $ sudo yum -y remove git
     ```
 
@@ -37,7 +35,7 @@ Linux開発環境構築メモ(Git)
     ※バージョンは下記で確認する。（下記は2018.01.25時点の最新）
     [最新版チェック](https://github.com/git/git/releases)
 
-    ```(terminal)
+    ```terminal
     $ wget https://github.com/git/git/archive/v2.16.1.tar.gz
     $ tar -zxf v2.16.1.tar.gz
     $ cd git-2.16.1
@@ -50,14 +48,14 @@ Linux開発環境構築メモ(Git)
 
 4. 確認する。
 
-    ```(terminal)
+    ```terminal
     $ git --version
     ```
 
 
 5. バージョンアップ。（上記で最新版の場合、必要なし）
 
-    ```(terminal)
+    ```terminal
     $ git clone git://git.kernel.org/pub/scm/git/git.git
     ```
 
@@ -95,5 +93,4 @@ http://commte.net/blog/archives/5251
 
 
 
--------------------------------------------------------------------------------
-</div -- Markdow Memo End   -- ><script src="_markdowmemo_data/markdownmemo.js?v=1.0.1"></script></body></html>
+</textarea><script src="_markdownmemo_data/markdownmemo.js?v=1.0.2"></script></body></html>

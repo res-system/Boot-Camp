@@ -8,22 +8,27 @@ body {
   background:#ffffff; margin:2rem;
 }
 
-strong  { font-size:1.0rem; font-weight:bold; color:#ff3300; }
-.strong { font-size:1.0rem; font-weight:bold; color:#ff3300; }
+strong  { font-size:1.0rem; font-weight:bold; color:#dc143c; }
+.strong { font-size:1.0rem; font-weight:bold; color:#dc143c; }
 .notes  { font-size:0.7rem; }
+a { font-size:1.0rem; font-weight:bold; color:#4169e1;}
 
 hr { margin-top:2px; padding: 0px; border: 0px; border-top: 1px solid #a0a0a0; }
 h1,h2,h3,h4,h5,h6 { margin-bottom: 0px; }
-h1,h2 { margin-top:4rem; }
-h3,h4 { margin-top:2rem; }
-h5,h6 { margin-top:1rem; }
+h1,h2 { margin-top:3.2rem; color:#404058; font-size:1.6rem;}
+h3,h4 { margin-top:2rem; font-size:1.2rem; }
+h5,h6 { margin-top:1rem; font-size:1.0rem; }
 
 table { border-collapse: collapse; }
 th { background:#e0e0e0; }
 th, td { border:1px solid #606060; padding:2px 5px; }
 
+div.code-title {
+  margin-bottom:-1rem;
+}
 pre.code-style { 
-  padding: 8px; 
+  margin-left:0.5rem;
+  padding:1rem;
   background: #808080;
   color:#fefefe;
   border: 1px solid #e0e0e0;
