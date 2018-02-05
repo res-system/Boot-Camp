@@ -1,6 +1,18 @@
 -- 外部キーを無効
 SET FOREIGN_KEY_CHECKS=0;
 
+-- スキーマー名
+--   re_emp_mgr
+--
+-- ユーザーID
+--   re_emp_mgr
+--
+-- パスワード
+--   re_emp_mgr
+--
+-- 照合順序
+--   utf8mb4_bin
+
 -- c_m_account	アカウントマスタ	ACC
 -- c_s_acct_key	アカウントキーサブマスタ	ACKY
 -- c_s_acct_contact	アカウント連絡先サブマスタ	ACCT
