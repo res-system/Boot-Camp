@@ -286,6 +286,18 @@ public final class ReThHelper {
      * <br />使用例）
      * <br />[ th:if="${#h.isEmpty(~)}" (対象値)]
      *
+     * @param targetValue 確認対象の値(ID).
+     * @return 確認結果(true:OK, false:NG).
+     */
+    public boolean isEmpty(Long targetValue) {
+        return MvcUtil.isEmpty(targetValue);
+    }
+
+    /**
+     * 対象の値がNULL又は空である事を確認します.
+     * <br />使用例）
+     * <br />[ th:if="${#h.isEmpty(~)}" (対象値)]
+     *
      * @param targetValue 対象値.
      * @return 確認結果(true:OK, false:NG).
      */

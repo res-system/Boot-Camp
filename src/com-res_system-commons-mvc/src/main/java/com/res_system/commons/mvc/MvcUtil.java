@@ -416,6 +416,18 @@ public final class MvcUtil {
     //---------------------------------------------- static [public] 共通処理.
     /**
      * 値がNULL又は空である事を確認します.
+     * @param id 確認対象の値(ID).
+     * @return 確認結果(true:OK, false:NG).
+     */
+    public static final boolean isEmpty(Long id) {
+        if (id == null || id <= 0L) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 値がNULL又は空である事を確認します.
      * @param value 確認対象の値.
      * @return 確認結果(true:OK, false:NG).
      */

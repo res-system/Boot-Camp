@@ -34,6 +34,14 @@ public class ReUtilTest {
         assertEquals(true, ReUtil.isEmpty(value));
         assertEquals(true, ReUtil.isEmpty(""));
         assertEquals(false, ReUtil.isEmpty("a"));
+        Long id = null;
+        assertEquals(true, ReUtil.isEmpty(id));
+        id = -1L;
+        assertEquals(true, ReUtil.isEmpty(id));
+        id = 0L;
+        assertEquals(true, ReUtil.isEmpty(id));
+        id = 1L;
+        assertEquals(false, ReUtil.isEmpty(id));
     }
 
 
