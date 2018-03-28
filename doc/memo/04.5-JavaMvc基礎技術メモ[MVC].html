@@ -1,0 +1,392 @@
+<!-- ※「_markdownmemo_data」フォルダと同じ階層でご使用ください。-->
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><link rel="stylesheet" href="_markdownmemo_data/markdownmemo.css?v=1.0.2"><title>
+JavaMvc基礎技術メモ[MVC]
+</title></head></head><body><textarea id="memo_body" style="display:none;" title="Markdow Memo" >
+
+# JavaMvc基礎技術メモ[MVC]
+
+
+
+
+## Mvc Webアプリケーション（スケルトン）構築
+-------------------------------------------------------------------------------
+1. プロジェクト「mvc_skeleton」を作成する。
+
+    1. 【eclipseメニュー】＞「ファイル」＞「新規」＞「動的 Web プロジェクト」を選択。
+
+    2. 【動的 Web プロジェクト】の「プロジェクト名」に『mvc_skeleton』を入力し、次へ。
+    
+    3. 【ビルド・パス上のソース・フォルダー】を『src』(削除)→『src/main/java』に変更し、次へ。
+
+    4. 「web.xmlデプロイメント記述子の生成」をチェックし、
+        「コンテンツ・ディレクトリー」を『WebContent』→『src/main/webapp』に変更して、完了。
+
+
+2. Gradleプロジェクトへ変換
+  
+    1. build.gradleファイルを作成する.
+
+        ```gradle:build.gradle
+        /*
+          build.gradle
+        */
+        apply plugin: 'java'
+        apply plugin: 'war'
+
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+
+        repositories {
+            jcenter()
+        }
+
+        test {
+            // build時にUnitテストを除外.
+            exclude '*'
+        }
+
+        /*
+          war化する際に梱包されたくない(参照のみ)ライブラリは、providedCompileで指定.
+        */
+        dependencies {
+            // servlet.
+            providedCompile('javax.servlet:javax.servlet-api:3.+')
+            // JAX-RS実装(jersey).
+            compile("org.glassfish.jersey.containers:jersey-container-servlet:2.+")
+            compile("org.glassfish.jersey.inject:jersey-hk2:2.+")
+            // JAX-RS実装(jersey(json拡張)).
+            compile("org.glassfish.jersey.media:jersey-media-json-jackson:2.+")
+            // Thymeleaf
+            compile("org.thymeleaf:thymeleaf:3.+")
+            // CDI実装(Weld)
+            compile("org.jboss.weld.servlet:weld-servlet-core:3.+")
+            compile("org.glassfish.jersey.ext.cdi:jersey-cdi1x-servlet:2.+")
+            // JDBC(mariadb)
+            compile("org.mariadb.jdbc:mariadb-java-client:2.+")
+            // log4j.
+            compile("org.apache.logging.log4j:log4j-api:2.+")
+            compile("org.apache.logging.log4j:log4j-core:2.+")
+
+            // ./main/lib配下の全てのjarファイルをコンパイル時のクラスパスに追加
+            compile fileTree(dir: './src/main/webapp/WEB-INF/lib', includes: ['*.jar'])
+
+            // junit
+            testCompile 'junit:junit:4.+'
+
+            // CDI UNITテスト(deltaspike)
+            testCompile 'org.apache.deltaspike.modules:deltaspike-test-control-module-api:1.+'
+            testCompile 'org.apache.deltaspike.modules:deltaspike-test-control-module-impl:1.+'
+            testCompile 'org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld:1.+'
+            testCompile 'org.jboss.weld.se:weld-se-core:3.+'
+        }
+        ```
+
+    2. 【プロジェクト右クリックメニュー】＞「構成」＞「Convert to Gradle(STS) Project」を選択します。
+
+    3. Gradleのリフレッシュ
+
+
+3. web.xmlの作成。
+    
+    ```xml:/src/main/webapp/WEB-INF/web.xml
+    <?xml version="1.0" encoding="UTF-8"?>
+    <web-app 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xmlns="http://java.sun.com/xml/ns/javaee" 
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
+        id="WebApp_ID" 
+        version="3.0">
+
+      <display-name>mvc_skeleton</display-name>
+
+      <!-- JAX-RS(Jersey)の設定. -->
+      <filter>
+        <filter-name>JerseySettingFilter</filter-name>
+        <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
+        <init-param>
+          <param-name>jersey.config.server.provider.packages</param-name>
+          <!-- 対象となるパッケージを指定する. (複数の場合は「;(セミコロン)」で区切る) -->
+          <param-value>
+              com.res_system.commons.mvc.controller;
+              com.res_system.mvc_skeleton.commons.controller;
+              com.res_system.mvc_skeleton.controller
+          </param-value>
+        </init-param>
+        <!-- 静的ファイルパターン. -->
+        <!-- js,css,画像等、静的なファイルのパターン(格納場所[/src/main/webapp/contents/])を指定します. -->
+        <init-param>
+          <param-name>jersey.config.servlet.filter.staticContentRegex</param-name>
+          <param-value>/contents/.*</param-value>
+        </init-param>
+      </filter>
+      <!-- 動的ファイルパターン. -->
+      <filter-mapping>
+        <filter-name>JerseySettingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+      </filter-mapping>    
+
+      <!-- CDI(Weld)を設定する. -->
+      <listener>
+        <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
+      </listener>
+      <resource-env-ref>
+        <resource-env-ref-name>BeanManager</resource-env-ref-name>
+        <resource-env-ref-type>javax.enterprise.inject.spi.BeanManager</resource-env-ref-type>
+      </resource-env-ref>
+
+      <!-- session id をCookieに設定する. -->
+      <session-config>
+        <tracking-mode>COOKIE</tracking-mode>
+      </session-config>
+
+    </web-app>
+    ```
+
+
+4. beans.xmlの作成。
+
+    ```xml:/src/main/webapp/WEB-INF/beans.xml
+    <?xml version="1.0" encoding="UTF-8"?>
+    <beans xmlns="http://java.sun.com/xml/ns/javaee"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="
+                http://java.sun.com/xml/ns/javaee
+                http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
+    </beans>
+    ```
+
+
+5. context.xmlの作成。
+
+    ```xml:/src/main/webapp/META-INF/context.xml
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE configuration>
+    <Context>
+      <Resource name="BeanManager"
+                auth="Container"
+                type="javax.enterprise.inject.spi.BeanManager"
+                factory="org.jboss.weld.resources.ManagerObjectFactory"/>
+      <WatchedResource>WEB-INF/web.xml</WatchedResource>
+      <WatchedResource>META-INF/context.xml</WatchedResource>
+    </Context>
+    ```
+
+
+6. ライブラリの追加
+    以下のライブラリを「/src/main/webapp/WEB-INF/lib」フォルダに設置する。
+
+    * com-res_system-commons-x.x.x.jar
+    * com-res_system-commons-dao-x.x.x.jar
+    * com-res_system-commons-mvc-x.x.x.jar
+
+
+7. 動的ファイル格納場所作成
+    以下のフォルダを「/src/main/webapp/contents/」フォルダに設置する。
+
+    * images    … 画面に表示する画像ファイル等を格納する。
+    * scripts   … クライアントで動作するスクリプトを格納する。
+    * styles    … スタイツシートファイルを格納する。
+
+
+8. リソースフォルダを作成
+    「/src/main/resources/」フォルダに設置する。
+
+
+9. viewファイル格納場所作成
+    「/src/main/resources/view/」フォルダに設置する。
+
+
+10. デバッグ用の設定を行う。
+
+    * 下記のフォルダを追加する。
+        「/src/test/java/」
+        「/src/test/resources/META-INF/」
+
+    * 「/src/test/resources/META-INF/」にbeans.xmlを追加します。
+
+        ```xml:/src/main/webapp/WEB-INF/beans.xml
+        <?xml version="1.0" encoding="UTF-8"?>
+        <beans xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="
+                  http://xmlns.jcp.org/xml/ns/javaee 
+                  http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd"
+               version="1.1"
+               bean-discovery-mode="annotated">
+        </beans>
+        ```
+
+
+11. フォームクラスを作成する。
+
+    ```java:/src/main/java/com/res_system/mvc_skeleton/model/top/TopForm.java
+    (com.res_system.mvc_skeleton.model.top.TopForm)
+    package com.res_system.mvc_skeleton.model.top;
+
+    import com.res_system.commons.mvc.model.form.Param;
+
+    public class TopForm {
+
+        //---------------------------------------------- properies [private].
+        @Param
+        private String code;
+        @Param
+        private String name;
+
+        //-- setter / getter. --//
+        public String getCode() { return code; }
+        public void setCode(String code) { this.code = code; }
+        public String getName() { return name; }
+        public void setName(String name) { this.name = name; }
+
+    }
+    ```
+
+
+12. モデルクラスを作成する。
+
+    ```java:/src/main/java/com/res_system/mvc_skeleton/model/top/TopModel.java
+    (com.res_system.mvc_skeleton.model.top.TopModel)
+    package com.res_system.mvc_skeleton.model.top;
+
+    import javax.enterprise.context.RequestScoped;
+
+    import com.res_system.commons.util.ReUtil;
+
+    @RequestScoped
+    public class TopModel {
+
+        public void init(TopForm form) {
+            form.setCode("");
+            form.setName("nothing");
+        }
+
+        public void doAction(TopForm form) {
+            if (!ReUtil.isEmpty(form.getCode())) {
+                form.setName("something[" + form.getCode() + "]");
+            } else {
+                form.setName("nothing");
+            }
+        }
+
+    }
+    ```
+
+
+13. コントローラクラスを作成する。
+
+    ```java:/src/main/java/com/res_system/mvc_skeleton/controller/TopController.java
+    (com.res_system.mvc_skeleton.controller.TopController)
+    package com.res_system.mvc_skeleton.controller;
+
+    import javax.enterprise.context.RequestScoped;
+    import javax.inject.Inject;
+    import javax.ws.rs.GET;
+    import javax.ws.rs.POST;
+    import javax.ws.rs.Path;
+    import javax.ws.rs.core.MultivaluedMap;
+
+    import com.res_system.commons.mvc.controller.response.HtmlResponse;
+    import com.res_system.commons.mvc.model.form.FormUtil;
+    import com.res_system.mvc_skeleton.model.top.TopForm;
+    import com.res_system.mvc_skeleton.model.top.TopModel;
+
+    @Path("/")
+    @RequestScoped
+    public class TopController {
+
+        //---------------------------------------------- const [private].
+        private static final String TEMPLATE = "top/index";
+
+
+
+        //---------------------------------------------- [private] モデルクラス.
+        @Inject
+        private TopModel model;
+
+
+
+        //---------------------------------------------- [public] アクション.
+        @GET
+        public HtmlResponse defaultAction() throws Exception {
+            return index();
+        }
+
+        @Path("/index")
+        @GET
+        public HtmlResponse index() throws Exception {
+            TopForm form = FormUtil.make(TopForm.class);
+            model.init(form);
+            return new HtmlResponse(TEMPLATE).add("form", form);
+        }
+
+        @POST
+        @Path("/action")
+        public HtmlResponse doAction(MultivaluedMap<String, String> params) throws Exception {
+            TopForm form = FormUtil.make(TopForm.class, params);
+            model.doAction(form);
+            return new HtmlResponse(TEMPLATE).add("form", form);
+        }
+
+    }
+    ```
+
+
+14. viewファイルを作成する。
+
+    ```html:/src/main/resources/view/top/index.html
+    <!--/* ////////////////////////////////////////////////// */-->
+    <!--/*                                                    */-->
+    <!--/* top/index.html */-->
+    <!--/*                                                    */-->
+    <!--/* ////////////////////////////////////////////////// */-->
+    <!doctype html>
+    <html xmlns:th="http://www.thymeleaf.org" lang="ja">
+    <head>
+      <meta charset="utf-8">
+      <meta http-equiv="Content-Style-Type" content="text/css; charset=utf-8" />
+      <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+      <meta http-equiv="Cache-Control" content="no-cache" />
+      <meta http-equiv="Pragma" content="no-cache" />
+      <meta name="description" content="">
+      <meta name="description" content="" />
+      <meta name="author" content="株式会社リスタート" />
+
+      <title>top/index.html</title>
+
+    </head>
+    <body>
+
+      <h1><a th:href="@{/}">top/index.html</a></h1>
+      <p>html sample</p>
+      <form th:action="@{/action/}" method="post" >
+        <input type="text" name="code" th:value="${form.code}" />
+        <br />
+        <p th:text="${form.name}">...</p>
+      </form>
+
+    </body>
+    </html>
+    ```
+
+
+15. 実行する。
+
+    1. 【Gradleタスクウィンドウ】を開く。
+    
+    2. プロジェクトを「mvc_skeleton」に設定。
+
+    3. 「build」をクリック。
+
+    4. /build/libs/mvc_skeleton.warが作成されているので、
+        /opt/lampp/tomcat8/webapps/へwarをコピーする。
+
+    5. Tomcat起動。
+
+    6. サーバの起動後、ブラウザで確認する
+        
+        - http://localhost:8080/mvc_skeleton/
+
+
+
+</textarea><script src="_markdownmemo_data/markdownmemo.js?v=1.0.2"></script></body></html>

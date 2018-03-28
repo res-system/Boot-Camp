@@ -1,0 +1,31 @@
+<!--/* ////////////////////////////////////////////////// */-->
+<!--/*                                                    */-->
+<!--/* top/index.html */-->
+<!--/*                                                    */-->
+<!--/* ////////////////////////////////////////////////// */-->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css; charset=utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta name="description" content="">
+  <meta name="description" content="" />
+  <meta name="author" content="株式会社リスタート" />
+
+  <title>top/index.html</title>
+
+</head>
+<body>
+
+  <h1><a th:href="@{/}">top/index.html</a></h1>
+  <p>html sample</p>
+  <form th:action="@{/action/}" method="post" >
+    <input type="text" name="code" th:value="${form.code}" />
+    <p th:text="${form.name}">...</p>
+  </form>
+
+</body>
+</html>
