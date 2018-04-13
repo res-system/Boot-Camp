@@ -2,8 +2,6 @@ package com.res_system.mvc_skeleton.model.top;
 
 import javax.enterprise.context.RequestScoped;
 
-import com.res_system.commons.util.ReUtil;
-
 @RequestScoped
 public class TopModel {
 
@@ -13,7 +11,7 @@ public class TopModel {
     }
 
     public void doAction(TopForm form) {
-        if (!ReUtil.isEmpty(form.getCode())) {
+        if (form.getCode() != null && form.getCode().length() > 0) {
             form.setName("something[" + form.getCode() + "]");
         } else {
             form.setName("nothing");
