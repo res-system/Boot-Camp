@@ -71,7 +71,7 @@ public class HtmlResponseMessageBodyWriter implements MessageBodyWriter<HtmlResp
 
         if (response.getTemplate() != null && response.getTemplate().length() > 0) {
             // HTMLテキスト出力.
-            Writer writer = new OutputStreamWriter(entityStream);
+            Writer writer = new OutputStreamWriter(entityStream, thAppTemplateEngine.getCharsetName());
             thAppTemplateEngine.flushHtmlText(response, writer, httpRequest, httpResponse, servletContext);
 
         } else if (response.getRedirectUrl() != null && response.getRedirectUrl().length() > 0) {

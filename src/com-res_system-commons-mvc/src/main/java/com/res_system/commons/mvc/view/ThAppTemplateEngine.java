@@ -56,6 +56,12 @@ public class ThAppTemplateEngine {
 
 
 
+    //---------------------------------------------- properies [private].
+    /** Thymeleaf 文字コード設定 を取得します. */
+    public String getCharsetName() { return thAppSetting.getCharsetName(); }
+
+
+
     //---------------------------------------------- constructor.
     /**
      * コンストラクタ.

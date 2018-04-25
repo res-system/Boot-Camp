@@ -45,23 +45,35 @@ public class ThymeleafAppSetting {
     public static final String TEMPLATE_PREFIX = "/view/";
     /** テンプレートエンジン設定[SUFFIX] */
     public static final String TEMPLATE_SUFFIX = ".html";
+    /** テンプレートエンジン設定[デフォルト文字コード] */
+    public static final String TEMPLATE_CHARSET = "UTF-8";
+    /** テンプレートエンジン設定[デフォルトキャッシュ設定] */
+    public static final String TEMPLATE_CACHEABLE = "true";
 
-    /** プロパティ項目名. */
-    public static final String PROPERTY_ITEM_NAME = "com.res_system.commons.mvc.view.dialects";
+    /** プロパティ項目名[dialects]. */
+    public static final String PROPERTY_ITEM_NAME_DIALECTS = "com.res_system.commons.mvc.view.dialects";
+    /** プロパティ項目名[charset]. */
+    public static final String PROPERTY_ITEM_NAME_CHARSET = "com.res_system.commons.mvc.view.charset";
+    /** プロパティ項目名[cacheable]. */
+    public static final String PROPERTY_ITEM_NAME_CACHEABLE = "com.res_system.commons.mvc.view.cacheable";
 
 
 
     //---------------------------------------------- properies [private].
     /** ClassLoaderTemplateResolver. */
-    ClassLoaderTemplateResolver templateResolver;
+    private ClassLoaderTemplateResolver templateResolver;
     /** Thymeleaf 拡張クラス設定. */
     private Map<String, IDialect> dialects;
+    /** Thymeleaf 文字コード設定. */
+    private String charsetName;
 
     //-- setter / getter. --//
     /** ClassLoaderTemplateResolver を取得します. */
     public ClassLoaderTemplateResolver getTemplateResolver() { return templateResolver; }
     /** Thymeleaf 拡張クラス設定 を取得します. */
     public Map<String, IDialect> getDialects() { return dialects; }
+    /** Thymeleaf 文字コード設定 を取得します. */
+    public String getCharsetName() { return charsetName; }
 
 
 
@@ -96,6 +108,24 @@ public class ThymeleafAppSetting {
      */
     public void initTemplateResolver() {
         //
+        // Thymeleaf 文字コード設定.
+        // プロパティ「com.res_system.common.mvc.view.charset」で指定された文字コードを設定します.
+        //
+        charsetName = MvcUtil.getPropertyValue(MvcUtil.PROPERTY_FILE_NAME, PROPERTY_ITEM_NAME_CHARSET, null);
+        if (MvcUtil.isEmpty(charsetName)) {
+            charsetName = TEMPLATE_CHARSET;
+        }
+
+        //
+        // Thymeleaf キャッシュ設定.
+        // プロパティ「com.res_system.common.mvc.view.cacheable」で指定されたキャッシュ設定を行います.
+        //
+        boolean isCacheable = false;
+        if ("true".equals(MvcUtil.getPropertyValue(MvcUtil.PROPERTY_FILE_NAME, PROPERTY_ITEM_NAME_CACHEABLE, TEMPLATE_CACHEABLE).toLowerCase())) {
+            isCacheable = true;
+        }
+
+        //
         // ClassLoaderTemplateResolver.
         //
         if (templateResolver == null) {
@@ -103,6 +133,8 @@ public class ThymeleafAppSetting {
             templateResolver.setTemplateMode(ThymeleafAppSetting.TEMPLATE_MODE);
             templateResolver.setPrefix(ThymeleafAppSetting.TEMPLATE_PREFIX);
             templateResolver.setSuffix(ThymeleafAppSetting.TEMPLATE_SUFFIX);
+            templateResolver.setCacheable(isCacheable);
+            templateResolver.setCharacterEncoding(charsetName);
         }
     }
 
@@ -120,7 +152,7 @@ public class ThymeleafAppSetting {
             dialects.put(ReThHelperDialect.class.getName(), new ReThHelperDialect());
             dialects.put(ReThProcessorDialect.class.getName(), new ReThProcessorDialect());
         }
-        String dialectClassNames = MvcUtil.getPropertyValue(MvcUtil.PROPERTY_FILE_NAME, PROPERTY_ITEM_NAME, "");
+        String dialectClassNames = MvcUtil.getPropertyValue(MvcUtil.PROPERTY_FILE_NAME, PROPERTY_ITEM_NAME_DIALECTS, "");
         if (!MvcUtil.isEmpty(dialectClassNames)) {
             String[] classNames = dialectClassNames.split(",");
             for (String className : classNames) {
