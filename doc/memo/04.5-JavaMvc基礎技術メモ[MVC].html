@@ -262,7 +262,7 @@ JavaMvc基礎技術メモ[MVC]
         }
 
         public void doAction(TopForm form) {
-            if (!ReUtil.isEmpty(form.getCode())) {
+            if (form.getCode() != null && form.getCode().length() > 0) {
                 form.setName("something[" + form.getCode() + "]");
             } else {
                 form.setName("nothing");
