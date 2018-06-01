@@ -216,6 +216,14 @@ JavaMvc基礎技術メモ[MVC]
         </beans>
         ```
 
+    * ビルドパスに下記のファイルを設定する。
+        【プロジェクト右クリックメニュー】＞「プロパティー」＞「Javaのビルド・パス」＞「ソース」で設定する。
+
+        * 「/src/main/java/」
+        * 「/src/main/resources/」
+        * 「/src/test/java/」
+        * 「/src/test/resources/」
+
 
 11. フォームクラスを作成する。
 
@@ -262,7 +270,7 @@ JavaMvc基礎技術メモ[MVC]
         }
 
         public void doAction(TopForm form) {
-            if (form.getCode() != null && form.getCode().length() > 0) {
+            if (!ReUtil.isEmpty(form.getCode())) {
                 form.setName("something[" + form.getCode() + "]");
             } else {
                 form.setName("nothing");

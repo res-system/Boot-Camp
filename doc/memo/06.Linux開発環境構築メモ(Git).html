@@ -93,4 +93,35 @@ http://commte.net/blog/archives/5251
 
 
 
+
+## 所感
+
+GIT GUIではpullやfetch、mergeが使い辛いので、CUIで行った方が早いです。
+
+
+
+### コマンド例一覧
+
+    ※git対象のディレクトリで実行する。
+
+
+#### pull
+git pull
+( fetch + merge )
+
+git pull origin master
+
+
+#### merge
+git merge origin/master
+
+
+#### リモートの状態にしてから上書き
+git rebase origin/master
+
+#### 現在のHEADの状態
+git rev-parse HEAD
+
+
+
 </textarea><script src="_markdownmemo_data/markdownmemo.js?v=1.0.2"></script></body></html>

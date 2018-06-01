@@ -1,0 +1,124 @@
+<!-- ※「_markdownmemo_data」フォルダと同じ階層でご使用ください。-->
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><link rel="stylesheet" href="_markdownmemo_data/markdownmemo.css?v=1.0.2"><title>
+Linux開発環境構築メモ(SQLite)
+</title></head></head><body><textarea id="memo_body" style="display:none;" title="Markdow Memo" >
+
+# Linux開発環境構築メモ(SQLite)
+
+
+
+
+## SQLiteのインストール
+-------------------------------------------------------------------------------
+[参考(SQLite入門)](https://www.dbonline.jp/sqlite/)
+[参考(お気楽 SQLite 超入門)](http://www.geocities.co.jp/SiliconValley-Oakland/1680/linux/sqlite.html)
+
+1. インストール
+
+    ```terminal
+    $ sudo yum -y install install sqlite3
+    ```
+
+
+2. 確認
+
+    ```terminal
+    $ sqlite3
+    …(結果)
+    SQLite version 3.7.17 2013-05-20 00:56:22
+    Enter ".help" for instructions
+    Enter SQL statements terminated with a ";"
+    sqlite> 
+    ```
+
+
+3. 終了
+
+    ```terminal
+    sqlite> .exit
+    ```
+
+
+4. データベースの作成(接続)
+
+    ※ データーベースの作成と接続は同じです。
+       ファイルがあれば接続し、無ければ作成します。
+
+    ```terminal
+    $ sqlite3 myfriend.sqlite3
+    ```
+
+
+5. テーブルの作成と確認
+
+    (作成)
+    ```terminal
+    sqlite> create table personal(id, name);
+    ```
+
+    (確認)
+    ```terminal
+    sqlite> .table
+    …(結果)
+    personal
+    ```
+
+
+6. データの作成と確認
+
+    (作成)
+    ```terminal
+    sqlite> insert into personal(id, name) values('1','テスト');
+    ```
+
+    (確認)
+    ```terminal
+    sqlite> select * from personal;
+    …(結果)
+    1|テスト
+    ```
+
+
+7. データーベースファイルの確認。
+    (SQLite終了後)
+    
+    ```terminal
+    $ ls
+    …(結果)
+    myfriend.sqlite3
+    ```
+
+
+8. データーベースの削除
+    (ファイルの削除で削除可能です。)
+    
+    ```terminal
+    $ rm myfriend.sqlite3
+    ```
+
+
+
+
+## JDBCで接続
+-------------------------------------------------------------------------------
+1. build.gradleに下記を追加し、依存関係のリフレッシュを行う。
+
+    ```gradle:build.gradle
+    // JDBC(SQLite)
+    compile("org.xerial:sqlite-jdbc:3.+")
+    ```
+
+
+2. build.gradleに下記を追加し、依存関係のリフレッシュを行う。
+
+    ```dao.java
+    Class.forName ("org.sqlite.JDBC");
+    Connection con = DriverManager.getConnection("jdbc:sqlite:【**SQLiteファイル**】");
+    ```
+
+
+
+/home/res/work/workspace/com-res_system-commons-dao/src/test/resources/myfriend.sqlite3
+
+
+</textarea><script src="_markdownmemo_data/markdownmemo.js?v=1.0.2"></script></body></html>
