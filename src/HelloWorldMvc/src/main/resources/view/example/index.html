@@ -1,49 +1,84 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"  lang="ja">
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="Pragma" content="no-cache" />
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="Cache-Control" content="no-cache" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta name="description" content="">
+  <meta name="author" content="株式会社リスタート" />
   <title>HelloWorld Mvc</title>
 </head>
 <body>
+
   <a href="javascript:void(0)" th:href="@{/example}">リロード</a>
-  <p th:text="${form.message}">...</p>
 
-  <form action="/HelloWorldMvc/example/html_response_post" method="post" >
-    <input type="text" name="message" th:value="${form.message}" style="width:500px;"/>
-    <br />
-    <input type="submit" value="画面データ受取確認" style="width:300px;"/>
+  <!-- /////////////////////////////////////////////////////////////////// -->
+  <hr />
+  <form th:action="@{/example/html_response_post?cid=__${conversation_id}__}" method="post" >
+    <h2>画面データ受取確認(POST)</h2>
+    <input type="text" name="message" th:value="${form.message}" style="width:500px;" /><br />
+    <input type="submit" name="submit" value="POST" style="width:300px;" />
+    <div th:text="${form.result}"></div>
   </form>
 
-  <form action="/HelloWorldMvc/example/reload" method="post" >
-    <input type="submit" value="CDIのスコープ確認" style="width:300px;"/>
+  <!-- /////////////////////////////////////////////////////////////////// -->
+  <hr />
+  <form th:action="@{/example/check_cdi_scope1?cid=__${conversation_id}__}" method="post" >
+    <h2>CDIのスコープ確認(session/request)</h2>
+    <input type="text" name="message" th:value="${form.message}" style="width:500px;" /><br />
+      <input type="submit" name="submit" value="SET" style="width:300px;" />
+    ／<input type="submit" name="submit" value="GET" style="width:300px;" />
+    <div th:text="${form.result}"></div>
   </form>
 
-  <form action="/HelloWorldMvc/example/find" method="post" >
-    <input type="submit" value="DBアクセス確認(取得)." style="width:300px;"/>
+  <!-- /////////////////////////////////////////////////////////////////// -->
+  <hr />
+  <form th:action="@{/example/check_cdi_scope2?cid=__${conversation_id}__}" method="post" >
+    <h2>CDIのスコープ確認(conversation)</h2>
+      <input type="submit" name="submit" value="START" style="width:300px;" />
+    ／<input type="submit" name="submit" value="COUNT" style="width:300px;" />
+    ／<input type="submit" name="submit" value="END"   style="width:300px;" />
+    <div th:text="${form.result}"></div>
   </form>
 
-  <form action="/HelloWorldMvc/example/update" method="post" >
-    <input type="text" name="message" th:value="${form.message}" style="width:500px;"/>
-    <br />
-    <input type="submit" value="DBアクセス確認(更新)." style="width:300px;"/>
+  <!-- /////////////////////////////////////////////////////////////////// -->
+  <hr />
+  <form th:action="@{/example/check_db?cid=__${conversation_id}__}" method="post" >
+    <h2>DBアクセス確認</h2>
+    <input type="text" name="message" th:value="${form.message}" style="width:500px;" /><br />
+      <input type="submit" name="submit" value="FIND" style="width:300px;" />
+    ／<input type="submit" name="submit" value="UPDATE" style="width:300px;" />
+    <div th:text="${form.result}"></div>
   </form>
 
-  <form action="/HelloWorldMvc/example/json_post" method="post" >
-    <input type="submit" value="JSONレスポンス確認" style="width:300px;"/>
+  <!-- /////////////////////////////////////////////////////////////////// -->
+  <hr />
+  <form th:action="@{/example/json_post?cid=__${conversation_id}__}" method="post" >
+    <h2>JSONレスポンス確認</h2>
+    <input type="submit" name="submit" value="POST" style="width:300px;" />
   </form>
 
-  <form action="/HelloWorldMvc/example/exception_post" method="post" >
-    <input type="submit" value="例外マッピング確認" style="width:300px;"/>
+  <!-- /////////////////////////////////////////////////////////////////// -->
+  <hr />
+  <form th:action="@{/example/exception_post?cid=__${conversation_id}__}" method="post" >
+    <h2>例外マッピング確認</h2>
+    <input type="submit" name="submit" value="POST" style="width:300px;" />
   </form>
 
-  <form action="/HelloWorldMvc/example/redirect_post" method="post" >
-    <input type="submit" value="Redirect確認(crud)" style="width:300px;"/>
+  <!-- /////////////////////////////////////////////////////////////////// -->
+  <hr />
+  <form th:action="@{/example/redirect_post?cid=__${conversation_id}__}" method="post" >
+    <h2>Redirect確認(crud)</h2>
+    <input type="submit" name="submit" value="POST" style="width:300px;" />
   </form>
 
-  <form action="/HelloWorldMvc/example/html_post" method="post" >
-    <input type="submit" value="HTMLテキストレスポンス確認"  style="width:300px;"/>
+  <!-- /////////////////////////////////////////////////////////////////// -->
+  <hr />
+  <form th:action="@{/example/html_post?cid=__${conversation_id}__}" method="post" >
+    <h2>HTMLテキストレスポンス確認</h2>
+    <input type="submit" name="submit" value="POST" style="width:300px;" />
   </form>
 
 </body>

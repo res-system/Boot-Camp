@@ -1,6 +1,7 @@
 #管理対象除外
 
 .metadata/
+.recommenders/
 RemoteSystemsTempFiles/
 
 src/com-res_system-commons/.gradle/

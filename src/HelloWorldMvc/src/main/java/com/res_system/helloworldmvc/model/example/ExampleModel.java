@@ -2,7 +2,6 @@ package com.res_system.helloworldmvc.model.example;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -41,22 +40,23 @@ public class ExampleModel {
     //---------------------------------------------- [public] 業務処理.
     /**
      * SQLを直接実行してデータ取得する.
-     * @param form
+     * @param form 画面データ.
+     * @throws Exception
      */
-    public void find(ExampleForm form) {
-        String sql = "SELECT * FROM `test_table` WHERE code = ?";
+    public void find(final ExampleForm form) throws Exception {
+        final String sql = "SELECT * FROM `test_table` WHERE id = ?";
         try (PreparedStatement pstmt = dao.prepareStatement(sql)) {
-            pstmt.setString(1, "0000000001");
+            pstmt.setString(1, "1");
             try (ResultSet rs = dao.executeQuery(pstmt)) {
                 if (rs.next()) {
-                    form.setMessage(rs.getString("name"));
+                    form.setResult("code:" + rs.getString("code") 
+                            + "name:" + rs.getString("name")
+                            + "memo:" + rs.getString("memo")
+                            + "created:" + rs.getString("created"));
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
-
 
     /**
      * SQLを直接実行してデータ更新する.
@@ -66,18 +66,21 @@ public class ExampleModel {
      */
     public boolean update(ExampleForm form) throws Exception {
         dao.begin();
-        String sql = "UPDATE `test_table` SET name = ? WHERE id = ?";
+        final String sql = "UPDATE `test_table` SET memo = ? WHERE id = ?";
         try (PreparedStatement pstmt = dao.prepareStatement(sql)) {
             pstmt.setString(1, form.getMessage());
             pstmt.setString(2, "1");
-            int result = dao.executeUpdate(pstmt);
-            dao.commit();
-            return (result > 0);
+            if (dao.executeUpdate(pstmt) > 0) {
+                dao.commit();
+                return true;
+            } else {
+                dao.rollback();
+                return false;
+            }
         } catch (Exception e) {
             dao.rollback();
             throw e;
         }
     }
-
 
 }

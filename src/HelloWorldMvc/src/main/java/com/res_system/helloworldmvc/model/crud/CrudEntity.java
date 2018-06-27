@@ -1,5 +1,7 @@
 package com.res_system.helloworldmvc.model.crud;
 
+import com.res_system.commons.dao.entities.AtInsert;
+import com.res_system.commons.dao.entities.AtUpdate;
 import com.res_system.commons.dao.entities.Column;
 import com.res_system.commons.dao.entities.IEntity;
 import com.res_system.commons.dao.entities.Key;
@@ -39,7 +41,9 @@ public class CrudEntity implements IEntity {
     @Column
     private String select;
     @Param
-    @Column(insertValue="now()", updateValue="now()")
+    @Column
+    @AtInsert("now()")
+    @AtUpdate("now()")
     private String created;
 
     //-- setter / getter. --//

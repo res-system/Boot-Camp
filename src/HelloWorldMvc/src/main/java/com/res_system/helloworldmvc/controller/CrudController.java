@@ -36,8 +36,8 @@ public class CrudController {
 
 
 
-    //---------------------------------------------- [public] アクション処理.
-    /** 一覧表示 アクション. */
+    //---------------------------------------------- [public] アクション処理[一覧].
+    /** 一覧 画面表示 アクション. */
     @GET
     public HtmlResponse index() throws Exception {
         CrudForm form = FormUtil.make(CrudForm.class);
@@ -52,7 +52,9 @@ public class CrudController {
     }
 
 
-    /** 追加画面表示 アクション. */
+
+    //---------------------------------------------- [public] アクション処理[追加].
+    /** 追加 画面表示 アクション. */
     @GET
     @Path("/add")
     public HtmlResponse add() throws Exception {
@@ -72,7 +74,9 @@ public class CrudController {
     }
 
 
-    /** 詳細画面表示 アクション. */
+
+    //---------------------------------------------- [public] アクション処理[詳細].
+   /** 詳細 画面表示 アクション. */
     @GET
     @Path("/show/{id}")
     public HtmlResponse show(@PathParam("id") String id) throws Exception {
@@ -82,7 +86,10 @@ public class CrudController {
         return showShow(form);
     }
 
-    /** 更新画面表示 アクション. */
+
+
+    //---------------------------------------------- [public] アクション処理[更新].
+    /** 更新 画面表示 アクション. */
     @GET
     @Path("/edit/{id}")
     public HtmlResponse edit(@PathParam("id") String id) throws Exception {
@@ -102,7 +109,10 @@ public class CrudController {
         return showEdit(form);
     }
 
-    /** 削除画面表示 アクション. */
+
+
+    //---------------------------------------------- [public] アクション処理[削除].
+    /** 削除 画面表示 アクション. */
     @GET
     @Path("/delete/{id}")
     public HtmlResponse delete(@PathParam("id") String id) throws Exception {
@@ -122,7 +132,10 @@ public class CrudController {
         return showDelete(form);
     }
 
-    /** 一覧入力表示 アクション. */
+
+
+    //---------------------------------------------- [public] アクション処理[一覧入力].
+    /** 一覧入力 画面表示 アクション. */
     @GET
     @Path("/list_input")
     public HtmlResponse list_input() throws Exception {
@@ -146,6 +159,7 @@ public class CrudController {
                 .add("title", "一覧入力")
                 .add("form", form);
     }
+
 
 
     //---------------------------------------------- [private] その他処理.

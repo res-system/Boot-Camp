@@ -14,20 +14,17 @@ public class ExampleForm {
     /** メッセージ. */
     @Param
     private String message;
+    @Param
+    private String result;
+    @Param
+    private String submit;
 
     //-- setter / getter. --//
     public String getMessage() { return message; }
     public void setMessage(String message) { this.message = message; }
-
-
-
-    //---------------------------------------------- constructor.
-    /**
-     * コンストラクタ.
-     * @param message メッセージ.
-     */
-    public ExampleForm() {
-        super();
-    }
+    public String getResult() { return result; }
+    public void setResult(String result) { this.result = result; }
+    public String getSubmit() { return submit; }
+    public void setSubmit(String submit) { this.submit = submit; }
 
 }
