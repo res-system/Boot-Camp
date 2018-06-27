@@ -69,8 +69,8 @@ public class TableEntityTest {
                     assertEquals(name, true, (sql != null));
                 }
                 {
-                    String name = "SQL_NAME_KEY_WHERE_WITH_T";
-                    String sql = target.getSql(MEmployee.class, SqlMaker.SQL_NAME_KEY_WHERE_WITH_T);
+                    String name = "SQL_NAME_KEY_WHERE_WT";
+                    String sql = target.getSql(MEmployee.class, SqlMaker.SQL_NAME_KEY_WHERE_WT);
                     System.out.println(name + ":" + sql);
                     assertEquals(name, true, (sql != null));
                 }

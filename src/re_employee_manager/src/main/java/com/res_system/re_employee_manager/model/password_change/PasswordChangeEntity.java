@@ -10,9 +10,9 @@ import com.res_system.re_employee_manager.commons.model.entities.table.CSAcctKey
  */
 @Sqls({
     @Sql(name="find_password",
-           sql = "SELECT--*"
+           sql = "--SELECT"
                    + ",`ACC`.`salt` AS `salt`"
-                   + " FROM--*"
+                   + " --FROM"
                    +    " INNER JOIN `c_m_account` `ACC` ON `ACKY`.`account_id`=`ACC`.`id`"
                    + " WHERE `ACKY`.`account_id`=:account_id AND `ACKY`.`seq`=:seq")
     ,@Sql(name="update_password",
