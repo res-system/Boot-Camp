@@ -16,6 +16,10 @@ src/com-res_system-commons-mvc/.gradle/
 src/com-res_system-commons-mvc/.settings/
 src/com-res_system-commons-mvc/build/
 
+src/mvc_skeleton/.gradle/
+src/mvc_skeleton/.settings/
+src/mvc_skeleton/build/
+
 src/HelloWorldMvc/.gradle/
 src/HelloWorldMvc/.settings/
 src/HelloWorldMvc/build/

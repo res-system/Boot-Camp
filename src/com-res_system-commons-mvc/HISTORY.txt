@@ -16,4 +16,8 @@
   2018.04.25
     ClassLoaderTemplateResolverの文字コードとキャッシュの設定をプロパティファイルで設定できるように修正.
 
+1.2.0 
+  2018.06.28
+    Multipart機能を有効化する為のクラス(MultiPartApp)を追加しました.
+
     

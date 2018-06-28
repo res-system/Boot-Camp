@@ -2,7 +2,7 @@ apply plugin: 'java'
 
 jar {
     baseName = 'com-res_system-commons-mvc'
-    version =  '1.1.1'
+    version =  '1.2.0'
 }
 
 sourceCompatibility = 1.8
@@ -20,6 +20,8 @@ dependencies {
     compile("org.glassfish.jersey.inject:jersey-hk2:2.+")
     // JAX-RS実装(jersey(json拡張)).
     compile("org.glassfish.jersey.media:jersey-media-json-jackson:2.+")
+    // JAX-RS実装(jersey(multipart拡張)).
+    compile("org.glassfish.jersey.media:jersey-media-multipart:2.+")
     // Thymeleaf
     compile("org.thymeleaf:thymeleaf:3.+")
     // CDI実装(Weld)
@@ -28,5 +30,11 @@ dependencies {
 
     // junit
     testCompile 'junit:junit:4.+'
+
+    // CDI UNITテスト(deltaspike)
+    testCompile 'org.apache.deltaspike.modules:deltaspike-test-control-module-api:1.+'
+    testCompile 'org.apache.deltaspike.modules:deltaspike-test-control-module-impl:1.+'
+    testCompile 'org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld:1.+'
+    testCompile 'org.jboss.weld.se:weld-se-core:3.+'
 
 }
