@@ -56,16 +56,13 @@ JavaMvc基礎技術メモ[MVC]
             compile("org.glassfish.jersey.inject:jersey-hk2:2.+")
             // JAX-RS実装(jersey(json拡張)).
             compile("org.glassfish.jersey.media:jersey-media-json-jackson:2.+")
+            // JAX-RS実装(jersey(multipart拡張)).
+            compile("org.glassfish.jersey.media:jersey-media-multipart:2.+")
             // Thymeleaf
             compile("org.thymeleaf:thymeleaf:3.+")
             // CDI実装(Weld)
             compile("org.jboss.weld.servlet:weld-servlet-core:3.+")
             compile("org.glassfish.jersey.ext.cdi:jersey-cdi1x-servlet:2.+")
-            // JDBC(mariadb)
-            compile("org.mariadb.jdbc:mariadb-java-client:2.+")
-            // log4j.
-            compile("org.apache.logging.log4j:log4j-api:2.+")
-            compile("org.apache.logging.log4j:log4j-core:2.+")
 
             // ./main/lib配下の全てのjarファイルをコンパイル時のクラスパスに追加
             compile fileTree(dir: './src/main/webapp/WEB-INF/lib', includes: ['*.jar'])
@@ -78,7 +75,7 @@ JavaMvc基礎技術メモ[MVC]
             testCompile 'org.apache.deltaspike.modules:deltaspike-test-control-module-impl:1.+'
             testCompile 'org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld:1.+'
             testCompile 'org.jboss.weld.se:weld-se-core:3.+'
-        }
+        }        
         ```
 
     2. 【プロジェクト右クリックメニュー】＞「構成」＞「Convert to Gradle(STS) Project」を選択します。
@@ -117,6 +114,11 @@ JavaMvc基礎技術メモ[MVC]
         <init-param>
           <param-name>jersey.config.servlet.filter.staticContentRegex</param-name>
           <param-value>/contents/.*</param-value>
+        </init-param>
+        <!-- JAX-RS(Jersey(multipart拡張))の設定. -->
+        <init-param>
+          <param-name>javax.ws.rs.Application</param-name>
+          <param-value>com.res_system.commons.mvc.controller.MultiPartApp</param-value>
         </init-param>
       </filter>
       <!-- 動的ファイルパターン. -->
@@ -175,13 +177,11 @@ JavaMvc基礎技術メモ[MVC]
 6. ライブラリの追加
     以下のライブラリを「/src/main/webapp/WEB-INF/lib」フォルダに設置する。
 
-    * com-res_system-commons-x.x.x.jar
-    * com-res_system-commons-dao-x.x.x.jar
-    * com-res_system-commons-mvc-x.x.x.jar
+    * com-res_system-commons-mvc-x.x.x.jar 
 
 
 7. 動的ファイル格納場所作成
-    以下のフォルダを「/src/main/webapp/contents/」フォルダに設置する。
+    以下のフォルダを「/src/main/webapp/contents/」フォルダに設置する。(任意)
 
     * images    … 画面に表示する画像ファイル等を格納する。
     * scripts   … クライアントで動作するスクリプトを格納する。
@@ -287,12 +287,19 @@ JavaMvc基礎技術メモ[MVC]
     (com.res_system.mvc_skeleton.controller.TopController)
     package com.res_system.mvc_skeleton.controller;
 
+    import java.io.InputStream;
+
     import javax.enterprise.context.RequestScoped;
     import javax.inject.Inject;
+    import javax.ws.rs.Consumes;
     import javax.ws.rs.GET;
     import javax.ws.rs.POST;
     import javax.ws.rs.Path;
+    import javax.ws.rs.core.MediaType;
     import javax.ws.rs.core.MultivaluedMap;
+
+    import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+    import org.glassfish.jersey.media.multipart.FormDataParam;
 
     import com.res_system.commons.mvc.controller.response.HtmlResponse;
     import com.res_system.commons.mvc.model.form.FormUtil;
@@ -328,12 +335,21 @@ JavaMvc基礎技術メモ[MVC]
             return new HtmlResponse(TEMPLATE).add("form", form);
         }
 
-        @POST
         @Path("/action")
+        @POST
         public HtmlResponse doAction(MultivaluedMap<String, String> params) throws Exception {
             TopForm form = FormUtil.make(TopForm.class, params);
             model.doAction(form);
             return new HtmlResponse(TEMPLATE).add("form", form);
+        }
+
+        @Path("/upload")
+        @POST
+        @Consumes(MediaType.MULTIPART_FORM_DATA)
+        public String doUpload(
+                  @FormDataParam("file") InputStream file
+                , @FormDataParam("file") FormDataContentDisposition dispoosition) throws Exception {
+            return dispoosition.getFileName();
         }
 
     }
@@ -369,8 +385,13 @@ JavaMvc基礎技術メモ[MVC]
       <p>html sample</p>
       <form th:action="@{/action/}" method="post" >
         <input type="text" name="code" th:value="${form.code}" />
-        <br />
         <p th:text="${form.name}">...</p>
+      </form>
+
+      <!--/* アップロードフォーム. */-->
+      <form th:action="@{/upload}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" />
+        <input type="submit" name="upload" />
       </form>
 
     </body>
@@ -394,6 +415,87 @@ JavaMvc基礎技術メモ[MVC]
     6. サーバの起動後、ブラウザで確認する
         
         - http://localhost:8080/mvc_skeleton/
+
+
+
+## JAX-RS 2.0 (Jersey2) ファイルのアップロード設定.
+-------------------------------------------------------------------------------
+
+1. 必要なライブラリを追加します.
+
+    ```gradle:build.gradle
+    (…省略…)
+    // JAX-RS実装(jersey(multipart拡張)).
+    compile("org.glassfish.jersey.media:jersey-media-multipart:2.+")
+    (…省略…)
+    ```
+
+
+2. Multipartを有効にします.
+
+    1. Multipart機能を有効化する為のクラスを作成します.
+        ```/src/main/java/com/res_system/commons/mvc/controller/MultiPartApp.java
+        package com.res_system.commons.mvc.controller;
+
+        import javax.ws.rs.ApplicationPath;
+
+        import org.glassfish.jersey.media.multipart.MultiPartFeature;
+        import org.glassfish.jersey.server.ResourceConfig;
+
+        /**
+         * <pre>
+         * Multipart機能有効化 クラス.
+         *
+         * Multipart機能を有効化する為のクラスです.
+         * </pre>
+         * @author res.
+         */
+        @ApplicationPath("/")
+        public class MultiPartApp extends ResourceConfig {
+            public MultiPartApp() {
+                super(MultiPartFeature.class);
+            }
+        }
+        ```
+
+    2. web.xmlに上記のクラスを追加します.
+        ```xml:/src/main/webapp/WEB-INF/web.xml
+        (…省略…)
+        <!-- JAX-RS(Jersey(multipart拡張))の設定. -->
+        <init-param>
+          <param-name>javax.ws.rs.Application</param-name>
+          <param-value>com.res_system.commons.mvc.controller.MultiPartApp</param-value>
+        </init-param>
+        (…省略…)
+        ```
+
+
+3. コントローラーにアップロードされたファイルを受け取るアクションを追加します.
+    ```java:/src/main/java/com/res_system/mvc_skeleton/controller/TopController.java
+    (com.res_system.mvc_skeleton.controller.TopController)
+    (…省略…)
+    @Path("/upload")
+    @POST
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public String doUpload(
+              @FormDataParam("file") InputStream file
+            , @FormDataParam("file") FormDataContentDisposition dispoosition) throws Exception {
+        return dispoosition.getFileName();
+    }
+    (…省略…)
+    ```
+
+
+4. VIEWファイルにアップロードのフォームを追加します.
+    ```html:/src/main/resources/view/top/index.html
+    (…省略…)
+    <!--/* アップロードフォーム. */-->
+    <form th:action="@{/upload}" method="post" enctype="multipart/form-data">
+      <input type="file" name="file" />
+      <input type="submit" name="upload" />
+    </form>
+    (…省略…)
+    ```
 
 
 
