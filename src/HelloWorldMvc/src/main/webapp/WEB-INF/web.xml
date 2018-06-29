@@ -32,6 +32,11 @@
       <param-name>jersey.config.servlet.filter.staticContentRegex</param-name>
       <param-value>/contents/.*</param-value>
     </init-param>
+    <!-- JAX-RS(Jersey(multipart拡張))の設定. -->
+    <init-param>
+      <param-name>javax.ws.rs.Application</param-name>
+      <param-value>com.res_system.commons.mvc.controller.MultiPartApp</param-value>
+    </init-param>
   </filter>
   <!-- 動的ファイルパターン. -->
   <filter-mapping>

@@ -21,7 +21,7 @@ test {
 */
 dependencies {
     // servlet.
-    providedCompile('javax.servlet:javax.servlet-api:3.+')
+    providedCompile('javax.servlet:javax.servlet-api:4.+')
     // JAX-RS実装(jersey).
     compile("org.glassfish.jersey.containers:jersey-container-servlet:2.+")
     compile("org.glassfish.jersey.inject:jersey-hk2:2.+")
