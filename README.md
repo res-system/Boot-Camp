@@ -5,7 +5,7 @@
 
 ## はじめに
 
-    はじめに、「Boot-Campカリキュラムについて.pdf」と「Boot-Camp学習プログラムについて.pdf」をご覧ください。
+    はじめに、「Boot-Campカリキュラム内容.pdf」と「Boot-Camp学習プログラムについて.pdf」をご覧ください。
 
 
 
@@ -16,14 +16,20 @@
         ドキュメントを格納するフォルダです。
 
 
-    - Boot-Campカリキュラムについて.pdf
+    - Boot-Campカリキュラム概要.pdf
+      Boot-Campカリキュラム概要 (新人用).pdf
 
-            Boot-Campカリキュラムについての説明です。
+            Boot-Campカリキュラムの概要についての説明です。
 
 
-    - Boot-Camp学習プログラムについて.pdf
+    - Boot-Campカリキュラム内容.pdf
 
-            Boot-Camp学習プログラムについての説明です。
+            Boot-Campカリキュラムの内容についての説明です。
+
+
+    - Boot-Camp学習プログラムについて.pdf
+
+            Boot-Camp学習プログラムに関しての資料です。
 
 
     - [memo]
@@ -47,11 +53,6 @@
         ソースを格納しています。
 
 
-    - [com-res_system-commons]
-
-            共通処理ライブラリ(com-res_system-commons)のソースを格納しています。
-
-
     - [com-res_system-commons-mvc]
 
             MVC処理ライブラリ(com-res_system-commons-mvc)のソースを格納しています。
@@ -62,12 +63,17 @@
             MVCアプリケーションサンプル(HelloWorldMvc)のソースを格納しています。
 
 
-    - [re_employee_manager]
+    - [mvc_skeleton]
 
-            Boot-Camp学習プログラム「社員管理システム」(re_employee_manager)のソースを格納しています。
+            MVCアプリケーションのスケルトンを格納しています。
 
 
-      ※ com-res_system-commons-daoはソースを公開しておりません。
+    - [re_emp_manager]
+
+            Boot-Camp学習プログラム「社員管理システム」(re_emp_manager)のソースを格納しています。
+
+
+      ※ com-res_system-commons、com-res_system-commons-daoはソースを公開しておりません。
 
 
 
@@ -96,7 +102,10 @@
             MVCアプリケーションサンプル(HelloWorldMvc)のwarを格納しています。
 
 
-    - [re_employee_manager]
+    - [re_emp_manager]
 
-            Boot-Camp学習プログラム「社員管理システム」(re_employee_manager)のwarとjavadocを格納しています。
+            Boot-Camp学習プログラム「社員管理システム」(re_emp_manager)のwarを格納しています。
+            ※「libs_example」フォルダにあるwarは、STEP4までの作成例です。
+
+
 

@@ -1,0 +1,42 @@
+<!--/* ////////////////////////////////////////////////// */-->
+<!--/*                                                    */-->
+<!--/* top/error.html */-->
+<!--/*                                                    */-->
+<!--/* ////////////////////////////////////////////////// */-->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja" th:with="screen_name=エラー">
+
+<!--/* ================================================== */-->
+<!--/* ページヘッダー. */-->
+<head th:replace="_layout/default_layout::page_header(~{::title},~{::link.target})">
+  <!--/* タイトル設定. */-->
+  <title th:remove="tag" th:text="${screen_name}">xxx</title>
+  <!--/* 画面固有 スタイル設定. */-->
+  <link class="target" />
+</head>
+<!--/* ================================================== */-->
+
+<body class="bg-dark">
+
+  <!--/* ================================================== */-->
+  <!--/* メインコンテンツ. */-->
+  <div th:replace="_layout/default_layout::main_contents_plain(${screen_name},~{::div#main_contents})" th:remove="tag">
+    <div id="main_contents" class="container" th:remove="tag">
+      <div class="text-center">
+        <a th:href="@{/login}">システムへ戻る.</a>
+      </div>
+    </div>
+  </div>
+  <!--/* ================================================== */-->
+
+<!--/* ================================================== */-->
+<!--/* ページヘッダー. */-->
+<div th:replace="_layout/default_layout::page_footers(~{::div.modals},~{::script.target})" th:remove="tag">
+  <!--/* 画面固有 ダイアログ設定. */-->
+  <div class="modals" th:remove="tag"></div>
+  <!--/* 画面固有 スクリプト設定. */-->
+  <script type="text/javascript" class="target"></script>
+</div>
+<!--/* ================================================== */-->
+</body>
+</html>

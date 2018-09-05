@@ -1,0 +1,264 @@
+<!--/* ////////////////////////////////////////////////// */-->
+<!--/*                                                    */-->
+<!--/* emp_info/show.html */-->
+<!--/*                                                    */-->
+<!--/* ////////////////////////////////////////////////// */-->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja" th:with="screen_name=社員個人情報管理">
+
+<!--/* ================================================== */-->
+<!--/* ページヘッダー. */-->
+<head th:replace="_layout/default_layout::page_header(~{::title},~{::link.target})">
+  <!--/* タイトル設定. */-->
+  <title th:remove="tag" th:text="${screen_name}">xxx</title>
+  <!--/* 画面固有 スタイル設定. */-->
+  <link class="target" />
+</head>
+<!--/* ================================================== */-->
+
+<body class="fixed-nav sticky-footer bg-dark">
+
+  <!--/* ================================================== */-->
+  <!--/* メインコンテンツ. */-->
+  <div th:replace="_layout/default_layout::main_contents_navi(${screen_name},~{::div#main_contents})" th:remove="tag">
+    <div id="main_contents" class="container" th:remove="tag">
+
+      <!--/* 社員情報メニュータブ. */-->
+      <div th:replace="_layout/default_layout::contents_emp_menu_tab()" th:remove="tag"></div>
+
+      <h1 th:text="${screen_name}">xxx</h1>
+      <hr />
+      <div class="px-4 pt-2">
+        <fieldset>
+          <legend class="border-red">一般</legend>
+          <div class="px-5">
+            <!--/* 社員番号. */-->
+            <div class="form-group row">
+              <label for="" class="control-label col-12">社員番号</label>
+              <div class="col-12">
+                <span class="form-control-static" th:text="${form.data.employee_no}">XXXXXXXXXXXXXXXXXXXX</span>
+              </div>
+            </div>
+            <!--/* 社員名. */-->
+            <div class="form-group row">
+              <label for="" class="control-label col-12">社員名</label>
+              <div class="col-12">
+                <span class="form-control-static" th:text="${form.data.family_name}">XXXXXXXXXXXXXXXXXXXX</span>
+                <span class="form-control-static" th:text="${form.data.first_name}">XXXXXXXXXXXXXXXXXXXX</span>
+              </div>
+              <th:block th:if="${#h.isNotEmpty(form.data.family_name_kana) or #h.isNotEmpty(form.data.first_name_kana)}">
+              <div class="col-12">
+                <span>(</span>
+                <span class="form-control-static" th:text="${form.data.family_name_kana}">XXXXXXXXXXXXXXXXXXXX</span>
+                <span class="form-control-static" th:text="${form.data.first_name_kana}">XXXXXXXXXXXXXXXXXXXX</span>
+                <span>)</span>
+              </div>
+              </th:block>
+            </div>
+            <!--/* 就業状況. */-->
+            <div class="form-group row">
+              <label for="" class="control-label col-12">就業状況</label>
+              <div class="col-12">
+                <span class="form-control-static" th:text="${form.data.situation_name}">XXXXXXXXXXXXXXXXXXXX</span>
+              </div>
+            </div>
+            <!--/* 入社日. */-->
+            <div class="form-group row">
+              <label for="" class="control-label col-12">入社日</label>
+              <div class="col-12">
+                <span class="form-control-static" th:text="${form.data.hire_date}">XXXXXXXXXXXXXXXXXXXX</span>
+              </div>
+            </div>
+            <!--/* 退職日. */-->
+            <th:block th:if="${#h.isNotEmpty(form.data.retirement_date)}">
+            <div class="form-group row">
+              <label for="" class="control-label col-12">退職日</label>
+              <div class="col-12">
+                <span class="form-control-static" th:text="${form.data.retirement_date}">XXXXXXXXXXXXXXXXXXXX</span>
+              </div>
+            </div>
+            </th:block>
+            <!--/* 性別. */-->
+            <div class="form-group row">
+              <label for="" class="control-label col-12">性別</label>
+              <div class="col-12">
+                <span class="form-control-static" th:text="${form.data.sex_name}">XXXXXXXXXXXXXXXXXXXX</span>
+              </div>
+            </div>
+            <!--/* 生年月日. */-->
+            <div class="form-group row">
+              <label for="" class="control-label col-12">生年月日</label>
+              <div class="col-12">
+                <span class="form-control-static" th:text="${form.data.birthday}">XXXXXXXXXXXXXXXXXXXX</span>
+                <th:block th:if="${#h.isNotEmpty(form.data.birthday)}">
+                <span> ( </span><span th:text="${#exh.toAge(form.data.birthday)}">99</span><span>歳 ) </span>
+                </th:block>
+              </div>
+            </div>
+            <!--/* マイナンバー. */-->
+            <div class="form-group row">
+              <label for="" class="control-label col-12">マイナンバー</label>
+              <div class="col-12">
+                <span class="form-control-static" th:text="${form.data.mynumber}">XXXXXXXXXXXXXXXXXXXX</span>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend class="border-blue">メールアドレス</legend>
+          <div class="px-5">
+            <!--/* メールアドレス. */-->
+            <th:block tabindex="-1" th:each="listData,ix:${form.empEmailList}" th:remove="tag"><!--/* LOOP -- */-->
+            <div class="form-group row">
+              <label for="" class="control-label col-12">メールアドレス ( <span class="form-control-static" th:text="${listData.memo}">xxx</span> ) </label>
+              <div class="col-12">
+                <span class="form-control-static" th:text="${#exh.showEmail(listData.email_addr)}">XXXXXXXXXXXXXXXXXXXX</span>
+              </div>
+            </div>
+            </th:block><!--/* / -- LOOP */-->
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend class="border-yellow">電話番号</legend>
+          <div class="px-5">
+            <!--/* 電話番号. */-->
+            <th:block tabindex="-1" th:each="listData,ix:${form.empTelList}" th:remove="tag"><!--/* LOOP -- */-->
+            <div class="form-group row">
+              <label for="" class="control-label col-12">電話番号 ( <span class="form-control-static" th:text="${listData.memo}">xxx</span> ) </label>
+              <div class="col-12">
+                <span class="form-control-static" th:text="${#exh.showTelNo(listData.tel_no)}">XXXXXXXXXXXXXXXXXXXX</span>
+              </div>
+            </div>
+            </th:block><!--/* / -- LOOP */-->
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend class="border-green">住所</legend>
+          <!--/* 住所. */-->
+          <th:block tabindex="-1" th:each="listData,ix:${form.empAddrList}" th:remove="tag"><!--/* LOOP -- */-->
+          <div class="form-group row px-3">
+            <label for="" class="control-label col-12"><span class="form-control-static" th:text="${listData.memo}">xxx</span></label>
+          </div>
+          <div class="px-5">
+            <div class="form-group row">
+              <label for="" class="control-label col-12">郵便番号</label>
+              <div class="col-12">
+                <span class="form-control-static" th:text="${#exh.showPostalCode(listData.postal_code)}">XXXXXXXXXXXXXXXXXXXX</span>
+              </div>
+              <label th:for="${'empAddrList_'+ix.index+'_addr1'}" class="control-label col-12">住所</label>
+              <div class="col-12">
+                <span class="form-control-static" th:text="${#exh.showAddr(listData.addr1,listData.addr2)}">XXXXXXXXXXXXXXXXXXXX</span>
+              </div>
+              <th:block th:if="${listData.seq==1}">
+              <label th:for="${'empAddrList_'+ix.index+'_nearest_station'}" class="control-label col-12">最寄り駅</label>
+              <div class="col-12">
+                <span class="form-control-static" th:text="${listData.nearest_station}">XXXXXXXXXXXXXXXXXXXX</span>
+              </div>
+              </th:block>
+            </div>
+          </div>
+          </th:block><!--/* / -- LOOP */-->
+        </fieldset>
+        <fieldset>
+          <legend>その他</legend>
+          <div class="px-5">
+
+            <!--/* 社員サブ情報. */-->
+            <th:block tabindex="-1" th:each="listData,ix:${form.empInfoList}" th:remove="tag"><!--/* LOOP -- */-->
+            <div class="form-group row">
+              <th:block th:if="${listData.type == '90'}">
+              <br />
+              </th:block><!--/* / -- IF */-->
+              <th:block th:if="${listData.type != '90'}">
+              <th:block th:if="${listData.type == '00'}">
+              <div class="col-12">
+                <h5 class="type-label" th:text="${listData.label}">XXXXXXXXXXXXXXXXXXXX</h5>
+              </div>
+              </th:block><!--/* / -- IF */-->
+              <th:block th:if="${listData.type != '00'}">
+              <label th:for="${'empInfoList_'+ix.index+'_value'}" 
+                  class="control-label col-12"
+                  th:classappend="${((listData.required == 1) ? 'required' : '')}">
+                <span class="form-control-static" th:text="${listData.label}">xxx</span>
+              </label>
+              </th:block><!--/* / -- IF */-->
+              <div class="col-12">
+                <th:block th:if="${listData.type == '01'}"><!--/* 文字. */-->
+                <span class="form-control-static" th:text="${listData.value}">XXXXXXXXXXXXXXXXXXXX</span>
+                </th:block><!--/* / -- IF */-->
+                <th:block th:if="${listData.type == '02'}"><!--/* メモ. */-->
+                <span class="form-control-static" re-th:cltext="${listData.value}">XXXXXXXXXXXXXXXXXXXX</span>
+                </th:block><!--/* / -- IF */-->
+                <th:block th:if="${listData.type == '03'}"><!--/* 日付. */-->
+                <span class="form-control-static" th:text="${listData.value}">XXXXXXXXXXXXXXXXXXXX</span>
+                </th:block><!--/* / -- IF */-->
+                <th:block th:if="${listData.type == '04'}"><!--/* 数値. */-->
+                <span class="form-control-static" th:text="${listData.value}">XXXXXXXXXXXXXXXXXXXX</span>
+                </th:block><!--/* / -- IF */-->
+                <th:block th:if="${listData.type == '05'}"><!--/* 数字. */-->
+                <span class="form-control-static" th:text="${listData.value}">XXXXXXXXXXXXXXXXXXXX</span>
+                </th:block><!--/* / -- IF */-->
+                <th:block th:if="${listData.type == '06'}"><!--/* 英数字. */-->
+                <span class="form-control-static" th:text="${listData.value}">XXXXXXXXXXXXXXXXXXXX</span>
+                </th:block><!--/* / -- IF */-->
+                <th:block th:if="${listData.type == '07'}"><!--/* カナ. */-->
+                <span class="form-control-static" th:text="${listData.value}">XXXXXXXXXXXXXXXXXXXX</span>
+                </th:block><!--/* / -- IF */-->
+                <th:block th:if="${listData.type == '08'}"><!--/* 電話番号. */-->
+                <span class="form-control-static" th:text="${#exh.showTelNo(listData.value)}">XXXXXXXXXXXXXXXXXXXX</span>
+                </th:block><!--/* / -- IF */-->
+                <th:block th:if="${listData.type == '09'}"><!--/* メールアドレス. */-->
+                <span class="form-control-static" th:text="${#exh.showEmail(listData.value)}">XXXXXXXXXXXXXXXXXXXX</span>
+                </th:block><!--/* / -- IF */-->
+                <th:block th:if="${listData.type == '10'}"><!--/* コード. */-->
+                <span class="form-control-static" th:text="${listData.value}">XXXXXXXXXXXXXXXXXXXX</span>
+                </th:block><!--/* / -- IF */-->
+                <th:block th:if="${listData.type == '11'}"><!--/* コード(数値). */-->
+                <span class="form-control-static" th:text="${listData.value}">XXXXXXXXXXXXXXXXXXXX</span>
+                </th:block><!--/* / -- IF */-->
+                <th:block th:if="${listData.type == '12'}"><!--/* 郵便番号. */-->
+                <span class="form-control-static" th:text="${#exh.showPostalCode(listData.value)}">XXXXXXXXXXXXXXXXXXXX</span>
+                </th:block><!--/* / -- IF */-->
+              </div>
+              </th:block><!--/* / -- IF */-->
+            </div>
+            </th:block><!--/* / -- LOOP */-->
+            <br />
+
+            <!--/* 備考. */-->
+            <div class="form-group row">
+              <label for="data_memo" class="control-label col-12">備考</label>
+              <div class="col-12">
+                <span class="form-control-static" re-th:cltext="${form.data.memo}">XXXXXXXXXXXXXXXXXXXX</span>
+              </div>
+            </div>
+
+          </div>
+        </fieldset>
+      </div>
+
+      <!--/* button. */-->
+      <div class="form-group row">
+        <div class="col-12">
+          <button type="button" class="btn btn-lg btn-success w-100" id="btn_goto_input">
+            <i class="fa fa-arrow-right"></i>
+            <span>内容を変更する</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!--/* ================================================== */-->
+
+<!--/* ================================================== */-->
+<!--/* ページヘッダー. */-->
+<div th:replace="_layout/default_layout::page_footers(~{::div.modals},~{::script.target})" th:remove="tag">
+  <!--/* 画面固有 ダイアログ設定. */-->
+  <div class="modals" th:remove="tag"></div>
+  <!--/* 画面固有 スクリプト設定. */-->
+  <script type="text/javascript" src="../contents/scripts/emp_info_show.js" re-th:uqsrc="@{/contents/scripts/emp_info_show.js}" class="target" ></script>
+</div>
+<!--/* ================================================== */-->
+</body>
+</html>

@@ -24,9 +24,9 @@ src/HelloWorldMvc/.gradle/
 src/HelloWorldMvc/.settings/
 src/HelloWorldMvc/build/
 
-src/re_employee_manager/.gradle/
-src/re_employee_manager/.settings/
-src/re_employee_manager/build/
+src/re_emp_manager/.gradle/
+src/re_emp_manager/.settings/
+src/re_emp_manager/build/
 
 src/com-res_system-commons-dao/
 

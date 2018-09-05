@@ -1,0 +1,467 @@
+<!--/* ////////////////////////////////////////////////// */-->
+<!--/*                                                    */-->
+<!--/* _layout/default_layout.html */-->
+<!--/*                                                    */-->
+<!--/* ////////////////////////////////////////////////// */-->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+
+<!--/* ================================================== */-->
+<!--/* ページヘッダー. */-->
+<head th:fragment="page_header(title,links)">
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0 shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="株式会社リスタート" />
+
+  <!--/* タイトル設定. */-->
+  <title >社員管理システム <th:block th:replace="${title}" /></title>
+
+  <!--/* アイコン設定. */-->
+  <link rel="shortcut icon"    href="../contents/images/favicon.ico" re-th:uqhref="@{/contents/images/favicon.ico}" />
+  <link rel="apple-touch-icon" href="../contents/images/apple-touch-icon.png" re-th:uqhref="@{/contents/images/apple-touch-icon.png}" />
+
+  <!--/* 共通 スタイル設定. */-->
+  <link rel="stylesheet" href="../contents/vendor/jquery-ui/css/jquery-ui.min.css" re-th:uqhref="@{/contents/vendor/jquery-ui/css/jquery-ui.min.css}" />
+  <link rel="stylesheet" href="../contents/vendor/bootstrap/css/bootstrap.min.css"  re-th:uqhref="@{/contents/vendor/bootstrap/css/bootstrap.min.css}" />
+  <link rel="stylesheet" href="../contents/vendor/font-awesome/css/font-awesome.min.css"  re-th:uqhref="@{/contents/vendor/font-awesome/css/font-awesome.min.css}" />
+  <link rel="stylesheet" href="../contents/vendor/sb-admin/css/sb-admin.css"  re-th:uqhref="@{/contents/vendor/sb-admin/css/sb-admin.css}" />
+  <link rel="stylesheet" href="../contents/vendor/bootstrap-datepicker/css/bootstrap-datepicker.min.css" re-th:uqhref="@{/contents/vendor/bootstrap-datepicker/css/bootstrap-datepicker.min.css}" />
+  <link rel="stylesheet" href="../contents/styles/style.css"  re-th:uqhref="@{/contents/styles/style.css}" />
+
+  <!--/* 画面固有 スタイル設定. */-->
+  <th:block th:replace="${links}" />
+
+</head>
+<!--/* ================================================== */-->
+
+<body>
+
+<!--/* ================================================== */-->
+<!--/* ナビゲーションヘッダー. */-->
+<div th:fragment="header_navigation(title)" th:remove="tag">
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+    <a class="navbar-brand link main-hd ommit" th:href="@{/main_menu}">[ 社員管理システム ]</a>
+    <div class="sub-hd ommit"> - <span th:text="${title}"></span> - </div>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" 
+        data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!--/* ナビゲーション. */-->
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+
+      <!--/* サイドナビゲーション. */-->
+      <ul class="navbar-nav navbar-sidenav" id="side_menu">
+        <div class="pl-2 pt-2" th:utext="${#exh.sideMenu(side_menu_list)}"></div>
+      </ul>
+      <!--/* サイドナビゲーションOPEN/CLOSE. */-->
+      <ul class="navbar-nav sidenav-toggler">
+        <li class="nav-item">
+          <a class="nav-link text-center" id="sidenavToggler">
+            <i class="fa fa-fw fa-angle-left"></i>
+          </a>
+        </li>
+      </ul>
+
+      <!--/* ヘッダナビゲーション. */-->
+      <ul class="navbar-nav ml-auto">
+
+        <!--/* ユーザー. */-->
+        <th:block th:if="${#h.isNotEmpty(login_user_id)}">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle mr-lg-2" id="messagesDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fa fa-fw fa-user"></i>
+              <span class="d-lg-none">ユーザー情報</span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="messagesDropdown">
+              <h6 class="dropdown-header">ユーザー情報</h6>
+              <div class="dropdown-divider"></div><!-- /* ---------- */ -->
+              <div class="dropdown-item">
+                <th:block th:if="${#h.isNotEmpty(login_root_group_name)}">
+                <div class="sub">
+                  <span>【</span>
+                  <span class="dropdown-message small" th:text="${login_root_group_name}"></span>
+                  <span>】</span>
+                  <th:block th:if="${login_group_name}!=${login_root_group_name}">
+                  <br />　(<span class="dropdown-message small" th:text="${login_group_name}"></span>)
+                  </th:block>
+                </div>
+                </th:block>
+                <span class="dropdown-message small" th:text="${login_user_name}"></span>
+                <span class="sub">さん</span>
+                <th:block th:if="${login_user_name}!=${login_account_user_name}">
+                <div class="sub">
+                  <span>(</span>
+                  <span class="dropdown-message small" th:text="${login_account_user_name}"></span>
+                  <span>)</span>
+                </div>
+                </th:block>
+                <div class="sub mt-4">
+                  <span>権限:</span><span class="dropdown-message" th:text="${login_authority_name}"></span>
+                </div>
+              </div>
+              <div th:each="menuData,ix:${acc_menu_list}" th:remove="tag"><!--/* LOOP */-->
+                <div class="dropdown-divider"></div><!-- /* ---------- */ -->
+                <a class="dropdown-item link" th:href="@{${menuData.url}}">
+                  <i class="fa fa-fw fa-edit"></i>
+                  <span class="notes" th:text="${menuData.title}"></span>
+                </a>
+              </div><!--/* /LOOP */-->
+            </div>
+          </li>
+        </th:block>
+
+        <!--/* ログアウト. */-->
+        <th:block th:if="${#h.isNotEmpty(login_user_id)}">
+          <li class="nav-item">
+            <form>
+              <a class="nav-link postlink">
+                <i class="fa fa-fw fa-sign-out"></i>
+                <span class="sub">ログアウト</span>
+                <input type="hidden" name="data_action" th:value="@{/login/logout_post}"/>
+                <input type="hidden" name="data_action_name" value="ログアウトします"/>
+                <input type="hidden" name="data_action_title" value="ログアウト"/>
+              </a>
+            </form>
+          </li>
+        </th:block>
+
+      </ul>
+
+    </div>
+  </nav>
+
+</div>
+<!--/* ================================================== */-->
+
+
+<!--/* ================================================== */-->
+<!--/* プレーンヘッダー. */-->
+<div th:fragment="header_plain(title)" th:remove="tag">
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+    <a class="navbar-brand link main-hd ommit" th:href="@{/main_menu}">[ 社員管理システム ]</a>
+    <div class="sub-hd ommit"> - <span th:text="${title}"></span> - </div>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" 
+        data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!--/* ナビゲーション. */-->
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+
+      <!--/* ヘッダナビゲーション. */-->
+      <ul class="navbar-nav ml-auto">
+
+        <!--/* ユーザー. */-->
+        <th:block th:if="${#h.isNotEmpty(login_user_id)}">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle mr-lg-2" id="messagesDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fa fa-fw fa-user"></i>
+              <span class="d-lg-none">ユーザー情報</span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="messagesDropdown">
+              <h6 class="dropdown-header">ユーザー情報</h6>
+              <div class="dropdown-divider"></div><!-- /* ---------- */ -->
+              <div class="dropdown-item">
+                <th:block th:if="${#h.isNotEmpty(login_root_group_name)}">
+                <div class="sub">
+                  <span>【</span>
+                  <span class="dropdown-message small" th:text="${login_root_group_name}"></span>
+                  <span>】</span>
+                  <th:block th:if="${login_group_name}!=${login_root_group_name}">
+                  <br />　(<span class="dropdown-message small" th:text="${login_group_name}"></span>)
+                  </th:block>
+                </div>
+                </th:block>
+                <span class="dropdown-message small" th:text="${login_user_name}"></span>
+                <span class="sub">さん</span>
+                <th:block th:if="${login_user_name}!=${login_account_user_name}">
+                <div class="sub">
+                  <span>(</span>
+                  <span class="dropdown-message small" th:text="${login_account_user_name}"></span>
+                  <span>)</span>
+                </div>
+                </th:block>
+                <div class="sub mt-4">
+                  <span>権限:</span><span class="dropdown-message" th:text="${login_authority_name}"></span>
+                </div>
+              </div>
+              <div th:each="menuData,ix:${acc_menu_list}" th:remove="tag"><!--/* LOOP */-->
+                <div class="dropdown-divider"></div><!-- /* ---------- */ -->
+                <a class="dropdown-item link" th:href="@{${menuData.url}}">
+                  <i class="fa fa-fw fa-edit"></i>
+                  <span class="notes" th:text="${menuData.title}"></span>
+                </a>
+              </div><!--/* /LOOP */-->
+            </div>
+          </li>
+        </th:block>
+
+        <!--/* ログアウト. */-->
+        <li class="nav-item">
+          <th:block th:if="${#h.isNotEmpty(login_user_id)}">
+            <form>
+              <a class="nav-link postlink">
+                <i class="fa fa-fw fa-sign-out"></i>
+                <span class="sub">ログアウト</span>
+                <input type="hidden" name="data_action" th:value="@{/login/logout_post}"/>
+                <input type="hidden" name="data_action_name" value="ログアウトします"/>
+                <input type="hidden" name="data_action_title" value="ログアウト"/>
+              </a>
+            </form>
+          </th:block>
+        </li>
+
+      </ul>
+
+    </div>
+  </nav>
+
+</div>
+<!--/* ================================================== */-->
+
+
+<!--/* ================================================== */-->
+<!--/* コンテンツフッター. */-->
+<div th:fragment="contents_footers(footers_body)" th:remove="tag">
+
+  <!--/* フッター. */-->
+  <footer class="sticky-footer">
+    <div class="container-fluid">
+      <!--/* 共通フッター. */-->
+      <div class="text-right">
+        <small>Copyright &copy; 2018 株式会社リスタート.</small>
+      </div>
+      <!--/* 画面固有 フッター設定. */-->
+      <th:block th:replace="${footers_body}" />
+    </div>
+  </footer>
+
+</div>
+<!--/* ================================================== */-->
+
+
+<!--/* ================================================== */-->
+<!--/* コンテンツフッター(プレーン). */-->
+<div th:fragment="contents_footers_plain(footers_body)" th:remove="tag">
+
+  <!--/* フッター. */-->
+  <footer class="sticky-footer-plain">
+    <div class="container-fluid">
+      <!--/* 共通フッター. */-->
+      <div class="text-right">
+        <small>Copyright &copy; 2018 株式会社リスタート.</small>
+      </div>
+      <!--/* 画面固有 フッター設定. */-->
+      <th:block th:replace="${footers_body}" />
+    </div>
+  </footer>
+
+</div>
+<!--/* ================================================== */-->
+
+
+<!--/* ================================================== */-->
+<!--/* メインコンテンツ(ナビゲーション付). */-->
+<div th:fragment="main_contents_navi(title,contents_body)" th:remove="tag">
+  <!--/* ================================================== */-->
+  <!--/* ナビゲーションヘッダー. */-->
+  <div th:replace="_layout/default_layout::header_navigation(${title})" th:remove="tag"></div>
+  <!--/* ================================================== */-->
+  <div class="content-wrapper">
+    <div id="main_contents" class="container-fluid visibility-hidden px-3" >
+
+      <!--/* メッセージ. */-->
+      <div th:replace="_layout/default_layout::contents_message()" ></div>
+
+      <!--/* メインフォーム. */-->
+      <form class="form-horizontal" id="myform">
+        <th:block th:replace="${contents_body}" />
+        <input type="text" name="dummy" style="display:none;" /><!--/* 自動サブミット防止 */-->
+      </form>
+
+    </div>
+    <!--/* ================================================== */-->
+    <!--/* コンテンツフッター. */-->
+    <div th:replace="_layout/default_layout::contents_footers(~{::#main_footer})" th:remove="tag">
+      <!--/* 画面固有 フッター設定. */-->
+      <div id="main_footer" th:remove="tag"></div>
+    </div>
+    <!--/* ================================================== */-->
+  </div>
+</div>
+<!--/* ================================================== */-->
+
+
+<!--/* ================================================== */-->
+<!--/* メインコンテンツ(プレーン). */-->
+<div th:fragment="main_contents_plain(title,contents_body)" th:remove="tag">
+  <!--/* ================================================== */-->
+  <!--/* プレーンヘッダー. */-->
+  <div th:replace="_layout/default_layout::header_plain(${title})" th:remove="tag"></div>
+  <!--/* ================================================== */-->
+  <div class="main-contents-style mt-5">
+    <div id="main_contents" class="container visibility-hidden p-3">
+
+      <!--/* メッセージ. */-->
+      <div th:replace="_layout/default_layout::contents_message()" ></div>
+
+      <!--/* メインフォーム. */-->
+      <form class="form-horizontal py-1" id="myform">
+        <th:block th:replace="${contents_body}" />
+        <input type="text" name="dummy" style="display:none;" /><!--/* 自動サブミット防止 */-->
+      </form>
+
+    </div>
+  </div>
+  <!--/* ================================================== */-->
+  <!--/* プレーンコンテンツフッター. */-->
+  <div th:replace="_layout/default_layout::contents_footers_plain(~{::#main_footer})" th:remove="tag">
+    <!--/* 画面固有 フッター設定. */-->
+    <div id="main_footer" th:remove="tag"></div>
+  </div>
+  <!--/* ================================================== */-->
+</div>
+<!--/* ================================================== */-->
+
+
+<!--/* ================================================== */-->
+<!--/* メッセージ. */-->
+<div th:fragment="contents_message()" th:remove="tag">
+    <div class="message">
+      <!--/* 警告. */-->
+      <div class="alert alert-danger message-box" role="alert"><p></p></div>
+      <!--/* 注意. */-->
+      <div class="alert alert-warning message-box" role="alert"><p></p></div>
+      <!--/* 情報. */-->
+      <div class="alert alert-info message-box" role="alert"><p></p></div>
+    </div>
+</div>
+<!--/* ================================================== */-->
+
+
+<!--/* ================================================== */-->
+<!--/* ページング. */-->
+<div th:fragment="contents_pagination(pagination_id)" th:remove="tag">
+    <nav aria-label="...">
+      <ul class="pagination float-right" th:id="${pagination_id}"></ul>
+      <div class="pagination-title float-right px-2 sub">
+        <span class="pagination-title-page"></span> / <span class="pagination-title-total-page"></span>
+        <span></span>
+        ( 全<span class="pagination-title-total-size"></span>件 )
+      </div>
+    </nav>
+</div>
+<!--/* ================================================== */-->
+
+
+<!--/* ================================================== */-->
+<!--/* 検索条件保存. */-->
+<div th:fragment="contents_search_cond_hidden()" th:remove="tag">
+  <input type="hidden" re-th:input="form,searchCond,keyword" />
+  <input type="hidden" re-th:input="form,searchCond,is_all" />
+  <input type="hidden" re-th:input="form,searchCond,page" />
+  <input type="hidden" re-th:input="form,searchCond,total_page" />
+  <input type="hidden" re-th:input="form,searchCond,total_size" />
+  <input type="hidden" re-th:input="form,searchCond,selected_id" />
+  <input type="hidden" re-th:input="form,searchCond,selected_sub_id" />
+  <input type="hidden" re-th:input="form,searchCond,sort" />
+</div>
+<!--/* ================================================== */-->
+
+
+<!--/* ================================================== */-->
+<!--/* 社員情報メニュータブ. */-->
+<div th:fragment="contents_emp_menu_tab()" th:remove="tag">
+  <th:block th:if="${#h.isNotEmpty(selected_emp_user)}">
+    <a class="btn btn-secondary link my-3" th:href="@{/emp_search/return}">
+      <i class="fa fa-arrow-left"></i>
+      <span class="notes">一覧へ戻る</span>
+    </a>
+  </th:block>
+  <ul class="nav nav-tabs mb-4">
+  <div th:each="menuData,ix:${emp_menu_list}" th:remove="tag"><!--/* LOOP */-->
+    <li class="nav-item">
+      <a th:href="@{${menuData.url}}" data-toggle="tab" class="nav-link small text-uppercase link" 
+          th:classappend="${((request_controller == menuData.permission_key) ? 'active' : '')}" th:text="${menuData.title}">xxx</a>
+    </li>
+  </div><!--/* /LOOP */-->
+  </ul>
+</div>
+<!--/* ================================================== */-->
+
+
+<!--/* ================================================== */-->
+<!--/* ページフッター. */-->
+<div th:fragment="page_footers(modals,scripts)" th:remove="tag">
+  <div class="page-footer">
+
+    <!--/* 共通hidden項目. */-->
+    <input type="hidden" id="root_url" th:value="@{/}" value=".." />
+    <input type="hidden" id="ajax_error_url" th:value="@{/show_message/session_error}" value=".." />
+    <input type="hidden" id="conversation_id" />
+  
+    <!--/* 共通 スクリプト設定. */-->
+    <script type="text/javascript" src="../contents/vendor/jquery/jquery.min.js"  re-th:uqsrc="@{/contents/vendor/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" src="../contents/vendor/jquery-easing/jquery.easing.min.js"  re-th:uqsrc="@{/contents/vendor/jquery-easing/jquery.easing.min.js}"></script>
+    <script type="text/javascript" src="../contents/vendor/jquery-ui/js/jquery-ui.min.js" re-th:uqsrc="@{/contents/vendor/jquery-ui/js/jquery-ui.min.js}" class="target"></script>
+    <script type="text/javascript" src="../contents/vendor/bootstrap/js/bootstrap.bundle.min.js"  re-th:uqsrc="@{/contents/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <script type="text/javascript" src="../contents/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js" re-th:uqsrc="@{/contents/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js}"></script>
+    <script type="text/javascript" src="../contents/vendor/bootstrap-datepicker/js/bootstrap-datepicker.ja.js" re-th:uqsrc="@{/contents/vendor/bootstrap-datepicker/js/bootstrap-datepicker.ja.js}"></script>
+    <script type="text/javascript" src="../contents/vendor/sb-admin/js/sb-admin.js" re-th:uqsrc="@{/contents/vendor/sb-admin/js/sb-admin.js}"></script>
+    <script type="text/javascript" src="../contents/vendor/com-res_system-commons/com-res_system-commons.js" re-th:uqsrc="@{/contents/vendor/com-res_system-commons/com-res_system-commons.js}"></script>
+    <script type="text/javascript" src="../contents/scripts/common/commons.js" re-th:uqsrc="@{/contents/scripts/common/commons.js}"></script>
+    <script type="text/javascript" src="../contents/scripts/common/biz_commons.js" re-th:uqsrc="@{/contents/scripts/common/biz_commons.js}"></script>
+  
+    <!--/* 初期化処理. */-->
+    <script type="text/javascript">
+    <!-- 
+    (function () {
+        Commons.afterLoad = null;
+        Commons.commonMessages = {[(${#exh.commonMessages()})]};
+        Commons.setConversationId('[(${conversation_id})]');
+        Commons.resetChangeInput();
+    }());
+    -->
+    </script>
+  
+    <!--/* 画面固有 ダイアログ設定. */-->
+    <th:block th:replace="${modals}" />
+  
+    <!--/* 確認ダイアログ設定. */-->
+    <div th:replace="_modal/modal_confirm_layout::layout()" th:remove="tag"></div>
+  
+    <!--/* 画面固有 スクリプト設定. */-->
+    <th:block th:replace="${scripts}" />
+  
+    <!--/* 画面共通 スクリプト. */-->
+    <script type="text/javascript">
+    <!-- 
+    (function () {
+        Commons.setDatePicker();
+        Commons.setATagLink();
+        Commons.setChangeScreenLink();
+        Commons.setPostLink();
+        Commons.setPageTopBottom();
+        Commons.setAccordionMenu();
+        Commons.setChangeInput();
+        Commons.openScreen(Commons.afterLoad);
+        Commons.showMessages('#main_contents', $ReC.parseJSON('[(${#exh.jsonMsg(messageList)})]'));
+    }());
+    -->
+    </script>
+  
+    <!--/* スクロールボタン. */-->
+    <div id="to_page_top"    class="scroll-button big-font color-white"><i class="fa fa-fw fa-angle-up"></i></div>
+    <div id="to_page_bottom" class="scroll-button big-font color-white"><i class="fa fa-fw fa-angle-down"></i></div>
+  </div>
+</div>
+<!--/* ================================================== */-->
+
+</body>
+</html>

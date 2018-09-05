@@ -1,0 +1,274 @@
+<!--/* ////////////////////////////////////////////////// */-->
+<!--/*                                                    */-->
+<!--/* mnt_emp_info_hd/index.html */-->
+<!--/*                                                    */-->
+<!--/* ////////////////////////////////////////////////// */-->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja" th:with="screen_name=社員情報ヘッダーマスタメンテナンス">
+
+<!--/* ================================================== */-->
+<!--/* ページヘッダー. */-->
+<head th:replace="_layout/default_layout::page_header(~{::title},~{::link.target})">
+  <!--/* タイトル設定. */-->
+  <title th:remove="tag" th:text="${screen_name}">xxx</title>
+  <!--/* 画面固有 スタイル設定. */-->
+  <link class="target" />
+</head>
+<!--/* ================================================== */-->
+
+<body class="fixed-nav sticky-footer bg-dark">
+
+  <!--/* ================================================== */-->
+  <!--/* メインコンテンツ. */-->
+  <div th:replace="_layout/default_layout::main_contents_navi(${screen_name},~{::div#main_contents})" th:remove="tag">
+    <div id="main_contents" class="container" th:remove="tag">
+
+      <h1 th:text="${screen_name}">xxx</h1>
+      <hr />
+      <p class="mb-2">社員情報の追加情報を設定します</p>
+      
+      <!--/* 条件. */-->
+      <div class="form-group row">
+        <div class="input-group col-12">
+          <input type="text" class="form-control" placeholder="検索キーワードを入力してください。" id="keyword" maxlength="120"/>
+          <span class="input-group-append">
+            <button type="button" class="btn btn-info" id="btn_search">
+              <i class="fa fa-fw fa-search"></i> <span> 検索　</span>
+            </button>
+          </span>
+        </div>
+        <div class="col-12 pl-1">
+          <label class="checkbox">
+            <input type="checkbox" class="form-control" id="is_all" value="1" /><span class="indicator sub">無効も含める</span>
+          </label>
+        </div>
+      </div>
+
+      <!--/* 新規追加. */-->
+      <div class="form-group row">
+        <div class="col-8 col-md-10"></div>
+        <div class="col-4 col-md-2">
+          <button type="button" class="btn btn-secondary w-100" id="btn_add" >
+            <i class="fa fa-fw fa-plus"></i> <span> 新規追加　</span>
+          </button>
+        </div>
+      </div>
+
+      <!--/* 一覧. */-->
+      <div class="row mt-2">
+        <div class="col-12">
+          <!--/* 明細. */-->
+          <table class="table table-striped table-hover" id="main_tbl">
+          <thead>
+            <tr>
+              <th class="container">
+                <div class="row">
+                  <div class="col-1  omit sub"><span class="sort-link" data-sort-asc="1"  data-sort-desc="2" >連番</span></div>
+                  <div class="col-7  omit sub"><span class="sort-link" data-sort-asc="3"  data-sort-desc="4" >ヘッダラベル</span></div>
+                  <div class="col-1  omit sub"><span class="sort-link" data-sort-asc="5"  data-sort-desc="6" >タイプ</span></div>
+                  <div class="col-1  omit sub"><span class="sort-link" data-sort-asc="7"  data-sort-desc="8" >必須フラグ</span></div>
+                  <div class="col-1  omit sub"><span class="sort-link" data-sort-asc="9"  data-sort-desc="10">長さ</span></div>
+                  <div class="col-1  omit sub"><span class="sort-link" data-sort-asc="11" data-sort-desc="12">状態</span></div>
+                </div>
+                <div class="row">
+                  <div class="col-1  omit sub"></div>
+                  <div class="col-11 omit sub"><span class="sort-link" data-sort-asc="13" data-sort-desc="14">備考</span></div>
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+          <th:block tabindex="-1" th:each="listData,ix:${form.list}" th:remove="tag"><!--/* LOOP -- */-->
+            <tr>
+              <td class="container">
+                <div class="row">
+                  <div class="col-1  omit sub"><span th:title="${listData.seq}" th:text="${listData.seq}"></span><span>　</span></div>
+                  <div class="col-7  omit sub"><span th:title="${listData.label}" th:text="${listData.label}"></span><span>　</span></div>
+                  <div class="col-1  omit sub"><span th:title="${listData.type_name}" th:text="${listData.type_name}"></span><span>　</span></div>
+                  <div class="col-1  omit sub"><span th:title="${listData.required_name}" th:text="${listData.required_name}"></span><span>　</span></div>
+                  <div class="col-1  omit sub"><span th:title="${listData.maxlength}" th:text="${listData.maxlength}"></span><span>　</span></div>
+                  <div class="col-1  omit sub"><span th:title="${listData.status_name}" th:text="${listData.status_name}"></span><span>　</span></div>
+                </div>
+                <div class="row">
+                  <div class="col-1  omit sub"></div>
+                  <div class="col-11 omit sub"><span th:title="${listData.memo}" th:text="${listData.memo}"></span><span>　</span></div>
+                </div>
+                <input type="hidden" name="id" th:value="${listData.id}" />
+              </td>
+            </tr>
+          </th:block><!--/* / -- LOOP */-->
+          </tbody>
+          </table>
+        </div>
+        <!--/* ページング. */-->
+        <div class="col-12">
+          <div th:replace="_layout/default_layout::contents_pagination('pagination')" th:remove="tag"></div>
+        </div>
+      </div>
+
+      <input type="hidden" re-th:listSize="form,list" />
+      <!--/* 検索条件保存. */-->
+      <div th:replace="_layout/default_layout::contents_search_cond_hidden()" th:remove="tag"></div>
+
+    </div>
+  </div>
+  <!--/* ================================================== */-->
+
+<!--/* ================================================== */-->
+<!--/* ページヘッダー. */-->
+<div th:replace="_layout/default_layout::page_footers(~{::div.modals},~{::script.target})" th:remove="tag">
+  <!--/* 画面固有 ダイアログ設定. */-->
+  <div class="modals" th:remove="tag">
+    <!--/* -------------------------------------------------- */-->
+    <!--/* 入力ダイアログ. */-->
+    <div class="modal fade" id="modal_input" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" id="modal_input_content">
+          <div class="modal-header"><h5 class="modal-title">【社員情報ヘッダー】</h5></div><!--/* /.modal-header */-->
+          <div class="modal-body">
+            <div class="container">
+              <!--/* メッセージ. */-->
+              <div th:replace="_layout/default_layout::contents_message()" ></div>
+              <!--/* フォーム. */-->
+              <form id="modal_input_form">
+
+                <div class="row">
+                  <div class="offset-6 offset-md-8 offset-lg-10  col-6 col-md-4 col-lg-2">
+                      <button type="button" class="btn btn-danger btn-sm w-100" id="modal_input_btn_delete">
+                        <i class="fa fa-fw fa-trash"></i> <span>削除する</span>
+                      </button>
+                  </div>
+                </div> 
+
+                <div class="row">
+                  <div class="col-sm-12 col-md-12 col-lg-12">
+
+                    <!--/* 入力. */-->
+                    <fieldset class="pb-1">
+
+                      <!--/* 表示順. */-->
+                      <div class="form-group row">
+                        <label for="data_seq" class="control-label required col-12">表示順</label>
+                        <div class="col-12">
+                          <input type="text" class="form-control" re-th:input="form,data,seq" maxlength="2" />
+                        </div>
+                        <div class="col-12">
+                          <p class="notes">※半角数値(1~99)で入力してください。</p>
+                        </div>
+                      </div>
+
+                      <!--/* ヘッダラベル. */-->
+                      <div class="form-group row">
+                        <label for="data_label" class="control-label col-12">タグラベル</label>
+                        <div class="col-12">
+                          <input type="text" class="form-control" re-th:input="form,data,label" maxlength="20" />
+                        </div>
+                        <div class="col-12">
+                          <p class="notes">※タイプがスペース以外の場合は、必須です。</p>
+                        </div>
+                      </div>
+
+                      <!--/* タイプ. */-->
+                      <div class="form-group row">
+                        <label for="data_type" class="control-label required col-12">タイプ</label>
+                        <div class="select">
+                          <select class="form-control" re-th:select="form,data,type" >
+                            <span th:each="listItem,ix:${InfTypeList}" th:remove="tag"><!--/* LOOP -- */-->
+                            <option re-th:option="form,data,type,${listItem.value},${listItem.text}">○○○</option>
+                            </span><!--/* / -- LOOP */-->
+                          </select>
+                          <span class="arrow"></span>
+                        </div>
+                      </div>
+
+                      <!--/* 必須フラグ. */-->
+                      <div class="form-group row">
+                        <label for="data_required" class="control-label required col-12">必須フラグ</label>
+                        <div class="select">
+                          <select class="form-control" re-th:select="form,data,required" >
+                            <span th:each="listItem,ix:${ReqFlgList}" th:remove="tag"><!--/* LOOP -- */-->
+                            <option re-th:option="form,data,required,${listItem.value},${listItem.text}">○○○</option>
+                            </span><!--/* / -- LOOP */-->
+                          </select>
+                          <span class="arrow"></span>
+                        </div>
+                      </div>
+
+                      <!--/* 長さ. */-->
+                      <div class="form-group row">
+                        <label for="data_maxlength" class="control-label required col-12">長さ</label>
+                        <div class="col-12">
+                          <input type="text" class="form-control" re-th:input="form,data,maxlength" maxlength="3" />
+                        </div>
+                        <div class="col-12">
+                          <p class="notes">※半角数値(0~999)で入力してください。</p>
+                        </div>
+                      </div>
+
+                      <!--/* 状態. */-->
+                      <div class="form-group row">
+                        <label for="data_status" class="control-label required col-12">状態</label>
+                        <div class="select">
+                          <select class="form-control" re-th:select="form,data,status" >
+                            <span th:each="listItem,ix:${StatList}" th:remove="tag"><!--/* LOOP -- */-->
+                            <option re-th:option="form,data,status,${listItem.value},${listItem.text}">○○○</option>
+                            </span><!--/* / -- LOOP */-->
+                          </select>
+                          <span class="arrow"></span>
+                        </div>
+                      </div>
+
+                      <!--/* 備考. */-->
+                      <div class="form-group row">
+                        <label for="data_memo" class="control-label col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">備考</label>
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                          <textarea class="form-control" placeholder="" re-th:input="form,data,memo" rows="1"></textarea>
+                        </div>
+                      </div>
+
+                    </fieldset>
+                    <br />
+
+                    <!--/* ボタン. */-->
+                    <div class="row btn-reservation">
+                      <div class="col-6">
+                          <button type="button" class="btn btn-lg btn-primary w-100" id="modal_input_btn_update">
+                            <i class="fa fa-fw fa-edit"></i> <span>変更する</span>
+                          </button>
+                      </div><!--/* /col */-->
+                      <div class="col-6">
+                          <button type="button" class="btn btn-lg btn-secondary w-100" id="modal_input_btn_copy">
+                            <i class="fa fa-fw fa-copy"></i> <span>コピーする</span>
+                          </button>
+                      </div><!--/* /col */-->
+                      <div class="col-12">
+                          <button type="button" class="btn btn-lg btn-primary w-100" id="modal_input_btn_add">
+                            <i class="fa fa-fw fa-edit"></i> <span>追加する</span>
+                          </button>
+                      </div><!--/* /col */-->
+                    </div><!--/* /row */-->
+
+                  </div><!-- /col -->
+                </div><!-- /row -->
+
+                <input type="hidden" re-th:input="form,mode" />
+                <input type="hidden" re-th:input="form,data,id" />
+                <input type="text" name="dummy" style="display:none;" value=""/><!--/* 自動サブミット防止 */-->
+              </form>
+            </div><!--/* /.container */-->
+          </div><!--/* /.modal-body */-->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-modal-footer btn-secondary" id="modal_input_btn_close"><i class="fa fa-fw fa-times-circle"></i> <span>閉じる</span></button>
+          </div><!--/* /.modal-footer */-->
+        </div><!--/* /.modal-content */-->
+      </div><!--/* /.modal-dialog */-->
+    </div><!--/* /.modal */-->
+    <!--/* -------------------------------------------------- */-->
+  </div>
+  <!--/* 画面固有 スクリプト設定. */-->
+  <script type="text/javascript" src="../contents/scripts/mnt_emp_info_hd.js" re-th:uqsrc="@{/contents/scripts/mnt_emp_info_hd.js}" class="target" ></script>
+</div>
+<!--/* ================================================== */-->
+
+</body>
+</html>

@@ -1,0 +1,661 @@
+<!--/* ////////////////////////////////////////////////// */-->
+<!--/*                                                    */-->
+<!--/* top/index.html */-->
+<!--/*                                                    */-->
+<!--/* ////////////////////////////////////////////////// */-->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja" th:with="screen_name=TEST画面">
+
+<!--/* ================================================== */-->
+<!--/* ページヘッダー. */-->
+<head th:replace="_layout/default_layout::page_header(~{::title},~{::link.target})">
+  <!--/* タイトル設定. */-->
+  <title th:remove="tag" th:text="${screen_name}">xxx</title>
+  <!--/* 画面固有 スタイル設定. */-->
+  <link class="target" />
+</head>
+<!--/* ================================================== */-->
+
+<body class="fixed-nav sticky-footer bg-dark">
+
+  <!--/* ================================================== */-->
+  <!--/* メインコンテンツ. */-->
+  <div th:replace="_layout/default_layout::main_contents_navi(${screen_name},~{::div#main_contents})" th:remove="tag">
+    <div id="main_contents" class="container" th:remove="tag">
+
+      <span id="win_size"></span>
+
+      <div class="row">
+        <div class="col-12 d-sm-none bg-blue">col</div>
+        <div class="col-12 d-none d-sm-block d-md-none bg-lightblue">col-sm</div>
+        <div class="col-12 d-none d-md-block d-lg-none bg-green">col-md</div>
+        <div class="col-12 d-none d-lg-block d-xl-none bg-yellow">col-lg</div>
+        <div class="col-12 d-none d-xl-block bg-red">col-xl</div>
+      </div>
+      <br />
+
+      <!--/* -------------------------------------------------- */-->
+      <!--/* 社員情報タブ. */-->
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a href="javascript:void(0)" data-toggle="tab" class="change_screenlink nav-link small text-uppercase active" id="employee_info">
+            <span>社員個人情報管理</span>
+            <input type="hidden" name="data_action" th:value="@{/test}"/>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="javascript:void(0)" data-toggle="tab" class="change_screenlink nav-link small text-uppercase " id="employee_info">
+            <span>社員家族情報</span>
+            <input type="hidden" name="data_action" th:value="@{/test}"/>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="javascript:void(0)" data-toggle="tab" class="change_screenlink nav-link small text-uppercase " id="employee_info">
+            <span>社員勤怠情報</span>
+            <input type="hidden" name="data_action" th:value="@{/test}"/>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="javascript:void(0)" data-toggle="tab" class="change_screenlink nav-link small text-uppercase " id="employee_info">
+            <span>社員交通費情報</span>
+            <input type="hidden" name="data_action" th:value="@{/test}"/>
+          </a>
+        </li>
+      </ul>
+      <!--/* -------------------------------------------------- */-->
+      <br />
+
+
+      <fieldset>
+        <legend>ヘッダー確認</legend>
+        <h1>ヘッダーです(h1)</h1>
+        <h2>ヘッダーです(h2)</h2>
+        <h3>ヘッダーです(h3)</h3>
+        <h4>ヘッダーです(h4)</h4>
+        <h5>ヘッダーです(h5)</h5>
+        <h6>ヘッダーです(h6)</h6>
+      </fieldset>
+
+      <fieldset>
+        <legend>文字確認</legend>
+        <div class="row">
+          <label for="" class="control-label col-12 col-sm-12 col-md-2  col-lg-1 d-none d-md-block text-right pr-2">文字確認</label>
+          <label for="" class="control-label col-12 col-sm-12 col-md-2  col-lg-1 d-md-none">文字確認</label>
+          <div class=" col-12 col-sm-12 col-md-10 col-lg-11">
+            <p class="form-control-static">
+              <span>0123456789</span><br />
+              <span>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz</span><br />
+              <span>!\"#$%'()*+,-./:;=?@[\\]^_`{|}~</span><br />
+              <span>ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝｧｨｩｪｫｬｭｮｯｰﾞﾟ</span><br />
+              <span>｡｢｣､･</span><br />
+              <span>０１２３４５６７８９</span><br />
+              <span>ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ</span><br />
+              <span>！”＃＄％＆’（）＊＋，－．／：；＜＝＞？＠［￥］＾＿‘｛｜｝￣</span><br />
+              <span>ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶー゛゜</span><br />
+              <span>。「」、・</span><br />
+              <span>ぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをん</span><br />
+            </p>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="" class="control-label col-12 col-sm-12 col-md-2  col-lg-1 d-none d-md-block text-right pr-2">装飾文字確認</label>
+          <label for="" class="control-label col-12 col-sm-12 col-md-2  col-lg-1 d-md-none">装飾文字確認</label>
+          <div class="col-sm-12 col-md-10 col-lg-10">
+            <p class="form-control-static"><span>通常の文字の大きさです。</span><br />
+              <strong>strong Tag</strong>/<span class="strong">strong Class</span>/<span class="strong">強調したい箇所に使用します。</span><br />
+              <span class="notes">notes※注意書き等に使用します。</span></p>
+          </div>
+        </div>
+        <div class="row">
+          <label for="" class="control-label col-12 col-sm-12 col-md-2  col-lg-1 d-none d-md-block text-right pr-2">線確認</label>
+          <label for="" class="control-label col-12 col-sm-12 col-md-2  col-lg-1 d-md-none">線確認</label>
+          <div class=" col-12 col-sm-12 col-md-10 col-lg-11">
+            <hr />
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>レイアウト</legend>
+        <div class="row bg-green">
+          <label for="btn_select_warehouse" class="control-label col-sm-12 col-md-12 col-lg-12 bg-pink">col-sm-12 col-md-12 col-lg-12</label>
+          <div class="col-sm-12 col-md-6  col-lg-6  bg-blue"             >col-sm-12 col-md-6  col-lg-6</div>
+          <div class="col-sm-6  col-md-2  col-lg-2  bg-lightblue"        >col-sm-6  col-md-2  col-lg-2</div>
+          <div class="col-sm-3  col-md-2  col-lg-2  bg-aquamarine"       >col-sm-3  col-md-2  col-lg-2</div>
+          <div class="col-sm-3  col-md-2  col-lg-2  text-right bg-yellow">col-sm-3  col-md-2  col-lg-2</div>
+        </div>
+        <div class="row bg-green">
+          <div class="col-sm-2  col-md-2  col-lg-2  text-right bg-yellow">col-sm-2  col-md-2  col-lg-2</div>
+        </div>
+        <div class="row bg-green">
+          <div class="col-sm-4  col-md-3  col-lg-2  text-right bg-aquamarine">col-sm-4  col-md-3  col-lg-2</div>
+          <div class="col-sm-4  col-md-3  col-lg-2  text-right bg-lightblue" >col-sm-4  col-md-3  col-lg-2</div>
+        </div>
+        <div class="row bg-green">
+          <div class="col-4  col-sm-4  col-md-4  col-lg-4 bg-blue"  >col-4  col-sm-4  col-md-4  col-lg-4</div>
+          <div class="col-4  col-sm-4  col-md-4  col-lg-4 bg-yellow">col-4  col-sm-4  col-md-4  col-lg-4</div>
+          <div class="col-4  col-sm-4  col-md-4  col-lg-4 bg-pink"  >col-4  col-sm-4  col-md-4  col-lg-4</div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>ボタン</legend>
+        <div class="form-group row">
+          <label for="" class="control-label col-sm-12 col-md-2 col-lg-2">標準</label>
+          <div class="col-sm-12 col-md-10 col-lg-10">
+            <button type="button" class="btn btn-default">default</button>
+            <button type="button" class="btn btn-primary">primary</button>
+            <button type="button" class="btn btn-secondary">secondary</button>
+            <button type="button" class="btn btn-success">success</button>
+            <button type="button" class="btn btn-danger">danger</button>
+            <button type="button" class="btn btn-warning">warning</button>
+            <button type="button" class="btn btn-info">info</button>
+            <button type="button" class="btn btn-light">light</button>
+            <button type="button" class="btn btn-dark">dark</button>
+            <button type="button" class="btn btn-link">link</button>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="" class="control-label col-sm-12 col-md-2 col-lg-2">標準(outline)</label>
+          <div class="col-sm-12 col-md-10 col-lg-10">
+            <button type="button" class="btn btn-outline-default">default</button>
+            <button type="button" class="btn btn-outline-primary">primary</button>
+            <button type="button" class="btn btn-outline-secondary">secondary</button>
+            <button type="button" class="btn btn-outline-success">success</button>
+            <button type="button" class="btn btn-outline-danger">danger</button>
+            <button type="button" class="btn btn-outline-warning">warning</button>
+            <button type="button" class="btn btn-outline-info">info</button>
+            <button type="button" class="btn btn-outline-light">light</button>
+            <button type="button" class="btn btn-dark">dark</button>
+            <button type="button" class="btn btn-link">link</button>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>入力項目</legend>
+
+        <div class="form-group row">
+          <label for="txt_test1" class="control-label col-sm-12 col-md-2 col-lg-2">テキスト1</label>
+          <div class="col-sm-9 col-md-9 col-lg-9">
+            <input type="text" class="form-control" placeholder="テキスト1" maxlength="10" id="txt_test1" name="txt_test1" value="" />
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="txt_test2" class="control-label required col-sm-12 col-md-2 col-lg-2">テキスト2～</label>
+          <div class="form-inline col-sm-12 col-md-10 col-lg-10">
+              <input type="text" class="form-control"          placeholder="テキスト2" maxlength="10" size="8"  id="txt_test2" name="txt_test2" value=""
+            /><input type="text" class="form-control required" placeholder="テキスト3" maxlength="10" size="8"  id="txt_test3" name="txt_test3" value=""
+            /><input type="text" class="form-control readonly" placeholder="テキスト4" maxlength="8"  size="10" id="txt_test4" name="txt_test4" value="" disabled="true" tabindex="-1" />
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="" class="control-label required col-sm-12 col-md-2 col-lg-2">選択</label>
+          <div class="form-inline col-sm-12 col-md-10 col-lg-10">
+            <div class="select">
+              <select class="form-control required" id="sel_test1" name="sel_test1" required>
+                <option value="">---</option>
+                <option value="0001">大</option>
+                <option value="0002">中</option>
+                <option value="0003">小</option>
+              </select>
+              <span class="arrow"></span>
+            </div>
+            <div class="select">
+              <select class="form-control"          id="sel_test2" name="sel_test2">
+                <option value="">---</option>
+                <option value="0001">やや多い</option>
+                <option value="0002">多い</option>
+                <option value="0003">ちょうど良い</option>
+                <option value="0004">少ない</option>
+              </select>
+              <span class="arrow"></span>
+            </div>
+            <div class="select">
+              <select class="form-control readonly" id="sel_test3" name="sel_test3" disabled tabindex="-1" >
+                <option value="">---</option>
+                <option value="0001">上</option>
+                <option value="0002" selected>中</option>
+                <option value="0003">下</option>
+              </select>
+              <span class="arrow"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="chk_test1" class="control-label col-sm-12 col-md-2 col-lg-2">チェック</label>
+          <div class="form-inline col-sm-12 col-md-10 col-lg-10">
+            <label class="checkbox"><input type="checkbox" class="form-control" value="1" id="chk_test1" name="chk_test1" checked="true" /><span class="indicator">チェック1</span></label>
+            <label class="checkbox"><input type="checkbox" class="form-control" value="1" id="chk_test2" name="chk_test2"                /><span class="indicator">チェック2</span></label>
+            <label class="checkbox"><input type="checkbox" class="form-control readonly" value="1" id="chk_test3" name="chk_test3" checked="true" disabled="true" tabindex="-1" />
+                <span class="indicator">チェック3</span></label>
+            <label class="checkbox"><input type="checkbox" class="form-control readonly" value="1" id="chk_test4" name="chk_test4"                disabled="true" tabindex="-1" />
+                <span class="indicator">チェック4</span></label>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="rdo_test1" class="control-label col-sm-12 col-md-2 col-lg-2">ラジオ</label>
+          <div class="form-inline col-sm-12 col-md-10 col-lg-10">
+            <label class="radio"><input type="radio" class="form-control" value="1" id="rdo_test1" name="rdo_test1" checked="true" /><span class="indicator">ラジオ1</span></label>
+            <label class="radio"><input type="radio" class="form-control" value="2" id="rdo_test2" name="rdo_test1"                /><span class="indicator">ラジオ2</span></label>
+            <label class="radio"><input type="radio" class="form-control readonly" value="1" id="rdo_test3" name="rdo_test2" checked="true" disabled="true" tabindex="-1" />
+                <span class="indicator">ラジオ3</span></label>
+            <label class="radio"><input type="radio" class="form-control readonly" value="2" id="rdo_test4" name="rdo_test2"                disabled="true" tabindex="-1" />
+                <span class="indicator">ラジオ4</span></label>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="dat_test1" class="control-label col-sm-12 col-md-2 col-lg-2">日付</label>
+          <div class="form-inline col-sm-12 col-md-10 col-lg-10">
+            <input type="text" class="form-control date-picker" placeholder="日付" maxlength="10" size="8" id="dat_test1" name="dat_test1" value="" />
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="txa_test1" class="control-label required col-sm-12 col-md-2 col-lg-2">テキストエリア</label>
+          <div class="form-inline col-sm-12 col-md-10 col-lg-10">
+            <textarea class="form-control"          placeholder="メモ" rows="3" cols="10" id="txa_test1" name="txa_test1" ></textarea>
+            <textarea class="form-control required" placeholder="メモ" rows="3" cols="10" id="txa_test2" name="txa_test2" ></textarea>
+            <textarea class="form-control readonly" placeholder="メモ" rows="3" cols="10" id="txa_test3" name="txa_test3" disabled="true" readonly tabindex="-1" ></textarea>
+          </div>
+        </div>
+        
+        <div class="form-group row">
+          <label for="txa_test1" class="control-label col-12 col-sm-12 col-md-2 col-lg-2">検索ダイアログ</label>
+          <div class="input-group col-12 col-sm-12 col-md-10 col-lg-10">
+            <input type="text" class="form-control" placeholder="検索キーワード" id="modal_select_warehouse_keyword" name="modal_select_warehouse_keyword" maxlength="120"/>
+            <span class="input-group-append">
+              <button class="btn btn-info" id="btn_select">
+              <span>選択</span>
+              </button>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-sm-12 col-md-2 col-lg-2"></div>
+          <div class="col-sm-12 col-md-10 col-lg-10">
+            <button type="button" class="btn btn-lg btn-primary col-sm-8" id="btn_update">
+              <i class="fa fa-fw fa-edit"></i>
+              <i class="fa fa-fw fa-search"></i>
+              <i class="fa fa-fw fa-print"></i>
+              <i class="fa fa-fw fa-arrow-right"></i>
+              <i class="fa fa-fw fa-arrow-left"></i>
+              <i class="fa fa-fw fa-sync"></i>
+              <i class="fa fa-fw fa-star"></i>
+              <i class="fa fa-fw fa-file-download"></i>
+              <span>変更を反映する</span>
+            </button>
+          </div>
+        </div>
+
+      </fieldset>
+
+      <fieldset>
+        <legend>テーブル</legend>
+
+        <div class="form-group row">
+          <label for="" class="control-label col-sm-12 col-md-2 col-lg-2">枠有り</label>
+          <div class="col-sm-12 col-md-10 col-lg-10">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th>Firstname</th>
+                  <th>Lastname</th>
+                  <th>Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>John</td>
+                  <td>Doe</td>
+                  <td>john@example.com</td>
+                </tr>
+                <tr>
+                  <td>Mary</td>
+                  <td>Moe</td>
+                  <td>mary@example.com</td>
+                </tr>
+                <tr>
+                  <td>July</td>
+                  <td>Dooley</td>
+                  <td>july@example.com</td>
+                </tr>
+              </tbody>
+            </table>            
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="" class="control-label col-sm-12 col-md-2 col-lg-2">枠無し</label>
+          <div class="col-sm-12 col-md-10 col-lg-10">
+            <table class="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th>Firstname</th>
+                  <th>Lastname</th>
+                  <th>Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>John</td>
+                  <td>Doe</td>
+                  <td>john@example.com</td>
+                </tr>
+                <tr>
+                  <td>Mary</td>
+                  <td>Moe</td>
+                  <td>mary@example.com</td>
+                </tr>
+                <tr>
+                  <td>July</td>
+                  <td>Dooley</td>
+                  <td>july@example.com</td>
+                </tr>
+              </tbody>
+            </table>            
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="" class="control-label col-sm-12 col-md-2 col-lg-2">選択有り</label>
+          <div class="col-sm-12 col-md-10 col-lg-10">
+            <table class="table table-striped table-hover" id="selected_table">
+              <thead>
+                <tr>
+                  <th>Firstname</th>
+                  <th>Lastname</th>
+                  <th>Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>John</td>
+                  <td>Doe</td>
+                  <td>john@example.com</td>
+                </tr>
+                <tr>
+                  <td>Mary</td>
+                  <td>Moe</td>
+                  <td>mary@example.com</td>
+                </tr>
+                <tr>
+                  <td>July</td>
+                  <td>Dooley</td>
+                  <td>july@example.com</td>
+                </tr>
+              </tbody>
+            </table>            
+            <button type="button" class="btn btn-primary" id="btn_get_row">選択行</button>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="" class="control-label col-sm-12 col-md-2 col-lg-2">ページング</label>
+          <div class="col-sm-12 col-md-10 col-lg-10">
+            <nav class="row">
+              <div class="pagination-title p-2">
+                <span class="pagination-title-page"></span><span> / </span>
+                <span class="pagination-title-total-page"></span><span> ページ </span>
+                <span> [ </span><span class="pagination-title-total-size"></span><span> 件 ] </span>
+              </div>
+              <ul class="pagination main-pagination">
+                <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">前へ</a></li>
+                <li class="page-item"         ><a class="page-link" href="#">1</a></li>
+                <li class="page-item active"  ><a class="page-link" href="#">2<span class="sr-only">(current)</span></a></li>
+                <li class="page-item"         ><a class="page-link" href="#">3</a></li>
+                <li class="page-item"         ><a class="page-link" href="#">次へ</a></li>
+              </ul>
+            </nav>
+            <input type="hidden" id="paging_page" value="1" />
+            <input type="hidden" id="paging_total_page" value="20" />
+            <input type="hidden" id="paging_total_size" value="400" />
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>スクリプトテスト</legend>
+        <div class="form-group row">
+          <label for="" class="control-label col-sm-12 col-md-2 col-lg-2">チェック</label>
+          <div class="col-sm-12 col-md-10 col-lg-10">
+
+            <!-- 確認ダイアログ テスト. -->
+            <button type="button" class="btn btn-lg btn-primary" id="btn_modal_confirm_test_1">BTN_NONE</button>
+            <button type="button" class="btn btn-lg btn-primary" id="btn_modal_confirm_test_2">BTN_ERROR</button>
+            <button type="button" class="btn btn-lg btn-primary" id="btn_modal_confirm_test_3">BTN_INFO</button>
+            <br />
+            <button type="button" class="btn btn-lg btn-primary" id="btn_modal_confirm_test_4">BTN_YES_NO</button>
+            <button type="button" class="btn btn-lg btn-primary" id="btn_modal_confirm_test_6">BTN_YES_NO(NO)</button>
+            <br />
+            <div class="btn-group" role="group" aria-label="テスト">
+              <button type="button" class="btn btn-lg btn-primary" id="btn_modal_confirm_test_5">BTN_YES_NO_CANCEL</button>
+              <button type="button" class="btn btn-lg btn-primary" id="btn_modal_confirm_test_7">BTN_YES_NO_CANCEL(NO)</button>
+              <button type="button" class="btn btn-lg btn-primary" id="btn_modal_confirm_test_8">BTN_YES_NO_CANCEL(CANCEL)</button>
+            </div>
+            <br />
+
+            <input type="hidden" id="data_employee_id" name="data.employee_id" value="1" />
+            <input type="hidden" id="data_personal_id" name="data.personal_id" value="1" />
+            <input type="hidden" id="data_name_id" name="data.name_id" value="1" />
+            <input type="hidden" id="data_addr_id" name="data.addr_id" value="1" />
+            <input type="hidden" id="data_tel_id" name="data.tel_id" value="1" />
+            <input type="hidden" id="data_tel_mb_id" name="data.tel_mb_id" value="2" />
+            <input type="hidden" id="data_email_id" name="data.email_id" value="1" />
+            <input type="hidden" id="data_email_mb_id" name="data.email_mb_id" value="2" />
+
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>色</legend>
+        <div class="px-5">
+          <div style="border:2px solid; margin:1px;" class="color-red border-red bg-red">red</div>
+          <div style="border:2px solid; margin:1px;" class="color-pink border-pink bg-pink">pink</div>
+          <div style="border:2px solid; margin:1px;" class="color-magenta border-magenta bg-magenta">magenta</div>
+          <div style="border:2px solid; margin:1px;" class="color-purple border-purple bg-purple">purple</div>
+          <div style="border:2px solid; margin:1px;" class="color-violet border-violet bg-violet">violet</div>
+          <div style="border:2px solid; margin:1px;" class="color-darkblue border-darkblue bg-darkblue">darkblue</div>
+          <div style="border:2px solid; margin:1px;" class="color-blue border-blue bg-blue">blue</div>
+          <div style="border:2px solid; margin:1px;" class="color-lightblue border-lightblue bg-lightblue">lightblue</div>
+          <div style="border:2px solid; margin:1px;" class="color-aquamarine border-aquamarine bg-aquamarine">aquamarine</div>
+          <div style="border:2px solid; margin:1px;" class="color-green border-green bg-green">green</div>
+          <div style="border:2px solid; margin:1px;" class="color-greenyellow border-greenyellow bg-greenyellow">greenyellow</div>
+          <div style="border:2px solid; margin:1px;" class="color-yellow border-yellow bg-yellow">yellow</div>
+          <div style="border:2px solid; margin:1px;" class="color-orange border-orange bg-orange">orange</div>
+          <div style="border:2px solid; margin:1px;" class="color-brown border-brown bg-brown">brown</div>
+          <div style="border:2px solid; margin:1px;" class="color-darkgray border-darkgray bg-darkgray">darkgray</div>
+          <div style="border:2px solid; margin:1px;" class="color-gray border-gray bg-gray">gray</div>
+          <div style="border:2px solid; margin:1px;" class="color-lightgrey border-lightgrey bg-lightgrey">lightgrey</div>
+          <div style="border:2px solid; margin:1px;" class="color-white border-white bg-white">white</div>
+        </div>
+      </fieldset>
+
+    </div>
+  </div>
+  <!--/* ================================================== */-->
+
+<!--/* ================================================== */-->
+<!--/* ページヘッダー. */-->
+<div th:replace="_layout/default_layout::page_footers(~{::div.modals},~{::script.target})" th:remove="tag">
+  <!--/* 画面固有 ダイアログ設定. */-->
+  <div class="modals" th:remove="tag"></div>
+  <!--/* 画面固有 スクリプト設定. */-->
+  <script type="text/javascript" class="target" ></script>
+</div>
+<!--/* ================================================== */-->
+
+<script>
+  $('#sidenavToggler').click();
+  // 画面サイズ表示.
+  $(window).on('load resize', function(){
+      var size = '[ w' + window.innerWidth + ' * h' + window.innerHeight + ' ]';
+      $('#win_size').html(size);
+  });
+  // 確認ダイアログ テスト.
+  $('#btn_modal_confirm_test_1').on('click', function (event) {
+      Commons.closeMessage();
+      ModalConfirm.show({
+            msgData: {button:ModalConfirm.BTN_NONE, text:'BTN_NONE'}
+          , title: 'BTN_NONE'
+          , btnOkFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_INFO, text:'btnOkFunc()'});
+              Commons.scrollTop();
+          }
+          , closedFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_WORN, text:'closedFunc()'});
+              Commons.scrollTop();
+          }
+      });
+  });
+  $('#btn_modal_confirm_test_2').on('click', function (event) {
+      Commons.closeMessage();
+      ModalConfirm.show({
+            msgData: {button:ModalConfirm.BTN_ERROR, text:'BTN_ERROR'}
+          , title: 'BTN_ERROR'
+          , btnOkFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_ERROR, text:'btnOkFunc()'});
+              Commons.scrollTop();
+          }
+          , closedFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_WORN, text:'closedFunc()'});
+              Commons.scrollTop();
+          }
+      });
+  });
+  $('#btn_modal_confirm_test_3').on('click', function (event) {
+      Commons.closeMessage();
+      ModalConfirm.show({
+            msgData: {button:ModalConfirm.BTN_INFO, text:'BTN_INFO'}
+          , title: 'BTN_INFO'
+          , btnOkFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_INFO, text:'btnOkFunc()'});
+              Commons.scrollTop();
+          }
+          , closedFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_WORN, text:'closedFunc()'});
+              Commons.scrollTop();
+          }
+      });
+  });
+  $('#btn_modal_confirm_test_4').on('click', function (event) {
+      Commons.closeMessage();
+      ModalConfirm.show({
+           msgData:{button:ModalConfirm.BTN_YES_NO, text:'BTN_YES_NO'}
+          ,title:'BTN_YES_NO'
+          ,btnYesFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_INFO, text:'btnYesFunc()'});
+              Commons.scrollTop();
+          }
+          ,btnNoFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_ERROR, text:'btnNoFunc()'});
+              Commons.scrollTop();
+          }
+          ,closedFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_WORN, text:'closedFunc()'});
+              Commons.scrollTop();
+          }
+      });
+  });
+  $('#btn_modal_confirm_test_5').on('click', function (event) {
+      Commons.closeMessage();
+      ModalConfirm.show({
+            msgData: {button:ModalConfirm.BTN_YES_NO_CANCEL, text:'BTN_YES_NO_CANCEL'}
+          , title: 'BTN_YES_NO_CANCEL'
+          , btnYesFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_INFO, text:'btnYesFunc()'});
+              Commons.scrollTop();
+          }
+          , btnNoFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_ERROR, text:'btnNoFunc()'});
+              Commons.scrollTop();
+          }
+          , btnCancelFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_INFO, text:'btnCancelFunc()'});
+              Commons.scrollTop();
+          }
+          , closedFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_WORN, text:'closedFunc()'});
+              Commons.scrollTop();
+          }
+      });
+  });
+  $('#btn_modal_confirm_test_6').on('click', function (event) {
+      Commons.closeMessage();
+      ModalConfirm.show({
+            msgData: {button:ModalConfirm.BTN_YES_NO, text:'BTN_YES_NO'}
+          , title: 'BTN_YES_NO'
+          , btnYesFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_INFO, text:'btnYesFunc()'});
+              Commons.scrollTop();
+          }
+          , btnNoFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_ERROR, text:'btnNoFunc()'});
+              Commons.scrollTop();
+          }
+          , closedFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_WORN, text:'closedFunc()'});
+              Commons.scrollTop();
+          }
+          , focusButton: ModalConfirm.BTN_NO
+      });
+  });
+  $('#btn_modal_confirm_test_7').on('click', function (event) {
+      Commons.closeMessage();
+      ModalConfirm.show({
+            msgData: {button:ModalConfirm.BTN_YES_NO_CANCEL, text:'BTN_YES_NO_CANCEL'}
+          , title: 'BTN_YES_NO_CANCEL'
+          , btnYesFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_INFO, text:'btnYesFunc()'});
+              Commons.scrollTop();
+          }
+          , btnNoFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_ERROR, text:'btnNoFunc()'});
+              Commons.scrollTop();
+          }
+          , btnCancelFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_INFO, text:'btnCancelFunc()'});
+              Commons.scrollTop();
+          }
+          , closedFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_WORN, text:'closedFunc()'});
+              Commons.scrollTop();
+          }
+          , focusButton: ModalConfirm.BTN_NO
+      });
+  });
+  $('#btn_modal_confirm_test_8').on('click', function (event) {
+      Commons.closeMessage();
+      ModalConfirm.show({
+           msgData:{button:ModalConfirm.BTN_YES_NO_CANCEL, text:'BTN_YES_NO_CANCEL'}
+          ,title:'BTN_YES_NO_CANCEL'
+          ,btnYesFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_INFO, text:'btnYesFunc()'});
+              Commons.scrollTop();
+          }
+          ,btnNoFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_ERROR, text:'btnNoFunc()'});
+              Commons.scrollTop();
+          }
+          ,btnCancelFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_INFO, text:'btnCancelFunc()'});
+              Commons.scrollTop();
+          }
+          ,closedFunc: function () {
+              Commons.showMessage('#main_contents', {kind:Commons.MSG_WORN, text:'closedFunc()'});
+              Commons.scrollTop();
+          }
+          ,focusButton: ModalConfirm.BTN_CANCE
+      });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!--/* ////////////////////////////////////////////////// */-->
+<!--/*                                                    */-->
+<!--/* _layout/modal_confirm_layout.html */-->
+<!--/*                                                    */-->
+<!--/* ////////////////////////////////////////////////// */-->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<body>
+  <!--/* -------------------------------------------------- */-->
+  <!--/* 確認ダイアログ設定. */-->
+  <div th:fragment="layout()" th:remove="tag">
+    <div class="modal fade" id="modal_confirm" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content" id="modal_confirm_content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              <i class="fa fa-fw fa-times-circle accent color-red"          id="modal_confirm_icon_error"   style="display:none;"></i>
+              <i class="fa fa-fw fa-exclamation-circle accent color-yellow" id="modal_confirm_icon_caution" style="display:none;"></i>
+              <i class="fa fa-fw fa-info-circle accent color-blue"          id="modal_confirm_icon_info"    style="display:none;"></i>
+              <span id="modal_confirm_title"></span>
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="閉じる"><span aria-hidden="true">&times;</span></button>
+          </div><!--/* /.modal-header */-->
+          <div class="modal-body">
+            <div class="container-fluid">
+              <p id="modal_confirm_message" class="confirm-msg" style="display: none;"></p>
+            </div><!--/* /.container */-->
+          </div><!--/* /.modal-body */-->
+          <div class="modal-footer">
+             <button type="button" class="btn btn-sm btn-modal-footer btn-primary display-none"   id="modal_confirm_btn_ok"    ><i class="fa fa-fw fa-check-circle"></i> <span>ＯＫ</span></button
+            ><button type="button" class="btn btn-sm btn-modal-footer btn-primary display-none"   id="modal_confirm_btn_yes"   ><i class="fa fa-fw fa-check-circle"></i> <span>はい</span></button
+            ><button type="button" class="btn btn-sm btn-modal-footer btn-warning display-none"   id="modal_confirm_btn_no"    ><i class="fa fa-fw fa-times-circle"></i> <span>いいえ</span></button
+            ><button type="button" class="btn btn-sm btn-modal-footer btn-secondary display-none" id="modal_confirm_btn_cancel"><i class="fa fa-fw fa-ban"         ></i> <span>キャンセル</span></button>
+          </div><!--/* /.modal-footer */-->
+        </div><!--/* /.modal-content */-->
+      </div><!--/* /.modal-dialog */-->
+    </div><!--/* /.modal */-->
+    <script type="text/javascript" src="../contents/scripts/modal/modal_confirm.js" re-th:uqsrc="@{/contents/scripts/modal/modal_confirm.js}" async></script>
+  </div>
+  <!--/* -------------------------------------------------- */-->
+</body>
+</html>

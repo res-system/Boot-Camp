@@ -1,0 +1,121 @@
+<!--/* ////////////////////////////////////////////////// */-->
+<!--/*                                                    */-->
+<!--/* change_group/input.html */-->
+<!--/*                                                    */-->
+<!--/* ////////////////////////////////////////////////// */-->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja" th:with="screen_name=グループ変更">
+
+<!--/* ================================================== */-->
+<!--/* ページヘッダー. */-->
+<head th:replace="_layout/default_layout::page_header(~{::title},~{::link.target})">
+  <!--/* タイトル設定. */-->
+  <title th:remove="tag" th:text="${screen_name}">xxx</title>
+  <!--/* 画面固有 スタイル設定. */-->
+  <link class="target" />
+</head>
+<!--/* ================================================== */-->
+
+<body class="fixed-nav sticky-footer bg-dark">
+
+  <!--/* ================================================== */-->
+  <!--/* メインコンテンツ. */-->
+  <div th:replace="_layout/default_layout::main_contents_navi(${screen_name},~{::div#main_contents})" th:remove="tag">
+    <div id="main_contents" class="container" th:remove="tag">
+
+      <h1 th:text="${screen_name}">xxx</h1>
+      <hr />
+      <p class="mb-2">下記の一覧からグループを選択してください。</p>
+      <div class="px-5 py-2">
+
+        <!--/* 条件. */-->
+        <div class="form-group row">
+          <div class="input-group col-12">
+            <input type="text" class="form-control" placeholder="検索キーワードを入力してください。" id="keyword" maxlength="120"/>
+            <span class="input-group-append">
+              <button type="button" class="btn btn-info" id="btn_search">
+                <i class="fa fa-fw fa-search"></i> <span> 検索　</span>
+              </button>
+            </span>
+          </div>
+        </div>
+
+        <!--/* 一覧. */-->
+        <div class="row mt-2">
+          <div class="col-12">
+            <div class="col-12">
+              <p class="notes">※現在選択中のグループは、選択出来ません。</p>
+            </div>
+            <!--/* 明細. */-->
+            <table class="table table-striped table-hover" id="main_tbl">
+            <thead>
+              <tr>
+                <th class="container">
+                  <div class="row pb-3">
+                    <div class="col-12 omit accent"><span class="sort-link" data-sort-asc="3"  data-sort-desc="4" >グループ</span></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-2 omit "><span class="sort-link" data-sort-asc="7"  data-sort-desc="8" >権限</span></div>
+                    <div class="col-6 omit "><span class="sort-link" data-sort-asc="5"  data-sort-desc="6" >ユーザー</span></div>
+                    <div class="col-3 omit "><span class="sort-link" data-sort-asc="9"  data-sort-desc="10" >登録日</span></div>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+            <th:block tabindex="-1" th:each="listData,ix:${form.list}" th:remove="tag"><!--/* LOOP -- */-->
+              <tr>
+                <td class="container">
+                  <div class="row pb-3">
+                    <div class="col-12 omit accent">
+                      <span th:title="${listData.root_group_name}" th:text="${listData.root_group_name}"></span>
+                      <th:block th:if="${listData.root_group_name} != ${listData.group_name}">
+                      <span>／</span>
+                      <span th:title="${listData.group_name}" th:text="${listData.group_name}"></span>
+                      </th:block>
+                      <span>　</span>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-2 omit "><span th:title="${listData.authority_name}" th:text="${listData.authority_name}"></span><span>　</span></div>
+                    <div class="col-6 omit "><span th:title="${listData.user_name}" th:text="${listData.user_name}"></span><span>　</span></div>
+                    <div class="col-3 omit "><span th:title="${listData.created}" th:text="${listData.created}"></span><span>　</span></div>
+                    <div class="col-1 omit sub">
+                      <th:block th:if="${login_group_name} == ${listData.group_name}">
+                      <span class="color-red">[選択中]</span>
+                      </th:block>
+                    </div>
+                  </div>
+                  <input type="hidden" name="id" th:value="${listData.group_id}" />
+                </td>
+              </tr>
+            </th:block><!--/* / -- LOOP */-->
+            </tbody>
+            </table>
+          </div>
+          <!--/* ページング. */-->
+          <div class="col-12">
+            <div th:replace="_layout/default_layout::contents_pagination('pagination')" th:remove="tag"></div>
+          </div>
+        </div>
+      </div>
+      <input type="hidden" id="login_group_name" th:value="${login_group_name}" />
+      <input type="hidden" re-th:listSize="form,list" />
+      <!--/* 検索条件保存. */-->
+      <div th:replace="_layout/default_layout::contents_search_cond_hidden()" th:remove="tag"></div>
+  
+    </div>
+  </div>
+  <!--/* ================================================== */-->
+
+<!--/* ================================================== */-->
+<!--/* ページヘッダー. */-->
+<div th:replace="_layout/default_layout::page_footers(~{::div.modals},~{::script.target})" th:remove="tag">
+  <!--/* 画面固有 ダイアログ設定. */-->
+  <div class="modals" th:remove="tag"></div>
+  <!--/* 画面固有 スクリプト設定. */-->
+  <script type="text/javascript" src="../contents/scripts/change_group.js" re-th:uqsrc="@{/contents/scripts/change_group.js}" class="target" ></script>
+</div>
+<!--/* ================================================== */-->
+</body>
+</html>

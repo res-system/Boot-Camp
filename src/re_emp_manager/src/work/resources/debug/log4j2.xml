@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+
+  開発用 log4j2.xml
+
+  created. 2018/07/20
+  updated. 2018/07/20
+
+-->
+<!DOCTYPE configuration>
+<configuration status="off">
+
+  <properties>
+    <!-- 出力パターン -->
+    <property name="logpattern">【%-5level】%d{yyyy-MM-dd HH:mm:ss.SSS} [ %t ] %c{2} - %msg %n</property>
+    <!-- ログ格納先 -->
+    <property name="logpath">/home/res/work/log</property>
+    <!-- ファイル名 -->
+    <property name="filename">re_emp_manager-log</property>
+  </properties>
+
+  <appenders>
+    <!-- コンソール出力設定 -->
+    <console name="Console" target="SYSTEM_OUT" >
+      <patternLayout pattern="${logpattern}" />
+    </console>
+
+    <!-- ファイル出力設定 -->
+    <rollingFile name="RollingFile"
+        fileName   ="${logpath}/${filename}.log"
+        filePattern="${logpath}/${filename}-%i.log" >
+      <patternLayout pattern="${logpattern}" />
+      <sizeBasedTriggeringPolicy size="2000KB" />
+      <defaultRolloverStrategy max="24" />
+    </rollingFile>
+  </appenders>
+
+  <!-- ログ設定 -->
+  <loggers>
+    <root level="debug">
+      <appender-ref ref="Console" level="error" />
+      <appender-ref ref="RollingFile" />
+    </root>
+  </loggers>
+
+</configuration>

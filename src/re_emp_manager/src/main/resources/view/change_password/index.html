@@ -1,0 +1,86 @@
+<!--/* ////////////////////////////////////////////////// */-->
+<!--/*                                                    */-->
+<!--/* change_password/index.html */-->
+<!--/*                                                    */-->
+<!--/* ////////////////////////////////////////////////// */-->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja" th:with="screen_name=パスワード変更">
+
+<!--/* ================================================== */-->
+<!--/* ページヘッダー. */-->
+<head th:replace="_layout/default_layout::page_header(~{::title},~{::link.target})">
+  <!--/* タイトル設定. */-->
+  <title th:remove="tag" th:text="${screen_name}">xxx</title>
+  <!--/* 画面固有 スタイル設定. */-->
+  <link class="target" />
+</head>
+<!--/* ================================================== */-->
+
+<body class="fixed-nav sticky-footer bg-dark">
+
+  <!--/* ================================================== */-->
+  <!--/* メインコンテンツ. */-->
+  <div th:replace="_layout/default_layout::main_contents_navi(${screen_name},~{::div#main_contents})" th:remove="tag">
+    <div id="main_contents" class="container" th:remove="tag">
+
+      <div class="card card-login mx-auto mt-4">
+        <div class="card-header">パスワードを変更します。</div>
+        <div class="card-body pt-3 pb-4 px-4">
+
+          <fieldset>
+            <!--/* 旧パスワード. */-->
+            <div class="form-group row">
+              <label for="password" class="control-label required col-12">旧パスワード</label>
+              <div class="col-12">
+                <input type="password" class="form-control" placeholder="旧パスワード" re-th:input="form,password" maxlength="128" />
+              </div>
+            </div>
+            <!--/* 新パスワード. */-->
+            <div class="form-group row">
+              <label for="new_password" class="control-label required col-12">新パスワード</label>
+              <div class="col-12">
+                <input type="password" class="form-control" placeholder="新パスワード" re-th:input="form,new_password" maxlength="128" />
+              </div>
+            </div>
+            <!--/* 確認用パスワード. */-->
+            <div class="form-group row">
+              <label for="confirmation_password" class="control-label required col-12">確認用パスワード</label>
+              <div class="col-12">
+                <input type="password" class="form-control" placeholder="確認用パスワード" re-th:input="form,confirmation_password" maxlength="128" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <p class="notes">※パスワードは、半角英数（大小を含む、A～Z,a～z,0～9）と「-」「_」「@」を含む文字、8桁以上で入力してください。</p>
+              </div>
+            </div>
+          </fieldset>
+          <!--/* button. */-->
+          <div class="form-group row">
+            <div class="col-12">
+              <button type="button" class="btn btn-lg btn-primary w-100" id="btn_update">
+                <i class="fa fa-edit"></i>
+                <span>変更を反映する</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /card-container -->
+
+
+    </div>
+  </div>
+  <!--/* ================================================== */-->
+
+<!--/* ================================================== */-->
+<!--/* ページヘッダー. */-->
+<div th:replace="_layout/default_layout::page_footers(~{::div.modals},~{::script.target})" th:remove="tag">
+  <!--/* 画面固有 ダイアログ設定. */-->
+  <div class="modals" th:remove="tag"></div>
+  <!--/* 画面固有 スクリプト設定. */-->
+  <script type="text/javascript" src="../contents/scripts/change_password.js" re-th:uqsrc="@{/contents/scripts/change_password.js}" class="target" ></script>
+</div>
+<!--/* ================================================== */-->
+</body>
+</html>

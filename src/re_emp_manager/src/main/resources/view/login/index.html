@@ -1,0 +1,92 @@
+<!--/* ////////////////////////////////////////////////// */-->
+<!--/*                                                    */-->
+<!--/* login/index.html */-->
+<!--/*                                                    */-->
+<!--/* ////////////////////////////////////////////////// */-->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja" th:with="screen_name=社員個人情報管理">
+
+<!--/* ================================================== */-->
+<!--/* ページヘッダー. */-->
+<head th:replace="_layout/default_layout::page_header(~{::title},~{::link.target})">
+  <!--/* タイトル設定. */-->
+  <title th:remove="tag" th:text="${screen_name}">xxx</title>
+  <!--/* 画面固有 スタイル設定. */-->
+  <link class="target" />
+</head>
+<!--/* ================================================== */-->
+
+<body class="bg-dark">
+
+  <!--/* ================================================== */-->
+  <!--/* メインコンテンツ. */-->
+  <div th:replace="_layout/default_layout::main_contents_plain(${screen_name},~{::div#main_contents})" th:remove="tag">
+    <div id="main_contents" class="container" th:remove="tag">
+
+      <div class="card card-login mx-auto mt-4">
+        <div class="card-header">社員管理システムへ ログインします。</div>
+        <div class="card-body pt-3 pb-4 px-4">
+
+          <fieldset>
+            <!--/* グループ識別コード. */-->
+            <div class="form-group">
+              <label for="code" class="control-label">グループ識別コード</label>
+              <input type="text" class="form-control" placeholder="識別コード" re-th:input="form,code" maxlength="256" />
+            </div>
+            <!--/* ログインID. */-->
+            <div class="form-group">
+              <label for="id" class="control-label">ログインID</label>
+              <input type="text" class="form-control" placeholder="ログインID" re-th:input="form,id" maxlength="256" />
+            </div>
+            <!--/* パスワード. */-->
+            <div class="form-group">
+              <label for="id" class="control-label">パスワード</label>
+              <input type="password" class="form-control" placeholder="パスワード" re-th:input="form,key" maxlength="256" />
+            </div>
+            <br />
+            <!--/* ログイン状態を維持する. */-->
+            <div class="form-group">
+              <label class="checkbox">
+                <input type="checkbox" class="form-control" value="1" re-th:checkbox="form,save,1" />
+                <span class="indicator">ログイン状態を維持する</span>
+              </label><!--/* checkbox. */-->
+            </div>
+          </fieldset>
+          <!--/* button. */-->
+          <div class="form-group row">
+            <div class="col-12">
+              <button type="button" class="btn btn-lg btn-primary w-100" id="btn_login">
+                <i class="fa fa-fw fa-sign-in"></i> <span>ログインする</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group row pt-3">
+            <div class="col-12">
+              <a href="javascript:void(0)" id="make_new_account" >
+                <i class="fa fa-arrow-right"></i>
+                <span>アカウントをお持ちでない方はこちらへ。</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /card-container -->
+
+      <input type="hidden" re-th:input="form,next" />
+    </div>
+  </div>
+  <!--/* ================================================== */-->
+
+<!--/* ================================================== */-->
+<!--/* ページヘッダー. */-->
+<div th:replace="_layout/default_layout::page_footers(~{::div.modals},~{::script.target})" th:remove="tag">
+  <!--/* 画面固有 ダイアログ設定. */-->
+  <div class="modals" th:remove="tag"></div>
+  <!--/* 画面固有 スクリプト設定. */-->
+  <script type="text/javascript" src="../contents/scripts/login.js" re-th:uqsrc="@{/contents/scripts/login.js}" class="target"></script>
+</div>
+<!--/* ================================================== */-->
+
+</body>
+</html>
