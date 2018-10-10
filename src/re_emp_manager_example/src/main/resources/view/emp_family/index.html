@@ -1,0 +1,275 @@
+<!--/* ////////////////////////////////////////////////// */-->
+<!--/*                                                    */-->
+<!--/* emp_family/index.html */-->
+<!--/*                                                    */-->
+<!--/* ////////////////////////////////////////////////// */-->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja" th:with="screen_name=社員家族情報管理">
+
+<!--/* ================================================== */-->
+<!--/* ページヘッダー. */-->
+<head th:replace="_layout/default_layout::page_header(~{::title},~{::link.target})">
+  <!--/* タイトル設定. */-->
+  <title th:remove="tag" th:text="${screen_name}">xxx</title>
+  <!--/* 画面固有 スタイル設定. */-->
+  <link class="target" />
+</head>
+<!--/* ================================================== */-->
+
+<body class="fixed-nav sticky-footer bg-dark">
+
+  <!--/* ================================================== */-->
+  <!--/* メインコンテンツ. */-->
+  <div th:replace="_layout/default_layout::main_contents_navi(${screen_name},~{::div#main_contents})" th:remove="tag">
+    <div id="main_contents" class="container" th:remove="tag">
+
+      <!--/* 社員情報メニュータブ. */-->
+      <div th:replace="_layout/default_layout::contents_emp_menu_tab()" th:remove="tag"></div>
+
+      <h1 th:text="${screen_name}">xxx</h1>
+      <hr />
+      <div class="form-group row p-2">
+        <span>【</span>
+        <span th:title="${emp_data.name}" th:text="${emp_data.name}"></span>
+        <span>さんの家族情報</span>
+        <span>】</span>
+      </div>
+
+      <!--/* 新規追加. */-->
+      <div class="form-group row">
+        <div class="col-8 col-md-10"></div>
+        <div class="col-4 col-md-2">
+          <button type="button" class="btn btn-secondary w-100" id="btn_add" >
+            <i class="fa fa-fw fa-plus"></i> <span> 新規追加　</span>
+          </button>
+        </div>
+      </div>
+
+      <!--/* 一覧. */-->
+      <div class="row mt-2">
+        <div class="col-12">
+          <!--/* 明細. */-->
+          <table class="table table-striped table-hover" id="main_tbl">
+          <thead>
+            <tr>
+              <th class="container">
+                <div class="row">
+                  <div class="col-2 omit sub"><span title="続柄">続柄</span></div>
+                  <div class="col-4 omit sub"><span title="氏名">氏名</span></div>
+                  <div class="col-2 omit sub"><span title="性別">性別</span></div>
+                  <div class="col-4 omit sub"><span title="マイナンバー">マイナンバー</span></div>
+                </div>
+                <div class="row">
+                  <div class="col-2 omit sub"><span title="同居／別居">同居／別居</span></div>
+                  <div class="col-4 omit sub"><span title="(カナ) ">(カナ) </span></div>
+                  <div class="col-2 omit sub"><span title="生年月日">生年月日</span></div>
+                  <div class="col-4 omit sub"><span title="備考">備考</span></div>
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+          <th:block tabindex="-1" th:each="listData,ix:${form.list}" th:remove="tag"><!--/* LOOP -- */-->
+            <tr>
+              <td class="container">
+                <div class="row">
+                  <div class="col-2 omit sub"><span th:title="${listData.relationship}" th:text="${listData.relationship}"></span></div>
+                  <div class="col-4 omit sub">
+                    <span th:title="${listData.family_name}" th:text="${listData.family_name}"></span>
+                    <span th:title="${listData.first_name}" th:text="${listData.first_name}"></span>
+                  </div>
+                  <div class="col-2 omit sub"><span th:title="${listData.sex_name}" th:text="${listData.sex_name}"></span></div>
+                  <div class="col-4 omit sub"><span th:title="${listData.mynumber}" th:text="${listData.mynumber}"></span></div>
+                </div>
+                <div class="row">
+                  <div class="col-2 omit sub"><span th:title="${listData.living_name}" th:text="${listData.living_name}"></span></div>
+                  <div class="col-4 omit sub">
+                    <th:block th:if="${#h.isNotEmpty(listData.family_name_kana) or #h.isNotEmpty(listData.first_name_kana)}">
+                    <span>(</span>
+                    <span th:title="${listData.family_name_kana}" th:text="${listData.family_name_kana}"></span>
+                    <span th:title="${listData.first_name_kana}" th:text="${listData.first_name_kana}"></span>
+                    <span>)</span>
+                    </th:block>
+                  </div>
+                  <div class="col-2 omit sub">
+                    <span th:title="${listData.birthday}" th:text="${listData.birthday}"></span>
+                    <th:block th:if="${#h.isNotEmpty(listData.birthday)}">
+                    <span th:text="${#exh.toAge(listData.birthday)}">?</span>
+                    </th:block>
+                  </div>
+                  <div class="col-4 omit sub"><span th:title="${listData.memo}" th:text="${listData.memo}"></span></div>
+                </div>
+                <input type="hidden" name="seq" th:value="${listData.seq}" />
+              </td>
+            </tr>
+          </th:block><!--/* / -- LOOP */-->
+          </tbody>
+          </table>
+        </div>
+      </div>
+
+      <input type="hidden" re-th:listSize="form,list" />
+
+    </div>
+  </div>
+  <!--/* ================================================== */-->
+
+<!--/* ================================================== */-->
+<!--/* ページヘッダー. */-->
+<div th:replace="_layout/default_layout::page_footers(~{::div.modals},~{::script.target})" th:remove="tag">
+  <!--/* 画面固有 ダイアログ設定. */-->
+  <div class="modals" th:remove="tag">
+    <!--/* -------------------------------------------------- */-->
+    <!--/* 入力ダイアログ. */-->
+    <div class="modal fade" id="modal_input" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" id="modal_input_content">
+          <div class="modal-header"><h5 class="modal-title">【社員情報ヘッダー】</h5></div><!--/* /.modal-header */-->
+          <div class="modal-body">
+            <div class="container">
+              <!--/* メッセージ. */-->
+              <div th:replace="_layout/default_layout::contents_message()" ></div>
+              <!--/* フォーム. */-->
+              <form id="modal_input_form">
+
+                <div class="row">
+                  <div class="offset-6 offset-md-8 offset-lg-10  col-6 col-md-4 col-lg-2">
+                      <button type="button" class="btn btn-danger btn-sm w-100" id="modal_input_btn_delete">
+                        <i class="fa fa-fw fa-trash"></i> <span>削除する</span>
+                      </button>
+                  </div>
+                </div> 
+
+                <div class="row">
+                  <div class="col-sm-12 col-md-12 col-lg-12">
+
+                    <!--/* 入力. */-->
+                    <fieldset class="pb-1">
+
+                      <!--/* 続柄. */-->
+                      <div class="form-group row">
+                        <label for="data_employee_no" class="control-label col-12 required">続柄</label>
+                        <div class="col-12">
+                           <input type="text" class="form-control" re-th:input="form,data,relationship" maxlength="16" />
+                        </div>
+                      </div>
+
+                      <!--/* 同居／別居. */-->
+                      <div class="form-group row">
+                        <label for="data_situation" class="control-label required col-12">同居／別居</label>
+                        <div class="select">
+                          <select class="form-control" re-th:select="form,data,living" >
+                            <span th:each="listItem,ix:${LivingList}" th:remove="tag"><!--/* LOOP -- */-->
+                            <option re-th:option="form,data,living,${listItem.value},${listItem.text}">○○○</option>
+                            </span><!--/* / -- LOOP */-->
+                          </select>
+                          <span class="arrow"></span>
+                        </div>
+                      </div>
+
+                      <!--/* 氏名. */-->
+                      <div class="form-group row">
+                        <label for="data_family_name" class="control-label required col-12">氏名</label>
+                        <div class="col-6">
+                          <input type="text" class="form-control" re-th:input="form,data,family_name" maxlength="40" />
+                        </div>
+                        <div class="col-6">
+                          <input type="text" class="form-control" re-th:input="form,data,first_name" maxlength="40" />
+                        </div>
+                      </div>
+
+                      <!--/* (カナ). */-->
+                      <div class="form-group row">
+                        <label for="data_family_name" class="control-label col-12">(カナ)</label>
+                        <div class="col-6">
+                          <input type="text" class="form-control" re-th:input="form,data,family_name_kana" maxlength="40" />
+                        </div>
+                        <div class="col-6">
+                          <input type="text" class="form-control" re-th:input="form,data,first_name_kana" maxlength="40" />
+                        </div>
+                      </div>
+
+                      <!--/* 性別. */-->
+                      <div class="form-group row">
+                        <label for="data_situation" class="control-label col-12">性別</label>
+                        <div class="select">
+                          <select class="form-control" re-th:select="form,data,sex" >
+                            <span th:each="listItem,ix:${SexList}" th:remove="tag"><!--/* LOOP -- */-->
+                            <option re-th:option="form,data,sex,${listItem.value},${listItem.text}">○○○</option>
+                            </span><!--/* / -- LOOP */-->
+                          </select>
+                          <span class="arrow"></span>
+                        </div>
+                      </div>
+
+                      <!--/* 生年月日. */-->
+                      <div class="form-group row">
+                        <label for="data_registration_date_show" class="control-label col-12">生年月日</label>
+                        <div class="col-12">
+                          <input type="text" class="form-control date-picker" re-th:input="form,data,birthday" maxlength="10" />
+                        </div>
+                      </div>
+
+                      <!--/* マイナンバー. */-->
+                      <div class="form-group row">
+                        <label for="data_registration_date_show" class="control-label col-12">マイナンバー</label>
+                        <div class="col-12">
+                          <input type="text" class="form-control" re-th:input="form,data,mynumber" maxlength="14" />
+                        </div>
+                      </div>
+
+                      <!--/* 備考. */-->
+                      <div class="form-group row">
+                        <label for="data_memo" class="control-label col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">備考</label>
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                          <textarea class="form-control" placeholder="" re-th:input="form,data,memo" rows="1"></textarea>
+                        </div>
+                      </div>
+
+                    </fieldset>
+                    <br />
+
+                    <!--/* ボタン. */-->
+                    <div class="row btn-reservation">
+                      <div class="col-6">
+                          <button type="button" class="btn btn-lg btn-primary w-100" id="modal_input_btn_update">
+                            <i class="fa fa-fw fa-edit"></i> <span>変更する</span>
+                          </button>
+                      </div><!--/* /col */-->
+                      <div class="col-6">
+                          <button type="button" class="btn btn-lg btn-secondary w-100" id="modal_input_btn_copy">
+                            <i class="fa fa-fw fa-copy"></i> <span>コピーする</span>
+                          </button>
+                      </div><!--/* /col */-->
+                      <div class="col-12">
+                          <button type="button" class="btn btn-lg btn-primary w-100" id="modal_input_btn_add">
+                            <i class="fa fa-fw fa-edit"></i> <span>追加する</span>
+                          </button>
+                      </div><!--/* /col */-->
+                    </div><!--/* /row */-->
+
+                  </div><!-- /col -->
+                </div><!-- /row -->
+
+                <input type="hidden" re-th:input="form,mode" />
+                <input type="hidden" re-th:input="form,data,seq" />
+                <input type="hidden" re-th:input="form,data,personal_id" />
+                <input type="text" name="dummy" style="display:none;" value=""/><!--/* 自動サブミット防止 */-->
+              </form>
+            </div><!--/* /.container */-->
+          </div><!--/* /.modal-body */-->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-modal-footer btn-secondary" id="modal_input_btn_close"><i class="fa fa-fw fa-times-circle"></i> <span>閉じる</span></button>
+          </div><!--/* /.modal-footer */-->
+        </div><!--/* /.modal-content */-->
+      </div><!--/* /.modal-dialog */-->
+    </div><!--/* /.modal */-->
+    <!--/* -------------------------------------------------- */-->
+  </div>
+  <!--/* 画面固有 スクリプト設定. */-->
+  <script type="text/javascript" src="../contents/scripts/emp_family.js" re-th:uqsrc="@{/contents/scripts/emp_family.js}" class="target" ></script>
+</div>
+<!--/* ================================================== */-->
+
+</body>
+</html>

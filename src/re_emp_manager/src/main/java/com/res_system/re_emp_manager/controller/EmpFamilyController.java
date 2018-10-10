@@ -7,7 +7,8 @@ import javax.ws.rs.Path;
 import com.res_system.commons.mvc.controller.response.HtmlResponse;
 import com.res_system.re_emp_manager.commons.controller.interceptor.Controller;
 import com.res_system.re_emp_manager.commons.controller.interceptor.EmpConvCtrl;
-import com.res_system.re_emp_manager.commons.controller.interceptor.LoginAuthority;
+import com.res_system.re_emp_manager.commons.controller.interceptor.LoginAuth;
+import com.res_system.re_emp_manager.commons.controller.interceptor.Permission;
 
 /**
  * 社員家族情報管理画面 コントローラークラス.
@@ -15,7 +16,8 @@ import com.res_system.re_emp_manager.commons.controller.interceptor.LoginAuthori
  */
 @Path("/emp_family")
 @Controller
-@LoginAuthority
+@LoginAuth
+@Permission
 @EmpConvCtrl
 @RequestScoped
 public class EmpFamilyController {

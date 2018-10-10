@@ -30,7 +30,7 @@
         fileName   ="${logpath}/${filename}.log"
         filePattern="${logpath}/${filename}-%i.log" >
       <patternLayout pattern="${logpattern}" />
-      <sizeBasedTriggeringPolicy size="2000KB" />
+      <sizeBasedTriggeringPolicy size="1000KB" />
       <defaultRolloverStrategy max="24" />
     </rollingFile>
   </appenders>

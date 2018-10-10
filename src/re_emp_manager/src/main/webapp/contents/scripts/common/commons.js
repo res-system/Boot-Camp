@@ -1,9 +1,8 @@
 /**
  * @file commons.js
  * @author res.
- * @version 1.2.3 (2018.07.25)
+ * @version 1.2.5 (2018.10.05)
  */
-/** @namespace */
 var Commons = { };
 
 //-------------------- 定数.
@@ -344,10 +343,14 @@ Commons.unlockScreen = function () {
  * @param {string} selector - 対象Tagのセレクタ.
  */
 Commons.scrollReset = function (selector) {
-    if (!Commons.isScrolling && $(selector) != null) {
-        Commons.isScrolling = true;
-        $(selector).animate({scrollTop:0}, '1'
-                , function(){ Commons.isScrolling = false });
+    if ((!$ReC.isStrBlk(selector) && '#main_contents' !== selector)) {
+        if (!Commons.isScrolling && $(selector) != null) {
+            Commons.isScrolling = true;
+            $(selector).animate({scrollTop:0}, '1'
+                    , function(){ Commons.isScrolling = false });
+        }
+    } else {
+        Commons.scrollTop();
     }
 };
 
@@ -670,12 +673,8 @@ Commons.showMessages = function (selector, msgDataList) {
         for (var i = 0, imax = msgDataList.length; i < imax; i++) {
             Commons.showMessage(selector, msgDataList[i]);
         }
-    }
-    // スクロールTOP.
-    if ((!$ReC.isStrBlk(selector) && '#main_contents' !== selector)) {
+        // スクロールTOP.
         Commons.scrollReset(selector);
-    } else {
-        Commons.scrollTop();
     }
 }
 
@@ -846,21 +845,19 @@ Commons.getSelectedRow = function (selector) {
 
 
 
-//-------------------- 初期設定処理.
+//-------------------- 入力内容変更フラグ処理.
+/**
+ * 入力内容変更設定.
+ */
+Commons.ChangeInputOn = function () { 
+    Commons.isChangedInput = true;
+};
+
 /**
  * 入力内容変更設定初期化.
  */
 Commons.resetChangeInput = function () { 
     Commons.isChangedInput = false;
-};
-
-/**
- * 入力内容変更設定.
- */
-Commons.setChangeInput = function () {
-    $('.form-control').on('change', function (event) {
-        Commons.isChangedInput = true;
-    });
 };
 
 /**
@@ -880,6 +877,18 @@ Commons.checkChangedInput = function (title, msg, func) {
     } else { 
         func();
     }
+};
+
+
+
+//-------------------- 初期設定処理.
+/**
+ * 入力内容変更設定.
+ */
+Commons.setChangeInput = function () {
+    $('.form-control').on('change', function (event) {
+        Commons.ChangeInputOn();
+    });
 };
 
 /**

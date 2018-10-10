@@ -14,7 +14,8 @@ import com.res_system.commons.mvc.model.form.FormUtil;
 import com.res_system.commons.mvc.model.kind.KindUtil;
 import com.res_system.re_emp_manager.commons.controller.interceptor.Controller;
 import com.res_system.re_emp_manager.commons.controller.interceptor.EmpConvCtrl;
-import com.res_system.re_emp_manager.commons.controller.interceptor.LoginAuthority;
+import com.res_system.re_emp_manager.commons.controller.interceptor.LoginAuth;
+import com.res_system.re_emp_manager.commons.controller.interceptor.Permission;
 import com.res_system.re_emp_manager.commons.data.AjaxResponse;
 import com.res_system.re_emp_manager.commons.kind.Sex;
 import com.res_system.re_emp_manager.commons.kind.Sitch;
@@ -27,7 +28,8 @@ import com.res_system.re_emp_manager.model.emp_info.EmpInfoModel;
  */
 @Path("/emp_info")
 @Controller
-@LoginAuthority
+@LoginAuth
+@Permission
 @EmpConvCtrl
 @RequestScoped
 public class EmpInfoController {

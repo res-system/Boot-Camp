@@ -49,11 +49,10 @@ public class EmpInfoModel implements IMessage {
     private AuthModel auth;
     /** メッセージ モデルクラス. */
     @Inject
-    private MessageModel msgModel;
+    private MessageModel msg;
     /** 入力チェック モデルクラス. */
     @Inject
-    private CheckerModel checkerModel;
-
+    private CheckerModel checker;
     /** 会話処理 モデルクラス. */
     @Inject 
     private EmployeeConvModel conv;
@@ -130,7 +129,7 @@ public class EmpInfoModel implements IMessage {
      */
     public EmpInfoForm initComplete(final EmpInfoForm form) throws Exception {
         findData(form);
-        addMessage(msgModel.getMessage("I00002", PROC_NAME + "の更新"));
+        addMessage(msg.getMessage("I00002", PROC_NAME + "の更新"));
         return form;
     }
 
@@ -189,10 +188,10 @@ public class EmpInfoModel implements IMessage {
                     auth.doReLoadLoginInfo();
                 }
                 dao.commit();
-                addMessage(msgModel.getMessage("I00002", PROC_NAME + "の更新"));
+                addMessage(msg.getMessage("I00002", PROC_NAME + "の更新"));
             } else {
                 dao.rollback();
-                addMessage(msgModel.getMessage("E00005", PROC_NAME + "の更新"));
+                addMessage(msg.getMessage("E00005", PROC_NAME + "の更新"));
             }
         } catch (SimpleDaoException e) {
             dao.rollback();
@@ -254,73 +253,91 @@ public class EmpInfoModel implements IMessage {
         int maxlength = 0;
 
         // 入力チェックモデルにメッセージリストを設定する.
-        checkerModel.setMessageList(messageList);
+        checker.setMessageList(messageList);
 
         //----------------
         name = "ユーザーID";
         selector = "#data_id";
         value = form.getData().getId();
-        if (!checkerModel.checkRequired(value, name, selector)) { result = false; }
-
+        if (!checker.checkRequired(value, name, selector)) {
+        // 必須チェック.
+            result = false;
+        } else if (!common.checkIdUser(value)) { 
+        // 正しさチェック.
+            addMessage(msg.getMessage("E00002"));
+            result = false; 
+        }
+        //----------------
+        name = "個人ID";
+        selector = "#data_personal_id";
+        value = form.getData().getPersonal_id();
+        if (!checker.checkRequired(value, name, selector)) {
+        // 必須チェック.
+            result = false;
+        } else if (!common.checkIdEmpPersonal(form.getData().getId(), value)) { 
+        // 正しさチェック.
+            addMessage(msg.getMessage("E00002"));
+            result = false; 
+        }
         //----------------
         name = "社員番号";
         selector = "#data_employee_no";
         value = form.getData().getEmployee_no();
-        if (!checkerModel.checkCode(value, true, 16, name, selector)) { result = false; }
+        if (!checker.checkCode(value, true, 16, name, selector)) { result = false; }
         //----------------
         name = "氏名（姓）";
         selector = "#data_family_name";
         value = form.getData().getFamily_name();
-        if (!checkerModel.checkFullText(value, true, 40, name, selector)) { result = false; }
-        if (!checkerModel.checkSpace(value, false, name, selector)) { result = false; }
+        if (!checker.checkFullText(value, true, 40, name, selector)) { result = false; }
+        if (!checker.checkSpace(value, false, name, selector)) { result = false; }
         //----------------
         name = "氏名（名）";
         selector = "#data_first_name";
         value = form.getData().getFirst_name();
-        if (!checkerModel.checkFullText(value, true, 40, name, selector)) { result = false; }
-        if (!checkerModel.checkSpace(value, false, name, selector)) { result = false; }
+        if (!checker.checkFullText(value, true, 40, name, selector)) { result = false; }
+        if (!checker.checkSpace(value, false, name, selector)) { result = false; }
         //----------------
         name = "氏名カナ（名）";
         selector = "#data_family_name_kana";
         value = form.getData().getFamily_name_kana();
-        if (!checkerModel.checkFullKanaText(value, false, 80, name, selector)) { result = false; }
+        if (!checker.checkFullKanaText(value, false, 80, name, selector)) { result = false; }
         //----------------
         name = "氏名カナ（姓）";
         selector = "#data_first_name_kana";
         value = form.getData().getFirst_name_kana();
-        if (!checkerModel.checkFullKanaText(value, false, 80, name, selector)) { result = false; }
+        if (!checker.checkFullKanaText(value, false, 80, name, selector)) { result = false; }
         //----------------
         name = "就業状況";
         selector = "#data_situation";
         value = form.getData().getSituation();
-        if (!checkerModel.checkKind(value, true, Sitch.values(), name, selector)) { result = false; }
+        if (!checker.checkKind(value, true, Sitch.values(), name, selector)) { result = false; }
         //----------------
         name = "入社日";
         selector = "#data_hire_date";
         value = form.getData().getHire_date();
         isRequired = (!Sitch.PLANS.equals(form.getData().getSituation()));
-        if (!checkerModel.checkDate(value, isRequired, name, selector)) { result = false; }
+        if (!checker.checkDate(value, isRequired, name, selector)) { result = false; }
         //----------------
         name = "退職日";
         selector = "#data_retirement_date";
         value = form.getData().getRetirement_date();
         isRequired = Sitch.RETIRING.equals(form.getData().getSituation());
-        if (!checkerModel.checkDate(value, isRequired, name, selector)) { result = false; }
+        if (!checker.checkDate(value, isRequired, name, selector)) { result = false; }
         //----------------
         name = "性別";
         selector = "#data_sex";
         value = form.getData().getSex();
-        if (!checkerModel.checkKind(value, false, Sex.values(), name, selector)) { result = false; }
+        if (!checker.checkKind(value, false, Sex.values(), name, selector)) { result = false; }
         //----------------
         name = "生年月日";
         selector = "#data_birthday";
         value = form.getData().getBirthday();
-        if (!checkerModel.checkDate(value, false, name, selector)) { result = false; }
+        if (!checker.checkDate(value, false, name, selector)) { result = false; }
         //----------------
         name = "マイナンバー";
         selector = "#data_mynumber";
         value = form.getData().getMynumber();
-        if (!checkerModel.checkNumCode(value, false, 14, name, selector)) { result = false; }
+        if (!checker.checkNumCode(value, false, 14, name, selector)) { result = false; }
         //----------------
         // 社員メールアドレスリスト.
         index = 0;
@@ -328,7 +345,7 @@ public class EmpInfoModel implements IMessage {
             name = "メールアドレス (" + emp_email.getMemo() + ") ";
             selector = "#empEmailList_" + index + "_email_addr";
             value = emp_email.getEmail_addr();
-            if (!checkerModel.checkEmail(value, false, name, selector)) { result = false; }
+            if (!checker.checkEmail(value, false, name, selector)) { result = false; }
             index++;
         }
         //----------------
@@ -338,38 +355,48 @@ public class EmpInfoModel implements IMessage {
             name = "電話番号 (" + emp_tel.getMemo() + ") ";
             selector = "#empTelList_" + index + "_tel_no";
             value = emp_tel.getTel_no();
-            if (!checkerModel.checkTelNo(value, false, name, selector)) { result = false; }
+            if (!checker.checkTelNo(value, false, name, selector)) { result = false; }
             index++;
         }
         //----------------
         // 社員住所リスト.
         index = 0;
         for (EmpInfoSEmpAddr emp_addr : form.getEmpAddrList()) {
+            if (!common.checkIdEmpAddr(form.getData().getId(), emp_addr.getSeq(), emp_addr.getAddr_id())) { 
+            // 正しさチェック.
+                addMessage(msg.getMessage("E00002"));
+                result = false; 
+            }
             //----------------
             name = emp_addr.getMemo() + " 郵便番号";
             selector = "#empAddrList_" + index + "_postal_code";
             value = emp_addr.getPostal_code();
-            if (!checkerModel.checkPostalCode(value, false, name, selector)) { result = false; }
+            if (!checker.checkPostalCode(value, false, name, selector)) { result = false; }
             //----------------
             name = emp_addr.getMemo() + " 住所1";
             selector = "#empAddrList_" + index + "_addr1";
             value = emp_addr.getAddr1();
-            if (!checkerModel.checkFullText(value, false, 50, name, selector)) { result = false; }
+            if (!checker.checkFullText(value, false, 50, name, selector)) { result = false; }
             name = emp_addr.getMemo() + " 住所2";
             selector = "#empAddrList_" + index + "_addr2";
             value = emp_addr.getAddr2();
-            if (!checkerModel.checkFullText(value, false, 50, name, selector)) { result = false; }
+            if (!checker.checkFullText(value, false, 50, name, selector)) { result = false; }
             //----------------
             name = emp_addr.getMemo() + " 最寄り駅";
             selector = "#empAddrList_" + index + "_nearest_station";
             value = emp_addr.getNearest_station();
-            if (!checkerModel.checkFullText(value, false, 50, name, selector)) { result = false; }
+            if (!checker.checkFullText(value, false, 50, name, selector)) { result = false; }
             index++;
         }
         //----------------
         // 社員サブ情報リスト.
         index = 0;
         for (EmpInfoSEmpInfo emp_info : form.getEmpInfoList()) {
+            if (!common.checkIdEmpInfoHd(emp_info.getEmp_info_hd_id())) { 
+            // 正しさチェック.
+                addMessage(msg.getMessage("E00002"));
+                result = false; 
+            }
             name = emp_info.getLabel();
             selector = "#empInfoList_" + index + "_value";
             value = emp_info.getValue();
@@ -378,29 +405,29 @@ public class EmpInfoModel implements IMessage {
             isRequired = ReqFlg.REQUIRED.equals(emp_info.getRequired());
             maxlength = ReUtil.toInt(emp_info.getMaxlength(), 0);
             if (InfType.TEXT.equals(type)) {
-                if (!checkerModel.checkFullText(value, isRequired, maxlength, name, selector)) { result = false; }
+                if (!checker.checkFullText(value, isRequired, maxlength, name, selector)) { result = false; }
             } else if (InfType.MEMO.equals(type)) {
-                if (!checkerModel.checkFullText(value, isRequired, maxlength, name, selector)) { result = false; }
+                if (!checker.checkFullText(value, isRequired, maxlength, name, selector)) { result = false; }
             } else if (InfType.DATE.equals(type)) {
-                if (!checkerModel.checkDate(value, isRequired, name, selector)) { result = false; }
+                if (!checker.checkDate(value, isRequired, name, selector)) { result = false; }
             } else if (InfType.NUMERIC.equals(type)) {
-                if (!checkerModel.checkHalfNumeric(value, isRequired, 0, 999999999, name, selector)) { result = false; }
+                if (!checker.checkHalfNumeric(value, isRequired, 0, 999999999, name, selector)) { result = false; }
             } else if (InfType.NUMBER.equals(type)) {
-                if (!checkerModel.checkHalfNum(value, isRequired, maxlength, name, selector)) { result = false; }
+                if (!checker.checkHalfNum(value, isRequired, maxlength, name, selector)) { result = false; }
             } else if (InfType.ALPHA_NUMBER.equals(type)) {
-                if (!checkerModel.checkHalfAlpNum(value, isRequired, maxlength, name, selector)) { result = false; }
+                if (!checker.checkHalfAlpNum(value, isRequired, maxlength, name, selector)) { result = false; }
             } else if (InfType.KANA.equals(type)) {
-                if (!checkerModel.checkFullKanaText(value, isRequired, maxlength, name, selector)) { result = false; }
+                if (!checker.checkFullKanaText(value, isRequired, maxlength, name, selector)) { result = false; }
             } else if (InfType.TEL_NO.equals(type)) {
-                if (!checkerModel.checkTelNo(value, isRequired, name, selector)) { result = false; }
+                if (!checker.checkTelNo(value, isRequired, name, selector)) { result = false; }
             } else if (InfType.EMAIL_ADDR.equals(type)) {
-                if (!checkerModel.checkEmail(value, isRequired, name, selector)) { result = false; }
+                if (!checker.checkEmail(value, isRequired, name, selector)) { result = false; }
             } else if (InfType.CODE.equals(type)) {
-                if (!checkerModel.checkCode(value, isRequired, maxlength, name, selector)) { result = false; }
+                if (!checker.checkCode(value, isRequired, maxlength, name, selector)) { result = false; }
             } else if (InfType.CODE_NUM.equals(type)) {
-                if (!checkerModel.checkNumCode(value, isRequired, maxlength, name, selector)) { result = false; }
+                if (!checker.checkNumCode(value, isRequired, maxlength, name, selector)) { result = false; }
             } else if (InfType.POSTAL_CODE.equals(type)) {
-                if (!checkerModel.checkPostalCode(value, isRequired, name, selector)) { result = false; }
+                if (!checker.checkPostalCode(value, isRequired, name, selector)) { result = false; }
             }
             index++;
         }
@@ -408,7 +435,7 @@ public class EmpInfoModel implements IMessage {
         name = "備考";
         selector = "#data_memo";
         value = form.getData().getMemo();
-        if (!checkerModel.checkFullText(value, false, 200, name, selector)) { result = false; }
+        if (!checker.checkFullText(value, false, 200, name, selector)) { result = false; }
 
         return result;
     }

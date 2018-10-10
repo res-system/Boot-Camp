@@ -67,6 +67,9 @@
               <label for="" class="control-label col-12">入社日</label>
               <div class="col-12">
                 <span class="form-control-static" th:text="${form.data.hire_date}">XXXXXXXXXXXXXXXXXXXX</span>
+                <th:block th:if="${#h.isNotEmpty(form.data.hire_date)}">
+                <span th:text="${#exh.toLengthOfService(form.data.hire_date, form.data.retirement_date)}">?</span>
+                </th:block>
               </div>
             </div>
             <!--/* 退職日. */-->
@@ -91,7 +94,7 @@
               <div class="col-12">
                 <span class="form-control-static" th:text="${form.data.birthday}">XXXXXXXXXXXXXXXXXXXX</span>
                 <th:block th:if="${#h.isNotEmpty(form.data.birthday)}">
-                <span> ( </span><span th:text="${#exh.toAge(form.data.birthday)}">99</span><span>歳 ) </span>
+                <span th:text="${#exh.toAge(form.data.birthday)}">?</span>
                 </th:block>
               </div>
             </div>

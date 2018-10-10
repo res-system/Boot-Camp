@@ -1,0 +1,325 @@
+<!--/* ////////////////////////////////////////////////// */-->
+<!--/*                                                    */-->
+<!--/* emp_info/input.html */-->
+<!--/*                                                    */-->
+<!--/* ////////////////////////////////////////////////// */-->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja" th:with="screen_name=社員個人情報管理">
+
+<!--/* ================================================== */-->
+<!--/* ページヘッダー. */-->
+<head th:replace="_layout/default_layout::page_header(~{::title},~{::link.target})">
+  <!--/* タイトル設定. */-->
+  <title th:remove="tag" th:text="${screen_name}">xxx</title>
+  <!--/* 画面固有 スタイル設定. */-->
+  <link class="target" />
+</head>
+<!--/* ================================================== */-->
+
+<body class="fixed-nav sticky-footer bg-dark">
+
+  <!--/* ================================================== */-->
+  <!--/* メインコンテンツ. */-->
+  <div th:replace="_layout/default_layout::main_contents_navi(${screen_name},~{::div#main_contents})" th:remove="tag">
+    <div id="main_contents" class="container" th:remove="tag">
+
+      <!--/* 社員情報メニュータブ. */-->
+      <div th:replace="_layout/default_layout::contents_emp_menu_tab()" th:remove="tag"></div>
+
+      <h1 th:text="${screen_name}">xxx</h1>
+      <hr />
+      <div class="px-4 pt-2">
+        <fieldset>
+          <legend class="border-red">一般</legend>
+          <div class="px-5">
+            <!--/* 社員番号. */-->
+            <div class="form-group row">
+              <label for="data_employee_no" class="control-label col-12 required">社員番号</label>
+              <div class="col-12">
+                <input type="text" class="form-control" re-th:input="form,data,employee_no" maxlength="16" />
+              </div>
+            </div>
+            <!--/* 社員名. */-->
+            <div class="form-group row">
+              <label for="data_family_name" class="control-label col-12 required">社員名</label>
+              <div class="col-6">
+                <input type="text" class="form-control" re-th:input="form,data,family_name" maxlength="40" />
+              </div>
+              <div class="col-6">
+                <input type="text" class="form-control" re-th:input="form,data,first_name" maxlength="40" />
+              </div>
+              <div class="col-12">
+                <p class="notes">※姓と名を分けて入力してください。</p>
+              </div>
+              <label for="data_family_name_kana" class="control-label col-12">(カナ)</label>
+              <div class="col-6">
+                <input type="text" class="form-control" re-th:input="form,data,family_name_kana" maxlength="80" />
+              </div>
+              <div class="col-6">
+                <input type="text" class="form-control" re-th:input="form,data,first_name_kana" maxlength="80" />
+              </div>
+              <div class="col-12">
+                <p class="notes">※全角カナで入力してください。</p>
+              </div>
+            </div>
+            <!--/* 旧姓. */-->
+            <div class="form-group row">
+              <label for="data_maiden_name" class="control-label col-12">旧姓</label>
+              <div class="col-6">
+                <input type="text" class="form-control" re-th:input="form,data,maiden_name" maxlength="40" />
+              </div>
+              <label for="data_maiden_name_kana" class="control-label col-12">(カナ)</label>
+              <div class="col-6">
+                <input type="text" class="form-control" re-th:input="form,data,maiden_name_kana" maxlength="80" />
+              </div>
+              <div class="col-12">
+                <p class="notes">※全角カナで入力してください。</p>
+              </div>
+            </div>
+            <!--/* 就業状況. */-->
+            <div class="form-group row">
+              <label for="data_situation" class="control-label col-12 required">就業状況</label>
+              <div class="col-12">
+                 <div class="select">
+                    <select class="form-control" re-th:select="form,data,situation" >
+                      <span th:each="listItem,ix:${SitchList}" th:remove="tag"><!--/* LOOP -- */-->
+                      <option re-th:option="form,data,situation,${listItem.value},${listItem.text}">○○○</option>
+                      </span><!--/* / -- LOOP */-->
+                    </select>
+                    <span class="arrow"></span>
+                  </div>
+               </div>
+            </div>
+            <!--/* 入社日. */-->
+            <div class="form-group row">
+              <label for="data_hire_date" class="control-label col-12">入社日</label>
+              <div class="col-12">
+                <input type="text" class="form-control date-picker" re-th:input="form,data,hire_date" maxlength="10" />
+              </div>
+            </div>
+            <!--/* 退職日. */-->
+            <div class="form-group row">
+              <label for="data_retirement_date" class="control-label col-12">退職日</label>
+              <div class="col-12">
+                <input type="text" class="form-control date-picker" re-th:input="form,data,retirement_date" maxlength="10" />
+              </div>
+            </div>
+            <!--/* 性別. */-->
+            <div class="form-group row">
+              <label for="data_sex" class="control-label col-12">性別</label>
+              <div class="col-12">
+                 <div class="select">
+                    <select class="form-control" re-th:select="form,data,sex" >
+                      <span th:each="listItem,ix:${SexList}" th:remove="tag"><!--/* LOOP -- */-->
+                      <option re-th:option="form,data,sex,${listItem.value},${listItem.text}">○○○</option>
+                      </span><!--/* / -- LOOP */-->
+                    </select>
+                    <span class="arrow"></span>
+                  </div>
+              </div>
+            </div>
+            <!--/* 生年月日. */-->
+            <div class="form-group row">
+              <label for="data_birthday" class="control-label col-12">生年月日</label>
+              <div class="col-12">
+                <input type="text" class="form-control date-picker" re-th:input="form,data,birthday" maxlength="10" />
+              </div>
+            </div>
+            <!--/* マイナンバー. */-->
+            <div class="form-group row">
+              <label for="data_mynumber" class="control-label col-12">マイナンバー</label>
+              <div class="col-12">
+                <input type="text" class="form-control" re-th:input="form,data,mynumber" maxlength="14" />
+              </div>
+            </div>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend class="border-blue">メールアドレス</legend>
+          <!--/* メールアドレス. */-->
+          <div class="px-5">
+            <th:block tabindex="-1" th:each="listData,ix:${form.empEmailList}" th:remove="tag"><!--/* LOOP -- */-->
+            <div class="form-group row">
+              <label th:for="${'empEmailList_'+ix.index+'_email_addr'}" class="control-label col-12">メールアドレス ( <span class="form-control-static" th:text="${listData.memo}">xxx</span> ) </label>
+              <div class="col-12">
+                <input type="text" class="form-control" re-th:input="form,empEmailList,ix,email_addr" maxlength="256" />
+              </div>
+            </div>
+            <input type="hidden" re-th:input="form,empEmailList,ix,seq" />
+            <input type="hidden" re-th:input="form,empEmailList,ix,memo" />
+            </th:block><!--/* / -- LOOP */-->
+            <input type="hidden" re-th:listSize="form,empEmailList" />
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend class="border-yellow">電話番号</legend>
+          <!--/* 電話番号. */-->
+          <div class="px-5">
+            <th:block tabindex="-1" th:each="listData,ix:${form.empTelList}" th:remove="tag"><!--/* LOOP -- */-->
+            <div class="form-group row">
+              <label th:for="${'empTelList_'+ix.index+'_tel_no'}" class="control-label col-12">電話番号 ( <span class="form-control-static" th:text="${listData.memo}">xxx</span> ) </label>
+              <div class="col-12">
+                <input type="text" class="form-control" re-th:input="form,empTelList,ix,tel_no" maxlength="14" />
+              </div>
+            </div>
+            <input type="hidden" re-th:input="form,empTelList,ix,seq" />
+            <input type="hidden" re-th:input="form,empTelList,ix,memo" />
+            </th:block><!--/* / -- LOOP */-->
+            <input type="hidden" re-th:listSize="form,empTelList" />
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend class="border-green">住所</legend>
+          <!--/* 住所. */-->
+          <th:block tabindex="-1" th:each="listData,ix:${form.empAddrList}" th:remove="tag"><!--/* LOOP -- */-->
+          <div class="form-group row px-3">
+            <label th:for="${'empAddrList_'+ix.index+'_postal_code'}" class="control-label col-12"><span class="form-control-static" th:text="${listData.memo}">xxx</span></label>
+          </div>
+          <div class="px-5">
+            <div class="form-group row">
+              <label th:for="${'empAddrList_'+ix.index+'_postal_code'}" class="control-label col-12">郵便番号</label>
+              <div class="col-12">
+                <input type="text" class="form-control postal-code" re-th:input="form,empAddrList,ix,postal_code" maxlength="7" />
+              </div>
+              <label th:for="${'empAddrList_'+ix.index+'_addr1'}" class="control-label col-12">住所</label>
+              <div class="col-12">
+                <input type="text" class="form-control" re-th:input="form,empAddrList,ix,addr1" maxlength="50" />
+                <input type="text" class="form-control" re-th:input="form,empAddrList,ix,addr2" maxlength="50" />
+              </div>
+              <th:block th:if="${listData.seq==1}">
+              <label th:for="${'empAddrList_'+ix.index+'_nearest_station'}" class="control-label col-12">最寄り駅</label>
+              <div class="col-12">
+                <input type="text" class="form-control" re-th:input="form,empAddrList,ix,nearest_station" maxlength="50" />
+              </div>
+              <div class="col-12 col-md-6 col-lg-4 my-3">
+                <button type="button" class="btn btn-lg btn-warning w-100" id="btn_addr_renew">
+                  <i class="fa fa-arrow-down"></i>
+                  <span>住所を新しくする</span>
+                </button>
+              </div>
+              </th:block>
+            </div>
+            <input type="hidden" re-th:input="form,empAddrList,ix,seq" />
+            <input type="hidden" re-th:input="form,empAddrList,ix,memo" />
+            <input type="hidden" re-th:input="form,empAddrList,ix,addr_id" />
+          </div>
+          </th:block><!--/* / -- LOOP */-->
+          <input type="hidden" re-th:listSize="form,empAddrList" />
+        </fieldset>
+        <fieldset>
+          <legend>その他</legend>
+          <div class="px-5">
+
+            <!--/* 社員サブ情報. */-->
+            <th:block tabindex="-1" th:each="listData,ix:${form.empInfoList}" th:remove="tag"><!--/* LOOP -- */-->
+            <div class="form-group row">
+              <th:block th:if="${listData.type == '90'}">
+              <br />
+              </th:block><!--/* / -- IF */-->
+              <th:block th:if="${listData.type != '90'}">
+              <th:block th:if="${listData.type == '00'}">
+              <div class="col-12">
+                <h5 class="type-label" th:text="${listData.label}">XXXXXXXXXXXXXXXXXXXX</h5>
+              </div>
+              </th:block><!--/* / -- IF */-->
+              <th:block th:if="${listData.type != '00'}">
+              <label th:for="${'empInfoList_'+ix.index+'_value'}" 
+                  class="control-label col-12"
+                  th:classappend="${((listData.required == 1) ? 'required' : '')}">
+                <span class="form-control-static" th:text="${listData.label}">xxx</span>
+              </label>
+              </th:block><!--/* / -- IF */-->
+              <div class="col-12">
+                <th:block th:if="${listData.type == '01'}"><!--/* 文字. */-->
+                <input type="text" class="form-control" re-th:input="form,empInfoList,ix,value" th:maxlength="${listData.maxlength}" />
+                </th:block><!--/* / -- IF */-->
+                <th:block th:if="${listData.type == '02'}"><!--/* メモ. */-->
+                <textarea class="form-control w-100" re-th:textarea="form,empInfoList,ix,value" rows="2"></textarea>
+                </th:block><!--/* / -- IF */-->
+                <th:block th:if="${listData.type == '03'}"><!--/* 日付. */-->
+                <input type="text" class="form-control date-picker" re-th:input="form,empInfoList,ix,value" maxlength="10" />
+                </th:block><!--/* / -- IF */-->
+                <th:block th:if="${listData.type == '04'}"><!--/* 数値. */-->
+                <input type="text" class="form-control" re-th:input="form,empInfoList,ix,value" th:maxlength="${listData.maxlength}" />
+                </th:block><!--/* / -- IF */-->
+                <th:block th:if="${listData.type == '05'}"><!--/* 数字. */-->
+                <input type="text" class="form-control" re-th:input="form,empInfoList,ix,value" th:maxlength="${listData.maxlength}" />
+                </th:block><!--/* / -- IF */-->
+                <th:block th:if="${listData.type == '06'}"><!--/* 英数字. */-->
+                <input type="text" class="form-control" re-th:input="form,empInfoList,ix,value" th:maxlength="${listData.maxlength}" />
+                </th:block><!--/* / -- IF */-->
+                <th:block th:if="${listData.type == '07'}"><!--/* カナ. */-->
+                <input type="text" class="form-control" re-th:input="form,empInfoList,ix,value" th:maxlength="${listData.maxlength}" />
+                </th:block><!--/* / -- IF */-->
+                <th:block th:if="${listData.type == '08'}"><!--/* 電話番号. */-->
+                <input type="text" class="form-control" re-th:input="form,empInfoList,ix,value" maxlength="14" />
+                </th:block><!--/* / -- IF */-->
+                <th:block th:if="${listData.type == '09'}"><!--/* メールアドレス. */-->
+                <input type="text" class="form-control" re-th:input="form,empInfoList,ix,value" maxlength="256" />
+                </th:block><!--/* / -- IF */-->
+                <th:block th:if="${listData.type == '10'}"><!--/* コード. */-->
+                <input type="text" class="form-control" re-th:input="form,empInfoList,ix,value" th:maxlength="${listData.maxlength}" />
+                </th:block><!--/* / -- IF */-->
+                <th:block th:if="${listData.type == '11'}"><!--/* コード(数値). */-->
+                <input type="text" class="form-control" re-th:input="form,empInfoList,ix,value" th:maxlength="${listData.maxlength}" />
+                </th:block><!--/* / -- IF */-->
+                <th:block th:if="${listData.type == '12'}"><!--/* 郵便番号. */-->
+                <input type="text" class="form-control postal-code" re-th:input="form,empInfoList,ix,value" maxlength="7" />
+                </th:block><!--/* / -- IF */-->
+              </div>
+              </th:block><!--/* / -- IF */-->
+              <th:block th:if="${#h.isNotEmpty(listData.memo)}">
+              <div class="col-12">
+                <p class="notes" re-th:cltext="${listData.memo}" >xxxxxx</p>
+              </div>
+              </th:block><!--/* / -- IF */-->
+              <input type="hidden" re-th:input="form,empInfoList,ix,emp_info_hd_id" />
+              <input type="hidden" re-th:input="form,empInfoList,ix,seq" />
+              <input type="hidden" re-th:input="form,empInfoList,ix,label" />
+              <input type="hidden" re-th:input="form,empInfoList,ix,type" />
+              <input type="hidden" re-th:input="form,empInfoList,ix,required" />
+              <input type="hidden" re-th:input="form,empInfoList,ix,maxlength" />
+              <input type="hidden" re-th:input="form,empInfoList,ix,memo" />
+            </div>
+            </th:block><!--/* / -- LOOP */-->
+            <input type="hidden" re-th:listSize="form,empInfoList" />
+            <br />
+
+            <!--/* 備考. */-->
+            <div class="form-group row">
+              <label for="data_memo" class="control-label col-12">備考</label>
+              <div class="col-12">
+                  <textarea class="form-control w-100" re-th:textarea="form,data,memo" rows="4"></textarea>
+              </div>
+            </div>
+
+          </div>
+        </fieldset>
+      </div>
+
+      <!--/* button. */-->
+      <div class="form-group row">
+        <div class="col-12">
+          <button type="button" class="btn btn-lg btn-primary w-100" id="btn_update">
+            <i class="fa fa-edit"></i>
+            <span>入力内容を保存します</span>
+          </button>
+        </div>
+      </div>
+
+      <input type="hidden" re-th:input="form,data,personal_id" />
+    </div>
+  </div>
+  <!--/* ================================================== */-->
+
+<!--/* ================================================== */-->
+<!--/* ページヘッダー. */-->
+<div th:replace="_layout/default_layout::page_footers(~{::div.modals},~{::script.target})" th:remove="tag">
+  <!--/* 画面固有 ダイアログ設定. */-->
+  <div class="modals" th:remove="tag"></div>
+  <!--/* 画面固有 スクリプト設定. */-->
+  <script type="text/javascript" src="../contents/scripts/emp_info_input.js" re-th:uqsrc="@{/contents/scripts/emp_info_input.js}" class="target" ></script>
+</div>
+<!--/* ================================================== */-->
+</body>
+</html>

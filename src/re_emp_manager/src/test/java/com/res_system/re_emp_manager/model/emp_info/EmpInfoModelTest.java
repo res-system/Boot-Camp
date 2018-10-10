@@ -71,9 +71,8 @@ public class EmpInfoModelTest {
             dao.setNonCommit(true);
             dao.begin();
 
-            msg = "[ OK(グループ) ]";
-            //assertEquals(msg, true, auth.doLogin("res-system.com", "member05", "test1234", false));
-            assertEquals(msg, true, auth.doLogin("res-system.com", "test@res-system.com", "test1234", false));
+            msg = "[ ログイン ]";
+            assertEquals(msg, true, auth.doLogin("res-system.com", "member01", "test1234", false));
 
             String targetId = auth.getLogin_user_id();
             //-- OK. --//
@@ -120,8 +119,8 @@ public class EmpInfoModelTest {
             dao.setNonCommit(true);
             dao.begin();
 
-            msg = "[ OK(グループ) ]";
-            assertEquals(msg, true, auth.doLogin("res-system.com", "test@res-system.com", "test1234", false));
+            msg = "[ ログイン ]";
+            assertEquals(msg, true, auth.doLogin("res-system.com", "member01", "test1234", false));
 
             String targetId = auth.getLogin_user_id();
             //-- OK. --//
@@ -226,8 +225,8 @@ public class EmpInfoModelTest {
             dao.setNonCommit(true);
             dao.begin();
 
-            msg = "[ OK(グループ) ]";
-            assertEquals(msg, true, auth.doLogin("res-system.com", "test@res-system.com", "test1234", false));
+            msg = "[ ログイン ]";
+            assertEquals(msg, true, auth.doLogin("res-system.com", "member01", "test1234", false));
 
             String targetId = auth.getLogin_user_id();
             //-- OK. --//

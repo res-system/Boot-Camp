@@ -6,7 +6,8 @@ import javax.ws.rs.Path;
 
 import com.res_system.commons.mvc.controller.response.HtmlResponse;
 import com.res_system.re_emp_manager.commons.controller.interceptor.Controller;
-import com.res_system.re_emp_manager.commons.controller.interceptor.LoginAuthority;
+import com.res_system.re_emp_manager.commons.controller.interceptor.LoginAuth;
+import com.res_system.re_emp_manager.commons.controller.interceptor.Permission;
 
 /**
  * アカウント名変更画面 コントローラークラス.
@@ -14,7 +15,8 @@ import com.res_system.re_emp_manager.commons.controller.interceptor.LoginAuthori
  */
 @Path("/change_account_name")
 @Controller
-@LoginAuthority
+@LoginAuth
+@Permission
 @RequestScoped
 public class ChangeAccountNameController {
 
