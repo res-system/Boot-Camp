@@ -41,8 +41,8 @@ dependencies {
     testCompile 'junit:junit:4.+'
 
     // CDI UNITテスト(deltaspike)
-    testCompile 'org.apache.deltaspike.modules:deltaspike-test-control-module-api:1.+'
-    testCompile 'org.apache.deltaspike.modules:deltaspike-test-control-module-impl:1.+'
+    testCompile 'org.apache.deltaspike.modules:deltaspike-test-control-module-api:1.8.+'
+    testCompile 'org.apache.deltaspike.modules:deltaspike-test-control-module-impl:1.8.+'
     testCompile 'org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld:1.+'
     testCompile 'org.jboss.weld.se:weld-se-core:3.+'
 }
