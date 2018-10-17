@@ -75,7 +75,7 @@ public class SelectGroupModelTest {
                 SelectGroupForm form = new SelectGroupForm();
                 assertEquals(msg, true, target.findList(form));
                 int count = 0;
-                for(SelectGroupMGroup data : form.getList()) {
+                for(SelectGroupData data : form.getList()) {
                     System.out.println(msg + "[" + (count++) + "]");
                     SandBox.showObject(msg, data);
                 }
@@ -88,7 +88,7 @@ public class SelectGroupModelTest {
                 form.getSearchCond().setSort("4");
                 assertEquals(msg, true, target.findList(form));
                 int count = 0;
-                for(SelectGroupMGroup data : form.getList()) {
+                for(SelectGroupData data : form.getList()) {
                     System.out.println(msg + "[" + (count++) + "]");
                     SandBox.showObject(msg, data);
                 }

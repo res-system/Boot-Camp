@@ -28,12 +28,7 @@
 
       <h1 th:text="${screen_name}">xxx</h1>
       <hr />
-      <div class="form-group row p-2">
-        <span>【</span>
-        <span th:title="${emp_data.name}" th:text="${emp_data.name}"></span>
-        <span>さんの家族情報</span>
-        <span>】</span>
-      </div>
+      <p class="pl-1 mb-3">『<span th:title="${emp_data.name}" th:text="${emp_data.name}"></span>』さんの家族情報を表示します</p>
 
       <!--/* 新規追加. */-->
       <div class="form-group row">

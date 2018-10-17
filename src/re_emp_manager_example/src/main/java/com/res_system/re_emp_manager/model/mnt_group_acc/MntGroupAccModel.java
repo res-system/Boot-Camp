@@ -98,9 +98,7 @@ public class MntGroupAccModel implements IMessage {
      * @throws Exception
      */
     public MntGroupAccForm initIndex(final MntGroupAccForm form) throws Exception {
-        // 初期化.
-        form.getSearchCond().setKeyword("");
-        form.getSearchCond().setIs_all(CheckKbn.OFF.getValue());
+        form.getSearchCond().reset();
         findList(form);
         return form;
     }

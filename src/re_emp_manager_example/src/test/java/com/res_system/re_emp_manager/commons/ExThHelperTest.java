@@ -15,6 +15,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.res_system.re_emp_manager.SandBox;
 import com.res_system.re_emp_manager.commons.model.auth.AuthModel;
 import com.res_system.re_emp_manager.commons.model.auth.AuthRMenu;
 import com.res_system.re_emp_manager.commons.view.thexpressionobjects.ExThHelper;
@@ -205,5 +206,32 @@ public class ExThHelperTest {
         System.out.println(testinfo + "**   End ****************");
     }
 
+    /** showNum() テスト */
+    @Test
+    //@Ignore
+    public void showNumTest() throws Exception {
+        String testinfo = "showNum() :";
+        System.out.println(testinfo + "** Start ****************");
+        String msg = "";
+        ExThHelper target = new ExThHelper();
+        {
+            msg = "通常:";
+            assertEquals(msg, "123,456,789"
+                    , SandBox.actual(msg, target.showNum("123456789")));
+            msg = "編集なし:";
+            assertEquals(msg, "123"
+                    , SandBox.actual(msg, target.showNum("123")));
+            msg = "数値以外:";
+            assertEquals(msg, ""
+                    , SandBox.actual(msg, target.showNum("cccc")));
+            msg = "空:";
+            assertEquals(msg, ""
+                    , SandBox.actual(msg, target.showNum("")));
+            msg = "null:";
+            assertEquals(msg, ""
+                    , SandBox.actual(msg, target.showNum(null)));
+        }
+        System.out.println(testinfo + "**   End ****************");
+    }
 
 }

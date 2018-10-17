@@ -200,4 +200,19 @@ BizCommons.showKana = function (name_kana) {
     return result;
 };
 
+/**
+ * 数値を加工して表示します.
+ * @param {string} num - 数値.
+ * @return {string} 数値.
+ */
+BizCommons.showNum = function (num) {
+    var result = '';
+    if (!$ReC.isStrBlk(num)) {
+        result = String(num).replace( /(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
+    } else {
+        result = '0';
+    }
+    return result;
+};
+
 /* end of file */

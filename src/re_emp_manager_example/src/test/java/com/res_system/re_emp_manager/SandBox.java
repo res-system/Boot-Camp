@@ -65,6 +65,10 @@ public class SandBox {
         }
     }
 
+    public static Object actual(final String msg, final Object value) {
+        System.out.println(msg + value);
+        return value;
+    }
 
     // ------------------------------------------------------------------------------------------------------------------------
     // Test.

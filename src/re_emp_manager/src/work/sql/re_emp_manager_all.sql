@@ -15,28 +15,28 @@ SET FOREIGN_KEY_CHECKS=0;
 -- 照合順序
 --   utf8mb4_bin
 -- 
--- m_account  アカウントマスタ  ACC
--- r_acc_cooperation  アカウント連携関連マスタ  ACCOP
--- m_user ユーザーマスタ USR
--- s_user_key ユーザーキーサブマスタ USRKY
--- t_login  ログイン認証トラン LGN
--- m_group  グループマスタ GRP
--- s_grp_account  グループアカウントサブマスタ  GRPAC
--- r_grp_member グループメンバー関連マスタ GRPMB
--- m_authority  権限マスタ AUT
--- m_permission 権限許可マスタ PER
--- r_grant  権限付与関連マスタ GRT
--- r_menu メニュー関連マスタ MNU
--- m_employee 社員マスタ EMP
--- m_emp_info_hd  社員情報ヘッダーマスタ EMPHD
--- s_emp_info 社員情報サブマスタ EMPIF
--- s_emp_addr 社員住所サブマスタ EMPAD
--- s_emp_tel  社員電話番号サブマスタ EMPTL
--- s_emp_email  社員メールアドレスサブマスタ  EMPEL
--- s_emp_family 社員家族サブマスタ EMPFM
--- g_kind 種別マスタ KND
--- g_personal 個人マスタ PSN
--- g_addr 住所マスタ ADD
+-- 1	m_account	アカウントマスタ	ACC
+-- 2	r_acc_cooperation	アカウント連携関連マスタ	ACCOP
+-- 3	m_user	ユーザーマスタ	USR
+-- 4	s_user_key	ユーザーキーサブマスタ	USRKY
+-- 5	t_login	ログイン認証トラン	LGN
+-- 6	m_group	グループマスタ	GRP
+-- 7	s_grp_account	グループアカウントサブマスタ	GRPAC
+-- 8	r_grp_member	グループメンバー関連マスタ	GRPMB
+-- 9	m_authority	権限マスタ	AUT
+-- 10	m_permission	権限許可マスタ	PER
+-- 11	r_grant	権限付与関連マスタ	GRT
+-- 12	r_menu	メニュー関連マスタ	MNU
+-- 13	m_employee	社員マスタ	EMP
+-- 14	s_emp_info	社員情報サブマスタ	EMPIF
+-- 15	s_emp_addr	社員住所サブマスタ	EMPAD
+-- 16	s_emp_tel	社員電話番号サブマスタ	EMPTL
+-- 17	s_emp_email	社員メールアドレスサブマスタ	EMPEL
+-- 18	s_emp_family	社員家族サブマスタ	EMPFM
+-- 19	m_emp_info_hd	社員情報ヘッダーマスタ	EMPHD
+-- 20	g_kind	種別マスタ	KND
+-- 21	g_personal	個人マスタ	PSN
+-- 22	g_addr	住所マスタ	ADD
 -- 
 -- ////////////////////////////////////////////////////////////////////////////
 
@@ -105,7 +105,7 @@ CREATE TABLE `m_user` (
 -- 
 DROP TABLE IF EXISTS `s_user_key`;
 CREATE TABLE `s_user_key` (
- `user_id` BIGINT(20) UNSIGNED NULL COMMENT 'ユーザーID'
+ `user_id` BIGINT(20) UNSIGNED NOT NULL COMMENT 'ユーザーID'
 ,`seq` INT(9) DEFAULT 1 NOT NULL COMMENT '連番'
 ,`key` VARCHAR(512) NOT NULL COMMENT 'キー'
 ,`expiration_time` TIMESTAMP NULL COMMENT '有効期限'
@@ -129,9 +129,9 @@ CREATE TABLE `t_login` (
 ,`save_flg` CHAR(1) DEFAULT '0' NOT NULL COMMENT '保存フラグ'
 ,`account_id` BIGINT(20) UNSIGNED NULL COMMENT 'アカウントID'
 ,`user_kbn` CHAR(1) NOT NULL COMMENT 'ユーザー区分'
-,`user_id` BIGINT(20) UNSIGNED NULL COMMENT 'ユーザーID'
+,`user_id` BIGINT(20) UNSIGNED NOT NULL COMMENT 'ユーザーID'
 ,`group_id` BIGINT(20) UNSIGNED NULL COMMENT 'グループID'
-,`authority_id` BIGINT(20) UNSIGNED NULL COMMENT '権限ID'
+,`authority_id` BIGINT(20) UNSIGNED NOT NULL COMMENT '権限ID'
 ,`client_info` TEXT NULL COMMENT 'クライアント情報'
 ,PRIMARY KEY(`token`)
 ) ENGINE = InnoDB COMMENT='ログイン認証トラン';
@@ -286,28 +286,6 @@ CREATE TABLE `m_employee` (
 ) ENGINE = InnoDB COMMENT='社員マスタ';
 
 -- 
--- 社員情報ヘッダーマスタ `m_emp_info_hd`
--- generated at 2018/08/07. 
--- 
-DROP TABLE IF EXISTS `m_emp_info_hd`;
-CREATE TABLE `m_emp_info_hd` (
- `id` BIGINT(20) UNSIGNED AUTO_INCREMENT NOT NULL COMMENT '社員情報ヘッダーID'
-,`root_group_id` BIGINT(20) UNSIGNED NOT NULL COMMENT 'ルートグループID'
-,`seq` INT(9) DEFAULT 1 NOT NULL COMMENT '連番'
-,`label` TEXT NULL COMMENT 'ヘッダラベル'
-,`type` CHAR(2) DEFAULT '0' NOT NULL COMMENT 'タイプ'
-,`required` CHAR(1) DEFAULT '0' NOT NULL COMMENT '必須フラグ'
-,`maxlength` INT DEFAULT 0 NULL COMMENT '長さ'
-,`status` CHAR(1) DEFAULT '0' NOT NULL COMMENT '状態'
-,`memo` TEXT NULL COMMENT '備考'
-,`updated_id` BIGINT(20) UNSIGNED DEFAULT 1 NOT NULL COMMENT '更新者ID'
-,`updated` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '更新日時'
-,`created_id` BIGINT(20) UNSIGNED DEFAULT 1 NOT NULL COMMENT '作成者ID'
-,`created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '作成日時'
-,PRIMARY KEY(`id`)
-) ENGINE = InnoDB COMMENT='社員情報ヘッダーマスタ';
-
--- 
 -- 社員情報サブマスタ `s_emp_info`
 -- generated at 2018/08/08. 
 -- 
@@ -395,6 +373,28 @@ CREATE TABLE `s_emp_family` (
 ,`created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '作成日時'
 ,PRIMARY KEY(`user_id`,`seq`)
 ) ENGINE = InnoDB COMMENT='社員家族サブマスタ';
+
+-- 
+-- 社員情報ヘッダーマスタ `m_emp_info_hd`
+-- generated at 2018/08/07. 
+-- 
+DROP TABLE IF EXISTS `m_emp_info_hd`;
+CREATE TABLE `m_emp_info_hd` (
+ `id` BIGINT(20) UNSIGNED AUTO_INCREMENT NOT NULL COMMENT '社員情報ヘッダーID'
+,`root_group_id` BIGINT(20) UNSIGNED NOT NULL COMMENT 'ルートグループID'
+,`seq` INT(9) DEFAULT 1 NOT NULL COMMENT '連番'
+,`label` TEXT NULL COMMENT 'ヘッダラベル'
+,`type` CHAR(2) DEFAULT '0' NOT NULL COMMENT 'タイプ'
+,`required` CHAR(1) DEFAULT '0' NOT NULL COMMENT '必須フラグ'
+,`maxlength` INT DEFAULT 0 NULL COMMENT '長さ'
+,`status` CHAR(1) DEFAULT '0' NOT NULL COMMENT '状態'
+,`memo` TEXT NULL COMMENT '備考'
+,`updated_id` BIGINT(20) UNSIGNED DEFAULT 1 NOT NULL COMMENT '更新者ID'
+,`updated` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '更新日時'
+,`created_id` BIGINT(20) UNSIGNED DEFAULT 1 NOT NULL COMMENT '作成者ID'
+,`created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '作成日時'
+,PRIMARY KEY(`id`)
+) ENGINE = InnoDB COMMENT='社員情報ヘッダーマスタ';
 
 -- 
 -- 種別マスタ `g_kind`

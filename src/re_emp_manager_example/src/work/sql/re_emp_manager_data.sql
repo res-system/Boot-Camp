@@ -233,10 +233,10 @@ VALUES
  ,(2, 3, 1, 1040, NULL,                 NULL, NULL,             NULL, '0')
  ,(2, 4, 1, 1050, 'アカウント変更',     NULL, NULL,             NULL, '0')
 
- ,(3, 1, 1, 3010, NULL,                 NULL, 'fa-user-circle', '/emp_info/show', '0')
- ,(3, 2, 1, 3020, NULL,                 NULL, 'fa-users',       '/emp_family/show', '0')
- ,(3, 3, 1, 3030, NULL,                 NULL, 'fa-calendar',    '/emp_attendance/show', '0')
- ,(3, 4, 1, 3040, NULL,                 NULL, 'fa-dollar',      '/emp_expenses/show', '0')
+ ,(3, 1, 1, 3010, '個人情報',           NULL, 'fa-user-circle', '/emp_info/show', '0')
+ ,(3, 2, 1, 3020, '家族情報',           NULL, 'fa-users',       '/emp_family/show', '0')
+ ,(3, 3, 1, 3030, '勤怠情報',           NULL, 'fa-calendar',    '/emp_attendance/show', '0')
+ ,(3, 4, 1, 3040, '経費情報',           NULL, 'fa-dollar',      '/emp_expenses/show', '0')
   ;
 
 

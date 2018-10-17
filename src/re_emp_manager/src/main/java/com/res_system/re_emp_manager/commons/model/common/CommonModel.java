@@ -79,14 +79,12 @@ public class CommonModel {
     /** データアクセス モデルクラス. */
     @Inject
     private AppDao dao;
-
     /** 認証処理  モデルクラス. */
     @Inject
     private AuthModel auth;
-
     /** メッセージ モデルクラス. */
     @Inject
-    private MessageModel msgModel;
+    private MessageModel msg;
 
 
 
@@ -110,30 +108,30 @@ public class CommonModel {
     public void showMessage(final String messageKbn, final List<Message> messageList) {
         if ("session_error".equals(messageKbn)) {
             // セッション切れエラーメッセージ設定.
-            messageList.add(msgModel.getMessage("W00011"));
+            messageList.add(msg.getMessage("W00011"));
         } else if ("login_error".equals(messageKbn)
                 || "auth_error".equals(messageKbn)) {
             // ログイン認証エラーメッセージ設定.
             // 認証エラーメッセージ設定.
-            messageList.add(msgModel.getMessage("W00012"));
+            messageList.add(msg.getMessage("W00012"));
         } else if ("system_error".equals(messageKbn)) {
             // システムエラーメッセージ設定.
-            messageList.add(msgModel.getMessage("E00009"));
+            messageList.add(msg.getMessage("E00009"));
         } else if ("change_password".equals(messageKbn)) {
             // パスワード変更.
-            messageList.add(msgModel.getMessage("I00002", "パスワードの変更"));
+            messageList.add(msg.getMessage("I00002", "パスワードの変更"));
         } else if ("change_account_name".equals(messageKbn)) {
             // アカウント名変更.
-            messageList.add(msgModel.getMessage("I00002", "アカウント名の変更"));
+            messageList.add(msg.getMessage("I00002", "アカウント名の変更"));
         } else if ("change_group".equals(messageKbn)) {
             // サブグループ変更.
-            messageList.add(msgModel.getMessage("I00001", "グループが変更されました。"));
+            messageList.add(msg.getMessage("I00001", "グループが変更されました。"));
         } else if ("change_account".equals(messageKbn)) {
             // グループアカウント変更.
-            messageList.add(msgModel.getMessage("I00001", "グループアカウントが変更されました。"));
+            messageList.add(msg.getMessage("I00001", "グループアカウントが変更されました。"));
         } else if ("delete_account".equals(messageKbn)) {
             // グループアカウント連携解除.
-            messageList.add(msgModel.getMessage("I00001", "グループアカウントの連携が解除されました。"));
+            messageList.add(msg.getMessage("I00001", "グループアカウントの連携が解除されました。"));
         }
     }
 

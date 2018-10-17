@@ -71,6 +71,7 @@
     - [re_emp_manager]
 
             Boot-Camp学習プログラム「社員管理システム」(re_emp_manager)のソースを格納しています。
+            ※「re_emp_manager_example」フォルダにあるソースは、STEP4までの作成例です。
 
 
       ※ com-res_system-commons、com-res_system-commons-daoはソースを公開しておりません。

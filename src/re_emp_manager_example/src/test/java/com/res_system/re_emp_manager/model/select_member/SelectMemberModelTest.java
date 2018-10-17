@@ -75,7 +75,7 @@ public class SelectMemberModelTest {
                 SelectMemberForm form = new SelectMemberForm();
                 assertEquals(msg, true, target.findList(form));
                 int count = 0;
-                for(SelectMemberMUser data : form.getList()) {
+                for(SelectMemberData data : form.getList()) {
                     System.out.println(msg + "[" + (count++) + "]");
                     SandBox.showObject(msg, data);
                 }
@@ -88,7 +88,7 @@ public class SelectMemberModelTest {
                 form.getSearchCond().setSort("2");
                 assertEquals(msg, true, target.findList(form));
                 int count = 0;
-                for(SelectMemberMUser data : form.getList()) {
+                for(SelectMemberData data : form.getList()) {
                     System.out.println(msg + "[" + (count++) + "]");
                     SandBox.showObject(msg, data);
                 }

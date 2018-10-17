@@ -83,7 +83,6 @@ public class ChangeGroupModel implements IMessage {
      * @throws Exception
      */
     public ChangeGroupForm init(final ChangeGroupForm form) throws Exception {
-        // 初期化.
         form.setList(auth.getGroupList());
         return form;
     }

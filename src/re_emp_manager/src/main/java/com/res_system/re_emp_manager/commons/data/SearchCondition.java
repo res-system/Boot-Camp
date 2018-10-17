@@ -113,6 +113,11 @@ public class SearchCondition implements Serializable {
         setKeywords(null);
         setIs_all(CheckKbn.OFF.getValue());
         setPage("1");
+        setTotal_page("1");
+        setTotal_size("0");
+        setSelected_id("");
+        setSelected_sub_id("");
+        setSort("");
     }
 
 }

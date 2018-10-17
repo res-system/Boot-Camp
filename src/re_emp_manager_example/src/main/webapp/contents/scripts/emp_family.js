@@ -60,6 +60,7 @@
                               Commons.focus('#keyword');
                           }
                 });
+        Commons.resetChangeInput();
     };
 
     /**
@@ -354,7 +355,7 @@ ModalInput.show = function (args) {
         $('#data_family_name_kana').val(data.family_name_kana);
         $('#data_first_name_kana').val(data.first_name_kana);
         $('#data_sex').val(data.sex);
-        $('#data_birthday').val(data.birthday);
+        $('#data_birthday').datepicker('setDate', data.birthday);
         $('#data_mynumber').val(data.mynumber);
         $('#data_memo').val(data.memo);
     }

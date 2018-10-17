@@ -89,7 +89,7 @@ import com.res_system.commons.mvc.model.form.Param;
     ,@Sql(name="find_list_order_16", sql = "ORDER BY `memo` DESC ")
     ,@Sql(name="find_status", sql = "`gpac_status` IN ('0','1')")
 })
-public class SelectMemberMUser implements IEntity {
+public class SelectMemberData implements IEntity {
 
     //---------------------------------------------- const [public].
     /** 並び順 [最小]. */

@@ -76,13 +76,13 @@ public class SelectMemberModel implements IMessage {
         // 検索キーワード取得.
         SearchCondition searchCond = form.getSearchCond();
         // 検索.
-        List<SelectMemberMUser> list = 
-                common.findList(SelectMemberMUser.class
+        List<SelectMemberData> list = 
+                common.findList(SelectMemberData.class
                         , searchCond
-                        , dao.getSql(SelectMemberMUser.class, "find_list")
-                        , common.makeWhere(searchCond, dao.getSql(SelectMemberMUser.class, "find_status"))
+                        , dao.getSql(SelectMemberData.class, "find_list")
+                        , common.makeWhere(searchCond, dao.getSql(SelectMemberData.class, "find_status"))
                         , common.getOrder(searchCond
-                                , SelectMemberMUser.class, SelectMemberMUser.SORT_MIN, SelectMemberMUser.SORT_MAX)
+                                , SelectMemberData.class, SelectMemberData.SORT_MIN, SelectMemberData.SORT_MAX)
                         , CommonModel.PAGE_SIZE
                         , (st)->{
                             st.setString(1, auth.getLogin_root_group_id());

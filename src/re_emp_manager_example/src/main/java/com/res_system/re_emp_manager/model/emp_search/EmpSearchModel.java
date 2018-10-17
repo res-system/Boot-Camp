@@ -10,7 +10,6 @@ import javax.inject.Inject;
 
 import com.res_system.re_emp_manager.commons.dao.AppDao;
 import com.res_system.re_emp_manager.commons.data.SearchCondition;
-import com.res_system.re_emp_manager.commons.kind.CheckKbn;
 import com.res_system.re_emp_manager.commons.message.IMessage;
 import com.res_system.re_emp_manager.commons.message.Message;
 import com.res_system.re_emp_manager.commons.message.MessageModel;
@@ -78,8 +77,7 @@ public class EmpSearchModel implements IMessage {
      */
     public EmpSearchForm initIndex(final EmpSearchForm form) throws Exception {
         conv.end();
-        form.getSearchCond().setKeyword("");
-        form.getSearchCond().setIs_all(CheckKbn.OFF.getValue());
+        form.getSearchCond().reset();
         findList(form);
         return form;
     }

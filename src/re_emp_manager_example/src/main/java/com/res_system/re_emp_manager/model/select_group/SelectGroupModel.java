@@ -92,13 +92,13 @@ public class SelectGroupModel implements IMessage {
         // 検索キーワード取得.
         SearchCondition searchCond = form.getSearchCond();
         // 検索.
-        List<SelectGroupMGroup> list = 
-                common.findList(SelectGroupMGroup.class
+        List<SelectGroupData> list = 
+                common.findList(SelectGroupData.class
                         , searchCond
-                        , dao.getSql(SelectGroupMGroup.class, "find_list")
-                        , common.makeWhere(searchCond, dao.getSql(SelectGroupMGroup.class, "find_status"))
+                        , dao.getSql(SelectGroupData.class, "find_list")
+                        , common.makeWhere(searchCond, dao.getSql(SelectGroupData.class, "find_status"))
                         , common.getOrder(searchCond
-                                , SelectGroupMGroup.class, SelectGroupMGroup.SORT_MIN, SelectGroupMGroup.SORT_MAX)
+                                , SelectGroupData.class, SelectGroupData.SORT_MIN, SelectGroupData.SORT_MAX)
                         , CommonModel.PAGE_SIZE
                         , (st)->{
                             st.setString(1, auth.getLogin_root_group_id());
@@ -155,7 +155,7 @@ public class SelectGroupModel implements IMessage {
         try {
             dao.begin();
 
-            SelectGroupMGroup data = form.getData();
+            SelectGroupData data = form.getData();
             data.setRoot_group_id(auth.getLogin_root_group_id());
             data.setGrp_status(GrpStat.ENABLE.getValue());
             common.setUpdateInfo(data);
@@ -186,7 +186,7 @@ public class SelectGroupModel implements IMessage {
      * @throws SimpleDaoException 
      */
     private boolean checkSize() throws SimpleDaoException, SQLException {
-        int count = dao.getCount(dao.getSql(SelectGroupMGroup.class, "check_count")
+        int count = dao.getCount(dao.getSql(SelectGroupData.class, "check_count")
                 , (st)->{ st.setString(1, auth.getLogin_root_group_id()); });
         if (count >= MAX_SIZE) {
             addMessage(msg.getMessage("E00015", MAX_SIZE));

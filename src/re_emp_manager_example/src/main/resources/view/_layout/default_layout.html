@@ -25,11 +25,11 @@
 
   <!--/* 共通 スタイル設定. */-->
   <link rel="stylesheet" href="../contents/vendor/jquery-ui/css/jquery-ui.min.css" re-th:uqhref="@{/contents/vendor/jquery-ui/css/jquery-ui.min.css}" />
-  <link rel="stylesheet" href="../contents/vendor/bootstrap/css/bootstrap.min.css"  re-th:uqhref="@{/contents/vendor/bootstrap/css/bootstrap.min.css}" />
-  <link rel="stylesheet" href="../contents/vendor/font-awesome/css/font-awesome.min.css"  re-th:uqhref="@{/contents/vendor/font-awesome/css/font-awesome.min.css}" />
-  <link rel="stylesheet" href="../contents/vendor/sb-admin/css/sb-admin.css"  re-th:uqhref="@{/contents/vendor/sb-admin/css/sb-admin.css}" />
+  <link rel="stylesheet" href="../contents/vendor/bootstrap/css/bootstrap.min.css" re-th:uqhref="@{/contents/vendor/bootstrap/css/bootstrap.min.css}" />
+  <link rel="stylesheet" href="../contents/vendor/font-awesome/css/font-awesome.min.css" re-th:uqhref="@{/contents/vendor/font-awesome/css/font-awesome.min.css}" />
+  <link rel="stylesheet" href="../contents/vendor/sb-admin/css/sb-admin.css" re-th:uqhref="@{/contents/vendor/sb-admin/css/sb-admin.css}" />
   <link rel="stylesheet" href="../contents/vendor/bootstrap-datepicker/css/bootstrap-datepicker.min.css" re-th:uqhref="@{/contents/vendor/bootstrap-datepicker/css/bootstrap-datepicker.min.css}" />
-  <link rel="stylesheet" href="../contents/styles/style.css"  re-th:uqhref="@{/contents/styles/style.css}" />
+  <link rel="stylesheet" href="../contents/styles/style.css" re-th:uqhref="@{/contents/styles/style.css}" />
 
   <!--/* 画面固有 スタイル設定. */-->
   <th:block th:replace="${links}" />
@@ -494,10 +494,10 @@
     <input type="hidden" id="conversation_id" />
 
     <!--/* 共通 スクリプト設定. */-->
-    <script type="text/javascript" src="../contents/vendor/jquery/jquery.min.js"  re-th:uqsrc="@{/contents/vendor/jquery/jquery.min.js}"></script>
-    <script type="text/javascript" src="../contents/vendor/jquery-easing/jquery.easing.min.js"  re-th:uqsrc="@{/contents/vendor/jquery-easing/jquery.easing.min.js}"></script>
+    <script type="text/javascript" src="../contents/vendor/jquery/jquery.min.js" re-th:uqsrc="@{/contents/vendor/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" src="../contents/vendor/jquery-easing/jquery.easing.min.js" re-th:uqsrc="@{/contents/vendor/jquery-easing/jquery.easing.min.js}"></script>
     <script type="text/javascript" src="../contents/vendor/jquery-ui/js/jquery-ui.min.js" re-th:uqsrc="@{/contents/vendor/jquery-ui/js/jquery-ui.min.js}" class="target"></script>
-    <script type="text/javascript" src="../contents/vendor/bootstrap/js/bootstrap.bundle.min.js"  re-th:uqsrc="@{/contents/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <script type="text/javascript" src="../contents/vendor/bootstrap/js/bootstrap.bundle.min.js" re-th:uqsrc="@{/contents/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
     <script type="text/javascript" src="../contents/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js" re-th:uqsrc="@{/contents/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js}"></script>
     <script type="text/javascript" src="../contents/vendor/bootstrap-datepicker/js/bootstrap-datepicker.ja.js" re-th:uqsrc="@{/contents/vendor/bootstrap-datepicker/js/bootstrap-datepicker.ja.js}"></script>
     <script type="text/javascript" src="../contents/vendor/sb-admin/js/sb-admin.js" re-th:uqsrc="@{/contents/vendor/sb-admin/js/sb-admin.js}"></script>
@@ -530,14 +530,7 @@
     <script type="text/javascript">
     <!-- 
     (function () {
-        Commons.setDatePicker();
-        Commons.setATagLink();
-        Commons.setChangeScreenLink();
-        Commons.setPostLink();
-        Commons.setPageTopBottom();
-        Commons.setAccordionMenu();
-        Commons.setChangeInput();
-        Commons.openScreen(Commons.afterLoad);
+        Commons.initScreen();
         Commons.showMessages('#main_contents', $ReC.parseJSON('[(${#exh.jsonMsg(messageList)})]'));
     }());
     -->

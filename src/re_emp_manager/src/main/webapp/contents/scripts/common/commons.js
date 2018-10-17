@@ -1,7 +1,7 @@
 /**
  * @file commons.js
  * @author res.
- * @version 1.2.5 (2018.10.05)
+ * @version 1.2.6 (2018.10.17)
  */
 var Commons = { };
 
@@ -33,6 +33,8 @@ Commons.isScrolling = false;
 Commons.isChangingScreen = false;
 /** 入力内容変更フラグ. */
 Commons.isChangedInput = false;
+/** アクションロックフラグ. */
+Commons.isLockAction = false;
 
 /** 共通メッセージ. */
 Commons.commonMessages = [];
@@ -45,7 +47,7 @@ Commons.afterLoad = function(){};
 
 
 
-//-------------------- 画面遷移・アクション処理.
+//-------------------- URL処理.
 /**
  * 会話IDを設定する.
  * @param {string} conversation_id - cid.
@@ -93,15 +95,34 @@ Commons.url = function (url, is_cid) {
     return url;
 };
 
+
+
+//-------------------- 画面遷移・アクション処理.
 /**
  * 画面遷移する.
  * @param {string} url - URL.
  */
 Commons.changeScreen = function (url) {
-    if (!Commons.isChangingScreen) {
+    if (!Commons.isChangingScreen && !Commons.isLockAction) {
         var sendUrl = Commons.url(url, true);
         if (!$ReC.isStrBlk(sendUrl)) {
-            Commons.closeScreen(function(){ window.location.href = sendUrl; });
+            Commons.closeScreen(function(){ 
+                        Commons.lockAction(); 
+                        window.location.href = sendUrl; 
+                    });
+        }
+    }
+};
+
+/**
+ * 画面遷移する(Lock無).
+ * @param {string} url - URL.
+ */
+Commons.changeScreenNoLock = function (url) {
+    if (!Commons.isChangingScreen && !Commons.isLockAction) {
+        var sendUrl = Commons.url(url, true);
+        if (!$ReC.isStrBlk(sendUrl)) {
+            window.location.href = sendUrl; 
         }
     }
 };
@@ -112,7 +133,28 @@ Commons.changeScreen = function (url) {
  * @param {string} url - URL.
  */
 Commons.post = function (selector, url) {
-    if (!Commons.isChangingScreen) {
+    if (!Commons.isChangingScreen && !Commons.isLockAction) {
+        var sendUrl = Commons.url(url, true);
+        if (!$ReC.isStrBlk(sendUrl)) {
+            var form = $(selector);
+            if (form.length > 0) {
+                form.attr('action', sendUrl);
+                form.attr('method', 'post');
+                Commons.lockAction();
+                form.submit();
+                Commons.closeScreen();
+            }
+        }
+    }
+};
+
+/**
+ * POST(送信)する(Lock無).
+ * @param {string} selector - 対象formのセレクタ.
+ * @param {string} url - URL.
+ */
+Commons.post = function (selector, url) {
+    if (!Commons.isChangingScreen && !Commons.isLockAction) {
         var sendUrl = Commons.url(url, true);
         if (!$ReC.isStrBlk(sendUrl)) {
             var form = $(selector);
@@ -120,7 +162,6 @@ Commons.post = function (selector, url) {
                 form.attr('action', sendUrl);
                 form.attr('method', 'post');
                 form.submit();
-                Commons.closeScreen();
             }
         }
     }
@@ -143,135 +184,143 @@ Commons.post = function (selector, url) {
  */
 Commons.action = function (args) {
     if (!$ReC.isEmpty(args)) {
-        var sendUrl = Commons.url(args.url, true);
-        if (!$ReC.isStrBlk(sendUrl)) {
-            // Ajaxアクション判定フラグ設定.
-            sendUrl += ((sendUrl.indexOf('?') < 0) ? '?' : '&') + 'is_ajax=1';
-            // TYPE.
-            var type = (!$ReC.isStrBlk(args.type)) ? args.type : 'POST';
-            // ロックの有無.
-            var isLock = ($ReC.isBool(args.isLock)) ? args.isLock : true;
-            // タイムアウト.
-            var timeout = (args.timeout != null) ? args.timeout : 60000*5;
+        if (!Commons.isChangingScreen && !Commons.isLockAction) {
+            var sendUrl = Commons.url(args.url, true);
+            if (!$ReC.isStrBlk(sendUrl)) {
+                // Ajaxアクション判定フラグ設定.
+                sendUrl += ((sendUrl.indexOf('?') < 0) ? '?' : '&') + 'is_ajax=1';
+                // TYPE.
+                var type = (!$ReC.isStrBlk(args.type)) ? args.type : 'POST';
+                // ロックの有無.
+                var isLock = ($ReC.isBool(args.isLock)) ? args.isLock : true;
+                // タイムアウト.
+                var timeout = (args.timeout != null) ? args.timeout : 60000*5;
 
-            //-- 送信前の処理. --//
-            var beforeSendFunc = function(xhr, settings) {
-                var beforeSendSubFunc = (args.beforeSend != null) 
-                                          ? args.beforeSend 
-                                          : function(xhr, settings) { return true; };
-                if (beforeSendSubFunc(xhr, settings) !== false) {
-                    if (isLock) { Commons.lockScreen(); }
-                    return true;
-                } else {
-                    return false;
-                }
-            };
-            //-- 通信成功時の処理. --//
-            var successFunc = function (result, status, xhr) {
-                if (isLock) { Commons.unlockScreen(); }
-                if (args.success != null) { args.success(result, status, xhr); }
-            };
-            //-- 通信失敗時の処理. --//
-            var errorFunc = (args.error != null) ? args.error 
-                          : function (xhr, status, errorThrown) {
-                                var ajax_error_url = $('#ajax_error_url').val();
-                                if ($ReC.isStrBlk(ajax_error_url)) {
-                                    ajax_error_url = '/system_error';
-                                }
-                                Commons.changeScreen(ajax_error_url);
-                            };
-            //-- 応答後の処理. --//
-            var completeFunc = function (xhr, status) {
-                Commons.showPageTopBottom();
-                if (args.complete != null) { args.complete(xhr, status); }
-            };
+                //-- 送信前の処理. --//
+                var beforeSendFunc = function(xhr, settings) {
+                    var beforeSendSubFunc = (args.beforeSend != null) 
+                                              ? args.beforeSend 
+                                              : function(xhr, settings) { return true; };
+                    if (beforeSendSubFunc(xhr, settings) !== false) {
+                        if (isLock) { Commons.lockScreen(); }
+                        return true;
+                    } else {
+                        return false;
+                    }
+                };
+                //-- 通信成功時の処理. --//
+                var successFunc = function (result, status, xhr) {
+                    if (isLock) { Commons.unlockScreen(); }
+                    if (args.success != null) { args.success(result, status, xhr); }
+                };
+                //-- 通信失敗時の処理. --//
+                var errorFunc = function (xhr, status, errorThrown) {
+                    if (isLock) { Commons.unlockScreen(); }
+                    if (args.error != null) { args.error(xhr, status, errorThrown); } 
+                    else {
+                        var ajax_error_url = $('#ajax_error_url').val();
+                        if ($ReC.isStrBlk(ajax_error_url)) { ajax_error_url = '/system_error'; }
+                        Commons.changeScreen(ajax_error_url);
+                    }
+                };
+                //-- 応答後の処理. --//
+                var completeFunc = function (xhr, status) {
+                    Commons.showPageTopBottom();
+                    if (args.complete != null) { args.complete(xhr, status); }
+                };
 
-            // アクション実行.
-            $.ajax({
-                url: sendUrl,
-                type: type,
-                data: args.data,
-                timeout: timeout,           // 単位はミリ秒.
-                beforeSend: beforeSendFunc, // 送信前の処理.
-                success: successFunc,       // 通信成功時の処理.
-                error: errorFunc,           // 通信失敗時の処理.
-                complete: completeFunc      // 応答後の処理.
-            });
+                // アクション実行.
+                $.ajax({
+                    url: sendUrl,
+                    type: type,
+                    data: args.data,
+                    timeout: timeout,           // 単位はミリ秒.
+                    beforeSend: beforeSendFunc, // 送信前の処理.
+                    success: successFunc,       // 通信成功時の処理.
+                    error: errorFunc,           // 通信失敗時の処理.
+                    complete: completeFunc      // 応答後の処理.
+                });
 
+            }
         }
     }
 };
 
 /**
  * アップロードアクションを実行する.
- * @param {string} selector - 対象formのセレクタ.
- * @param {string} url      - URL.
- * @param {function} [doneFunc(result, status, xhr)]      - 成功時の処理Function.
- * @param {function} [failFunc(xhr, status, errorThrown)] - 失敗時の処理Function.
+ * @param {object} args - アクションのパラメタ.
+ * <pre>
+ *  {string} url        - URL.
+ *  {string} [isLock]   - ロックの有無(true).
+ *  {number} [timeout]  - タイムアウト時間.
+ *  {string} [selector] - 対象formのセレクタ.
+ *  {function} [success(result, status, xhr)]       - 成功時の処理Function.
+ *  {function} [error(xhr, status, errorThrown)]    - 失敗時の処理Function.
+ * </pre>
  */
-Commons.upload = function (selector, url, doneFunc, failFunc) {
-    var sendUrl = Commons.url(url, true);
-    if (!$ReC.isStrBlk(sendUrl)) {
-        // Ajaxアクション判定フラグ設定.
-        sendUrl += ((sendUrl.indexOf('?') < 0) ? '?' : '&') + 'is_ajax=1';
-        // フォームデータを取得.
-        var formdata = new FormData($(selector).get(0));
-        // POSTでアップロード.
-        $.ajax({
-            url         : sendUrl,
-            type        : "POST",
-            data        : formdata,
-            cache       : false,
-            contentType : false,
-            processData : false,
-            dataType    : "html"
-        })
-        // 成功時.
-        .done(function(result, status, xhr) {
-            if (doneFunc) {
-                doneFunc(result, status, xhr);
+Commons.upload = function (args) {
+    if (!$ReC.isEmpty(args)) {
+        if (!Commons.isChangingScreen && !Commons.isLockAction) {
+            var sendUrl = Commons.url(args.url, true);
+            if (!$ReC.isStrBlk(sendUrl) && args.selector) {
+                // Ajaxアクション判定フラグ設定.
+                sendUrl += ((sendUrl.indexOf('?') < 0) ? '?' : '&') + 'is_ajax=1';
+                // フォームデータを取得.
+                var formdata = new FormData($(args.selector).get(0));
+                // ロックの有無.
+                var isLock = ($ReC.isBool(args.isLock)) ? args.isLock : true;
+                // タイムアウト.
+                var timeout = (args.timeout != null) ? args.timeout : 60000*5;
+
+                // POSTでアップロード.
+                if (isLock) { Commons.lockScreen(); }
+                $.ajax({
+                    url: sendUrl,
+                    type: "POST",
+                    data: formdata,
+                    timeout: timeout,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    dataType: "html"
+                })
+                // 成功時.
+                .done(function(result, status, xhr) {
+                    if (isLock) { Commons.unlockScreen(); }
+                    if (args.success != null) { args.success($ReC.parseJSON(result), status, xhr); }
+                })
+                // 失敗時.
+                .fail(function(xhr, status, errorThrown) {
+                    if (isLock) { Commons.unlockScreen(); }
+                    if (args.error != null) { args.error(xhr, status, errorThrown); } 
+                    else {
+                        var ajax_error_url = $('#ajax_error_url').val();
+                        if ($ReC.isStrBlk(ajax_error_url)) { ajax_error_url = '/system_error'; }
+                        Commons.changeScreen(ajax_error_url);
+                    }
+                });
             }
-        })
-        // 失敗時.
-        .fail(function(xhr, status, errorThrown) {
-            if (failFunc) {
-                failFunc(xhr, status, errorThrown);
-            } else {
-                var ajax_error_url = $('#ajax_error_url').val();
-                if ($ReC.isStrBlk(ajax_error_url)) {
-                    ajax_error_url = '/system_error';
-                }
-                Commons.changeScreen(ajax_error_url);
-            }
-        });
+        }
     }
+};
+
+/**
+ * アクションをロックします.
+ */
+Commons.lockAction = function () { 
+    Commons.isLockAction = true;
+};
+
+/**
+ * アクションのロックを解除します.
+ */
+Commons.unlockAction = function () { 
+    Commons.isLockAction = false;
 };
 
 
 
 //-------------------- 画面処理.
-/**
- * 画面全体の入力項目無効化.
- */
-Commons.lockInput = function () {
-    $('body').find('button').attr('disabled', true);
-    $('body').find('a').attr('disabled', true);
-    $('body').find('select').attr('disabled', true);
-    $('body').find('textarea').attr('disabled', true);
-    $('body').find(':input:not([type="hidden"]):not([tabindex="-1"])').attr('disabled', true);
-};
-
-/**
- * 画面全体の入力項目活性化.
- */
-Commons.unlockInput = function () {
-    $('body').find('button').attr('disabled', false);
-    $('body').find('a').attr('disabled', false);
-    $('body').find('select').attr('disabled', false);
-    $('body').find('textarea').attr('disabled', false);
-    $('body').find(':input:not([type="hidden"]):not([tabindex="-1"])').attr('disabled', false);
-};
-
 /**
  * 画面を開きます.
  * @param {function} [callback()] - callback処理.
@@ -312,29 +361,59 @@ Commons.closeScreen = function (callback) {
 
 
 /**
- * 画面操作をロックにする.
+ * 画面全体の入力項目無効化.
  */
-Commons.lockScreen = function () {
-    Commons.lockInput();
-    var divTag = $('<div />').attr('id', Commons.LOCKID);
-    divTag.css('z-index', '9999')
-          .css('position', 'fixed')
-          .css('top', '0px').css('left', '0px')
-          .css('height', '100%').css('width', '100%')
-          .css('background-color', 'ghostwhite').css('opacity', '0.6');
-    var divStyle = 'position:fixed;top:30%;left:50%;z-index:10000;';
-    var imgUrl = Commons.url('/contents/images/commons/loading.gif');
-    divTag.html('<div style="' + divStyle + '">Loading...<br /><img src="' + imgUrl + '"></div>');
-    $('body').append(divTag);
+Commons.lockInput = function () {
+    $('body').find('button').attr('disabled', true);
+    $('body').find('a').attr('disabled', true);
+    $('body').find('select:not([tabindex="-1"])').attr('disabled', true);
+    $('body').find('textarea:not([tabindex="-1"])').attr('disabled', true);
+    $('body').find('input:not([type="hidden"]):not([tabindex="-1"])').attr('disabled', true);
+};
+
+/**
+ * 画面全体の入力項目活性化.
+ */
+Commons.unlockInput = function () {
+    $('body').find('button').attr('disabled', false);
+    $('body').find('a').attr('disabled', false);
+    $('body').find('select:not([tabindex="-1"])').attr('disabled', false);
+    $('body').find('textarea:not([tabindex="-1"])').attr('disabled', false);
+    $('body').find('input:not([type="hidden"]):not([tabindex="-1"])').attr('disabled', false);
+};
+
+
+/**
+ * 画面操作をロックにする.
+ * @param {boolean} isNoLockInput - 入力項目無効化有無.
+ */
+Commons.lockScreen = function (isNoLockInput) {
+    Commons.lockAction();
+    if (!isNoLockInput) { Commons.lockInput(); }
+    var target = $('#' + Commons.LOCKID);
+    if (target.length === 0) { 
+        var divTag = $('<div />').attr('id', Commons.LOCKID);
+        divTag.css('z-index', '9999')
+              .css('position', 'fixed')
+              .css('top', '0px').css('left', '0px')
+              .css('height', '100%').css('width', '100%')
+              .css('background-color', 'ghostwhite').css('opacity', '0.6');
+        var divStyle = 'position:fixed;top:30%;left:50%;z-index:10000;';
+        var imgUrl = Commons.url('/contents/images/commons/loading.gif');
+        divTag.html('<div style="' + divStyle + '">Loading...<br /><img src="' + imgUrl + '"></div>');
+        $('body').append(divTag);
+    }
 };
 
 /**
  * 画面操作ロックを解除する.
+ * @param {boolean} isNoLockInput - 入力項目無効化有無.
  */
-Commons.unlockScreen = function () {
+Commons.unlockScreen = function (isNoLockInput) {
     var target = $('#' + Commons.LOCKID);
     if (target.length > 0) { target.remove(); }
-    Commons.unlockInput();
+    if (!isNoLockInput) { Commons.unlockInput(); }
+    Commons.unlockAction();
 };
 
 
@@ -424,7 +503,6 @@ Commons.hidePageTopBottom = function () {
 Commons.focus = function (selector) {
     var target = $(selector);
     if (target.length > 0) {
-        Commons.unlockScreen();
         target.focus();
     }
 };
@@ -883,6 +961,21 @@ Commons.checkChangedInput = function (title, msg, func) {
 
 //-------------------- 初期設定処理.
 /**
+ * 画面初期設定.
+ */
+Commons.initScreen = function () {
+  $ReC.inputTab($ReC.findAll('.tab_input'));
+  Commons.setDatePicker();
+  Commons.setATagLink();
+  Commons.setChangeScreenLink();
+  Commons.setPostLink();
+  Commons.setPageTopBottom();
+  Commons.setAccordionMenu();
+  Commons.setChangeInput();
+  Commons.openScreen(Commons.afterLoad);
+};
+
+/**
  * 入力内容変更設定.
  */
 Commons.setChangeInput = function () {
@@ -923,17 +1016,13 @@ Commons.setChangeScreenLink = function () {
         if ($ReC.isStrBlk(actionTitle)) {
             actionTitle = $(this).children('input[name="data_action_title"]').val();
         }
-        if ($ReC.isStrBlk(actionTitle)) {
-            actionTitle = '画面変更';
-        }
+        if ($ReC.isStrBlk(actionTitle)) { actionTitle = '画面変更'; }
         // Name.
         var actionName = $(this).attr('data-action-name');
         if ($ReC.isStrBlk(actionName)) {
             actionName = $(this).children('input[name="data_action_name"]').val();
         }
-        if ($ReC.isStrBlk(actionName)) {
-            actionName = '画面を遷移します';
-        }
+        if ($ReC.isStrBlk(actionName)) { actionName = '画面を遷移します'; }
         if (!$ReC.isStrBlk(actionUrl)) {
             Commons.checkChangedInput(actionTitle, actionName, function() { Commons.changeScreen(actionUrl); });
         }
@@ -955,14 +1044,13 @@ Commons.setPostLink = function () {
         if ($ReC.isStrBlk(actionTitle)) {
             actionTitle = $(this).children('input[name="data_action_title"]').val();
         }
-        if ($ReC.isStrBlk(actionTitle)) {
-            actionTitle = '送信';
-        }
+        if ($ReC.isStrBlk(actionTitle)) { actionTitle = '送信'; }
         // Name.
         var actionName = $(this).attr('data-action-name');
         if ($ReC.isStrBlk(actionName)) {
             actionName = $(this).children('input[name="data_action_name"]').val();
         }
+        if ($ReC.isStrBlk(actionName)) { actionName = '送信します'; }
         // form.
         var formName = $(this).attr('data-form-name');
         if ($ReC.isStrBlk(formName)) {
@@ -971,18 +1059,9 @@ Commons.setPostLink = function () {
         // POST.
         if (!$ReC.isStrBlk(actionUrl)) {
             var form;
-            if (!$ReC.isStrBlk(formName)) { form = $(formName); } 
+            if (!$ReC.isStrBlk(formName) && $(formName).length > 0) { form = $(formName)[0]; } 
             else { form = $(this).parents('form')[0]; }
-            if (!$ReC.isStrBlk(actionName)) {
-                ModalConfirm.show({
-                      title: actionTitle
-                    , msgData: {button:ModalConfirm.BTN_YES_NO, text:actionName+'。\nよろしいですか？'}
-                    , btnYesFunc: function () { Commons.post(form, actionUrl); }
-                    , focusButton: ModalConfirm.BTN_NO
-               });
-            } else {
-                Commons.post(form, actionUrl);
-            }
+            Commons.checkChangedInput(actionTitle, actionName, function() { Commons.post(form, actionUrl); });
         }
     });
 };
@@ -1050,7 +1129,6 @@ Commons.getFile = function (target) {
  * @param {object} args - ページング設定のパラメタ.
  * <pre>
  *  {object} file - 対象のfileタグ.
- *  {boolean} isRequired - 必須チェック有無.
  *  {string} size - 対象ファイル最大値.
  *  {string[]} types - 対象ファイルのタイプ.
  * </pre>
@@ -1058,32 +1136,25 @@ Commons.getFile = function (target) {
  *         (0:OK, 1:必須エラー, 2:サイズエラー, 3:タイプエラー, 9:その他エラー).
  */
 Commons.checkFile = function (args) {
-    if (args != null && args.file != null) {
+    if (args != null) {
         var file = args.file;
         // 必須チェック.
-        if (args.isRequired !== false) {
-            args.isRequired = true;
-        }        
-        if (args.isRequired === true && $ReC.isStrBlk(file.name)) {
+        if (file == null || $ReC.isStrBlk(file.name)) {
             return 1;
         }
         // サイズチェック.
-        if (args.size == null) {
-            file.size = 3145728; // 3M.
-        }
-        if (file.size > args.size) {
+        if (args.size == null) { file.size = 3145728; } // 3M.
+        if (file.size === 0 || file.size > args.size) {
             return 2;
         }
         // タイプチェック.
-        if (args.types == null) {
-            args.types = ['image/gif', 'image/jpeg', 'image/png'];
-        }
+        if (args.types == null) { args.types = ['image/gif', 'image/jpeg', 'image/png']; }
         if (args.types.length > 0) {
             var isHit = false;
             for (var i = 0, imax = args.types.length; i < imax; i++) {
                 if (args.types[i] === file.type) {
-                  isHit = true;
-                  break;
+                    isHit = true;
+                    break;
                 }
             }
             if (!isHit) {
@@ -1114,6 +1185,48 @@ Commons.thumbnail = function (target, selector) {
         }
     }
     $(selector).hide();
+};
+
+
+
+//-------------------- HTMLエスケープ処理.
+/**
+ * HTMLエスケープ処理を行います.
+ * @param {string} target - 対象文字列.
+ * @return {string} 編集後の文字列.
+ */
+Commons.escapeHTML = function (target) {
+    if (target === null) {
+        return "";
+    } else {
+        return $('<span />').text(target).html();
+    }
+};
+
+/**
+ * HTMLエスケープ処理を行います.（改行有り）
+ * @param {string} target - 対象文字列.
+ * @return {string} 編集後の文字列.
+ */
+Commons.escapeHTMLCL = function (target) {
+    if (target === null) {
+        return "";
+    } else {
+        return $('<span />').text(target).html().replace(/\r?\n/g,'<br />');
+    }
+};
+
+/**
+ * HTMLアンエスケープ処理を行います.
+ * @param {string} target - 対象文字列.
+ * @return {string} 編集後の文字列.
+ */
+Commons.unescapeHTML = function (target) {
+    if (target === null) {
+        return "";
+    } else {
+        return $('<span />').html(target).text();
+    }
 };
 
 
@@ -1227,45 +1340,5 @@ Commons.setPaging = function (args) {
         }
     }
 };
-
-/**
- * HTMLエスケープ処理を行います.
- * @param {string} target - 対象文字列.
- * @return {string} 編集後の文字列.
- */
-Commons.escapeHTML = function (target) {
-    if (target === null) {
-        return "";
-    } else {
-        return $('<span />').text(target).html();
-    }
-};
-
-/**
- * HTMLエスケープ処理を行います.（改行有り）
- * @param {string} target - 対象文字列.
- * @return {string} 編集後の文字列.
- */
-Commons.escapeHTMLCL = function (target) {
-    if (target === null) {
-        return "";
-    } else {
-        return $('<span />').text(target).html().replace(/\r?\n/g,'<br />');
-    }
-};
-
-/**
- * HTMLアンエスケープ処理を行います.
- * @param {string} target - 対象文字列.
- * @return {string} 編集後の文字列.
- */
-Commons.unescapeHTML = function (target) {
-    if (target === null) {
-        return "";
-    } else {
-        return $('<span />').html(target).text();
-    }
-};
-
 
 /* end of file */

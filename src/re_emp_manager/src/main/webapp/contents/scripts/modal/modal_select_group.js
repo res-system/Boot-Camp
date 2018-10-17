@@ -127,9 +127,6 @@ ModalSelectGroup.show = function (args) {
     }
 
 
-
-    //------------------------------------------------------------------------
-    //- 画面処理.
     /**
      * 初期化.
      */
@@ -204,21 +201,6 @@ ModalSelectGroup.show = function (args) {
         $(modalSelector + '_searchCond_total_size').val(searchCond.total_size);
         $(modalSelector + '_searchCond_sort').val(searchCond.sort);
         setMainTbl();
-
-        // 検索条件設定.
-        $(modalSelector + '_keyword').val($(modalSelector + '_searchCond_keyword').val());
-        $(modalSelector + '_is_all').prop('checked', ($(modalSelector + '_searchCond_is_all').val() === Commons.ON));
-        if ($(modalSelector + '_searchCond_keyword').val() || $(modalSelector + '_searchCond_is_all').val() === Commons.ON) {
-            $(modalSelector + '_tbl_cond').text(
-                      (($(modalSelector + '_searchCond_keyword').val()) 
-                          ? '「' + $(modalSelector + '_searchCond_keyword').val() + '」' : '')
-                    + (($(modalSelector + '_searchCond_is_all').val() === Commons.ON) 
-                          ? ' (無効も含める)' : ''));
-            $(modalSelector + '_tbl_cond_div').show();
-        } else {
-            $(modalSelector + '_tbl_cond').text('');
-            $(modalSelector + '_tbl_cond_div').hide();
-        }
     }
 
     /**
@@ -244,6 +226,22 @@ ModalSelectGroup.show = function (args) {
                               doSearch();
                           }
                 });
+        //-- ソート設定. --//
+        BizCommons.setSort(tableId, sortId);
+        //-- 検索条件設定. --//
+        $(modalSelector + '_keyword').val($(modalSelector + '_searchCond_keyword').val());
+        $(modalSelector + '_is_all').prop('checked', ($(modalSelector + '_searchCond_is_all').val() === Commons.ON));
+        if ($(modalSelector + '_searchCond_keyword').val() || $(modalSelector + '_searchCond_is_all').val() === Commons.ON) {
+            $(modalSelector + '_tbl_cond').text(
+                      (($(modalSelector + '_searchCond_keyword').val()) 
+                          ? '「' + $(modalSelector + '_searchCond_keyword').val() + '」' : '')
+                    + (($(modalSelector + '_searchCond_is_all').val() === Commons.ON) 
+                          ? ' (無効も含める)' : ''));
+            $(modalSelector + '_tbl_cond_div').show();
+        } else {
+            $(modalSelector + '_tbl_cond').text('');
+            $(modalSelector + '_tbl_cond_div').hide();
+        }
     }
 
     /**

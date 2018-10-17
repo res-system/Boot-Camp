@@ -13,7 +13,6 @@ import com.res_system.commons.dao.exception.SimpleDaoException;
 import com.res_system.commons.util.ReUtil;
 import com.res_system.re_emp_manager.commons.dao.AppDao;
 import com.res_system.re_emp_manager.commons.data.SearchCondition;
-import com.res_system.re_emp_manager.commons.kind.CheckKbn;
 import com.res_system.re_emp_manager.commons.kind.InfType;
 import com.res_system.re_emp_manager.commons.kind.ReqFlg;
 import com.res_system.re_emp_manager.commons.kind.Stat;
@@ -91,9 +90,7 @@ public class MntEmpInfoHdModel implements IMessage {
      * @throws Exception
      */
     public MntEmpInfoHdForm initIndex(final MntEmpInfoHdForm form) throws Exception {
-        // 初期化.
-        form.getSearchCond().setKeyword("");
-        form.getSearchCond().setIs_all(CheckKbn.OFF.getValue());
+        form.getSearchCond().reset();
         findList(form);
         return form;
     }

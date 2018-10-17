@@ -1,12 +1,10 @@
 package com.res_system.re_emp_manager.commons.model.entities;
 
-import com.res_system.commons.mvc.model.form.Param;
-
-
-import com.res_system.commons.dao.entities.IEntity;
 import com.res_system.commons.dao.entities.Column;
+import com.res_system.commons.dao.entities.IEntity;
 import com.res_system.commons.dao.entities.Key;
 import com.res_system.commons.dao.entities.Table;
+import com.res_system.commons.mvc.model.form.Param;
 
 /**
  * 権限マスタ Entityクラス.

@@ -67,7 +67,7 @@ import com.res_system.re_emp_manager.commons.model.entities.MGroup;
             +       " ON `GrpStat`.`kbn` = 'GrpStat' AND `GrpStat`.`seq` <> 0 AND `GrpStat`.`code` = `GRP`.`grp_status`"
             )
 })
-public class SelectGroupMGroup extends MGroup {
+public class SelectGroupData extends MGroup {
 
     //---------------------------------------------- const [public].
     /** 並び順 [最小]. */

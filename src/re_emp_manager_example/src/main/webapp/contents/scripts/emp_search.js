@@ -57,9 +57,6 @@
      */
     function init() {
         $('#sidenavToggler').click();
-        $('#keyword').val($('#searchCond_keyword').val());
-        $('#is_all').prop('checked', ($('#searchCond_is_all').val() === Commons.ON));
-        BizCommons.setSort(tableId, sortId);
         setMainTbl();
         Commons.resetChangeInput();
     }
@@ -76,6 +73,7 @@
                               Commons.showMessages('#main_contents', result.messageList);
                               makeRow(result.form.list, result.form.searchCond);
                               Commons.focus('#keyword');
+                              Commons.resetChangeInput();
                           }
                 });
     };
@@ -147,21 +145,6 @@
         $('#searchCond_sort').val(searchCond.sort);
         $('#list_size').val(list.length);
         setMainTbl();
-
-        // 検索条件設定.
-        $('#keyword').val($('#searchCond_keyword').val());
-        $('#is_all').prop('checked', ($('#searchCond_is_all').val() === Commons.ON));
-        if ($('#searchCond_keyword').val() || $('#searchCond_is_all').val() === Commons.ON) {
-            $('#main_tbl_cond').text(
-                      (($('#searchCond_keyword').val()) 
-                          ? '「' + $('#searchCond_keyword').val() + '」' : '')
-                    + (($('#searchCond_is_all').val() === Commons.ON) 
-                          ? ' (無効も含める)' : ''));
-            $('#main_tbl_cond_div').show();
-        } else {
-            $('#main_tbl_cond').text('');
-            $('#main_tbl_cond_div').hide();
-        }
     }
 
     /**
@@ -179,6 +162,22 @@
                               doSearch();
                           }
                 });
+        //-- ソート設定. --//
+        BizCommons.setSort(tableId, sortId);
+        //-- 検索条件設定. --//
+        $('#keyword').val($('#searchCond_keyword').val());
+        $('#is_all').prop('checked', ($('#searchCond_is_all').val() === Commons.ON));
+        if ($('#searchCond_keyword').val() || $('#searchCond_is_all').val() === Commons.ON) {
+            $('#main_tbl_cond').text(
+                      (($('#searchCond_keyword').val()) 
+                          ? '「' + $('#searchCond_keyword').val() + '」' : '')
+                    + (($('#searchCond_is_all').val() === Commons.ON) 
+                          ? ' (無効も含める)' : ''));
+            $('#main_tbl_cond_div').show();
+        } else {
+            $('#main_tbl_cond').text('');
+            $('#main_tbl_cond_div').hide();
+        }
     }
 
     /**
@@ -194,7 +193,6 @@
             var selected_id = $(e.target).parents('tr').find('input[type="hidden"][name="id"]').val();
             $('#searchCond_selected_id').val(selected_id);
             Commons.post('#myform', '/emp_info/next');
-            ModalInput.show({mode:BizCommons.MODE_UPD, selectedId:selected_id, successFunc:successUpdateFunc});
         }
         return false;
     };

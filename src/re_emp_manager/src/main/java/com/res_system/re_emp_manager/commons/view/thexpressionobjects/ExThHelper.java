@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.ibm.icu.text.NumberFormat;
 import com.res_system.commons.mvc.MvcUtil;
 import com.res_system.commons.util.ReDateUtil;
 import com.res_system.commons.util.ReUtil;
@@ -325,4 +326,24 @@ public final class ExThHelper {
         }
         return retUrl;
     };
+
+    /**
+     * 数値を加工して表示します.
+     * <br />使用例）
+     * <br />[ th:text="${#exh.showNum(~)}" (数値)]
+     * @param num 数値.
+     * @return 数値.
+     */
+    public String showNum(final String num) {
+        StringBuilder result = new StringBuilder();
+        if (!ReUtil.isEmpty(num)) {
+            try {
+                Number number = NumberFormat.getInstance().parse(num);
+                result.append(String.format("%,d", number.intValue()));
+            } catch (Exception e) {}
+        } else {
+            result.append("0");
+        }
+        return result.toString();
+    }
 }
