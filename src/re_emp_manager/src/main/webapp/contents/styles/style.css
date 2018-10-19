@@ -301,8 +301,8 @@ input-group .btn { margin:0 0 0 0; }
 /* // table // */
 .sort-link { border-bottom:1px solid #b0b0b0; }
 .sort-link-asc:after { font-size:0.6rem; color:#b0b0b0; content:"▼"; padding:0 0 0 4px;}
-.sort-link-desc:after{ font-size:0.6rem; color:#b0b0b0; content:"▲"; padding:0 0 0 4px;} 
-}
+.sort-link-desc:after{ font-size:0.6rem; color:#b0b0b0; content:"▲"; padding:0 0 0 4px;}
+table.table-hover{ cursor:pointer; }
 
 
 /* ////////////////////////////////////////////////////////////////////////// */

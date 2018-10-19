@@ -1,7 +1,7 @@
 /**
  * @file commons.js
  * @author res.
- * @version 1.2.6 (2018.10.17)
+ * @version 1.2.7 (2018.10.19)
  */
 var Commons = { };
 
@@ -946,8 +946,7 @@ Commons.resetChangeInput = function () {
  */
 Commons.checkChangedInput = function (title, msg, func) {
     if (Commons.isChangedInput) {
-        ModalConfirm.show({
-              title: title
+        ModalConfirm.show({ title: title
             , msgData: {button: ModalConfirm.BTN_YES_NO, text: msg + '。\n入力内容が破棄されますがよろしいですか？'}
             , btnYesFunc: function() { func(); }
             , focusButton: ModalConfirm.BTN_NO
@@ -967,7 +966,6 @@ Commons.initScreen = function () {
   $ReC.inputTab($ReC.findAll('.tab_input'));
   Commons.setDatePicker();
   Commons.setATagLink();
-  Commons.setChangeScreenLink();
   Commons.setPostLink();
   Commons.setPageTopBottom();
   Commons.setAccordionMenu();
@@ -1004,13 +1002,14 @@ Commons.setDatePicker = function () {
 /**
  * 画面遷移リンクタグ設定.
  */
-Commons.setChangeScreenLink = function () {
-    $('.change_screenlink').on('click', function (event) {
+Commons.setATagLink = function () {
+    $('.link').on('click', function (event) {
         // URL.
         var actionUrl = $(this).attr('data-action');
         if ($ReC.isStrBlk(actionUrl)) {
             actionUrl = $(this).children('input[name="data_action"]').val();
         }
+        if ($ReC.isStrBlk(actionUrl)) { actionUrl = $(this).attr('href'); }
         // Title.
         var actionTitle = $(this).attr('data-action-title');
         if ($ReC.isStrBlk(actionTitle)) {
@@ -1023,9 +1022,11 @@ Commons.setChangeScreenLink = function () {
             actionName = $(this).children('input[name="data_action_name"]').val();
         }
         if ($ReC.isStrBlk(actionName)) { actionName = '画面を遷移します'; }
+        // Link.
         if (!$ReC.isStrBlk(actionUrl)) {
             Commons.checkChangedInput(actionTitle, actionName, function() { Commons.changeScreen(actionUrl); });
         }
+        return false;
     });
 };
 
@@ -1039,6 +1040,7 @@ Commons.setPostLink = function () {
         if ($ReC.isStrBlk(actionUrl)) {
             actionUrl = $(this).children('input[name="data_action"]').val();
         }
+        if ($ReC.isStrBlk(actionUrl)) { actionUrl = $(this).attr('href'); }
         // Title.
         var actionTitle = $(this).attr('data-action-title');
         if ($ReC.isStrBlk(actionTitle)) {
@@ -1061,20 +1063,15 @@ Commons.setPostLink = function () {
             var form;
             if (!$ReC.isStrBlk(formName) && $(formName).length > 0) { form = $(formName)[0]; } 
             else { form = $(this).parents('form')[0]; }
-            Commons.checkChangedInput(actionTitle, actionName, function() { Commons.post(form, actionUrl); });
-        }
-    });
-};
-
-/**
- * 画面遷移リンクタグ設定.
- */
-Commons.setATagLink = function () {
-    $('a.link').on('click', function (event) {
-        event.preventDefault();
-        var actionUrl = $(this).attr('href');
-        if (!$ReC.isStrBlk(actionUrl)) {
-            Commons.checkChangedInput('画面遷移', '画面を遷移します', function() { Commons.changeScreen(actionUrl); });
+            if (!$ReC.isStrBlk(actionName)) {
+                ModalConfirm.show({ title: actionTitle
+                    , msgData: {button:ModalConfirm.BTN_YES_NO, text:actionName+'。\nよろしいですか？'}
+                    , btnYesFunc: function () { Commons.post(form, actionUrl); }
+                    , focusButton: ModalConfirm.BTN_NO
+               });
+            } else {
+                Commons.post(form, actionUrl);
+            }
         }
         return false;
     });

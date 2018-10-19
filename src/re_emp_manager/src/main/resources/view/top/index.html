@@ -38,32 +38,120 @@
       <!--/* 社員情報タブ. */-->
       <ul class="nav nav-tabs">
         <li class="nav-item">
-          <a href="javascript:void(0)" data-toggle="tab" class="change_screenlink nav-link small text-uppercase active" id="employee_info">
-            <input type="hidden" name="data_action" th:value="@{/test}"/>
+          <a href="javascript:void(0)" data-toggle="tab" class="link nav-link small text-uppercase active" id="employee_info">
+            <input type="hidden" name="data_action" th:value="@{/test?id=tab1}"/>
             <span>社員個人情報</span>
           </a>
         </li>
         <li class="nav-item">
-          <a href="javascript:void(0)" data-toggle="tab" class="change_screenlink nav-link small text-uppercase " id="employee_info">
+          <a href="javascript:void(0)" data-toggle="tab" class="link nav-link small text-uppercase " id="employee_info">
             <span>社員家族情報</span>
-            <input type="hidden" name="data_action" th:value="@{/test?id=1}"/>
+            <input type="hidden" name="data_action" th:value="@{/test?id=tab2}"/>
           </a>
         </li>
         <li class="nav-item">
-          <a href="javascript:void(0)" data-toggle="tab" class="change_screenlink nav-link small text-uppercase " id="employee_info">
+          <a href="javascript:void(0)" data-toggle="tab" class="link nav-link small text-uppercase " id="employee_info">
             <span>社員勤怠情報</span>
-            <input type="hidden" name="data_action" th:value="@{/test?id=2}"/>
+            <input type="hidden" name="data_action" th:value="@{/test?id=tab3}"/>
           </a>
         </li>
         <li class="nav-item">
-          <a href="javascript:void(0)" data-toggle="tab" class="change_screenlink nav-link small text-uppercase " id="employee_info">
+          <a href="javascript:void(0)" data-toggle="tab" class="link nav-link small text-uppercase " id="employee_info">
             <span>社員交通費情報</span>
-            <input type="hidden" name="data_action" th:value="@{/test?id=3}"/>
+            <input type="hidden" name="data_action" th:value="@{/test?id=tab4}"/>
           </a>
         </li>
       </ul>
-      <!--/* -------------------------------------------------- */-->
       <br />
+      <!--/* -------------------------------------------------- */-->
+
+      <!--/* -------------------------------------------------- */-->
+      <fieldset>
+        <legend>アクション</legend>
+        <form id="link_test_form1" class="p-2">
+          <h5>テストフォーム１</h5>
+          <input type="text" class="form-control" maxlength="10" name="link_test_form_txt1" value="１" />
+          <br />
+
+          <h5>link</h5>
+          <a href="javascript:void(0)" class="link"
+              data-action="/test?id=link1"
+              data-action-title="「link」プロパティへ"
+               data-action-name="「link」プロパティへ移動します">
+            <span>「link」プロパティ</span>
+          </a>
+          <br />
+          <a href="javascript:void(0)" class="link">
+            <span>「link」hidden</span>
+            <input type="hidden" name="data_action"       value="/test?id=link2"/>
+            <input type="hidden" name="data_action_title" value="「link」hiddenへ"/>
+            <input type="hidden" name="data_action_name"  value="「link」hiddenへ移動します"/>
+          </a>
+          <br />
+          <a href="/test?id=link3" class="link">
+            <span>「link」hrefのみ</span>
+          </a>
+          <br />
+
+          <h5>postlink</h5>
+          <a href="javascript:void(0)" class="postlink"
+              data-action="/test_post?id=poslink1"
+              data-action-title="「postlink」プロパティを"
+               data-action-name="「postlink」プロパティを送信します"
+                 data-form-name="#link_test_form2">
+            <span>「postlink」プロパティ</span>
+          </a>
+          <br />
+          <a href="javascript:void(0)" class="postlink">
+            <span>「postlink」hidden</span>
+            <input type="hidden" name="data_action"       value="/test_post?id=poslink2"/>
+            <input type="hidden" name="data_action_title" value="「postlink」hiddenを"/>
+            <input type="hidden" name="data_action_name"  value="「postlink」hiddenを送信します"/>
+            <input type="hidden" name="data_form_name"    value="#link_test_form2"/>
+          </a>
+          <br />
+          <a href="/test_post?id=poslink3" class="postlink">
+            <span>「postlink」hrefのみ</span>
+          </a>
+          <br />
+
+          <h5>action</h5>
+          <button type="button" class="btn btn-primary" id="btn_action_test1">action_test1</button>
+          <br />
+
+          <input type="text" name="dummy" style="display:none;" /><!--/* 自動サブミット防止 */-->
+        </form>
+        <br />
+        <form id="link_test_form2" class="p-2">
+          <h5>テストフォーム２</h5>
+          <input type="text" class="form-control" maxlength="10" name="link_test_form_txt1" value="２" />
+          <input type="text" name="dummy" style="display:none;" /><!--/* 自動サブミット防止 */-->
+        </form>
+        <br />
+        <form id="link_test_form3" method="post" enctype="multipart/form-data" class="p-2">
+          <h5>テストフォーム３</h5>
+          <div class="form-group row">
+            <div class="col-4 col-sm-8 col-md-8 col-lg-8">
+              <input type="file" class="" name="file" accept=".jpeg,.png,.gif" />
+            </div>
+            <div class="col-3 col-sm-2 col-md-2 col-lg-2">
+              <button type="button" class="btn btn-secondary w-100" id="btn_upload_test1">
+                <span>upload_test1</span>
+              </button>
+            </div>
+            <div class="col-3 col-sm-2 col-md-2 col-lg-2">
+              <button type="button" class="btn btn-secondary w-100" id="btn_download_test1">
+                <span>download_test1</span>
+              </button>
+            </div>
+          </div>
+          <input type="hidden" name="type" />
+          <img id="thumbnail" width="96" height="96" />
+          <input type="text" name="dummy" style="display:none;" /><!--/* 自動サブミット防止 */-->
+        </form>
+
+      </fieldset>
+      <!--/* -------------------------------------------------- */-->
 
       <!--/* -------------------------------------------------- */-->
       <fieldset>
@@ -316,114 +404,12 @@
 
       <!--/* -------------------------------------------------- */-->
       <fieldset>
-        <legend>アクション</legend>
-        <form id="link_test_form1" class="p-2">
-          <h5>テストフォーム１</h5>
-          <input type="text" class="form-control" maxlength="10" name="link_test_form_txt1" value="１" />
-          <br />
-
-          <h5>change_screenlink</h5>
-          <a href="javascript:void(0)" class="change_screenlink"
-              data-action="/test"
-              data-action-title="「change_screenlink」プロパティへ"
-               data-action-name="「change_screenlink」プロパティへ移動します">
-            <span>「change_screenlink」プロパティ</span>
-          </a>
-          <br />
-          <a href="javascript:void(0)" class="change_screenlink">
-            <span>「change_screenlink」hidden</span>
-            <input type="hidden" name="data_action"       value="@{/test}"/>
-            <input type="hidden" name="data_action_title" value="「change_screenlink」hiddenへ"/>
-            <input type="hidden" name="data_action_name"  value="「change_screenlink」hiddenへ移動します"/>
-          </a>
-          <br />
-          <a href="javascript:void(0)" class="change_screenlink">
-            <span>「change_screenlink」デフォルト</span>
-            <input type="hidden" name="data_action" value="@{/test}"/>
-          </a>
-          <br />
-          <a href="javascript:void(0)" class="change_screenlink">
-            <span>「change_screenlink」設定なし</span>
-          </a>
-          <br />
-
-          <h5>postlink</h5>
-          <a href="javascript:void(0)" class="postlink"
-              data-action="/test_post"
-              data-action-title="「postlink」プロパティを"
-               data-action-name="「postlink」プロパティを送信します"
-                 data-form-name="#link_test_form2">
-            <span>「postlink」プロパティ</span>
-          </a>
-          <br />
-          <a href="javascript:void(0)" class="postlink">
-            <span>「postlink」hidden</span>
-            <input type="hidden" name="data_action" th:value="@{/test_post}"/>
-            <input type="hidden" name="data_action_title" value="「postlink」hiddenを"/>
-            <input type="hidden" name="data_action_name"  value="「postlink」hiddenを送信します"/>
-            <input type="hidden" name="data_form_name"    value="#link_test_form2"/>
-          </a>
-          <br />
-          <a href="javascript:void(0)" class="postlink">
-            <span>「postlink」デフォルト</span>
-            <input type="hidden" name="data_action" th:value="@{/test_post}"/>
-          </a>
-          <br />
-          <a href="javascript:void(0)" class="postlink">
-            <span>「postlink」設定なし</span>
-          </a>
-          <br />
-
-          <h5>link</h5>
-          <a href="/test" class="link"><span>「link」</span></a>
-          <br />
-
-          <h5>action</h5>
-          <button type="button" class="btn btn-primary" id="btn_action_test1">action_test1</button>
-          <br />
-
-          <input type="text" name="dummy" style="display:none;" /><!--/* 自動サブミット防止 */-->
-        </form>
-        <br />
-        <form id="link_test_form2" class="p-2">
-          <h5>テストフォーム２</h5>
-          <input type="text" class="form-control" maxlength="10" name="link_test_form_txt1" value="２" />
-          <input type="text" name="dummy" style="display:none;" /><!--/* 自動サブミット防止 */-->
-        </form>
-        <br />
-        <form id="link_test_form3" method="post" enctype="multipart/form-data" class="p-2">
-          <h5>テストフォーム３</h5>
-          <div class="form-group row">
-            <div class="col-4 col-sm-8 col-md-8 col-lg-8">
-              <input type="file" class="" name="file" accept=".jpeg,.png,.gif" />
-            </div>
-            <div class="col-3 col-sm-2 col-md-2 col-lg-2">
-              <button type="button" class="btn btn-secondary w-100" id="btn_upload_test1">
-                <span>upload_test1</span>
-              </button>
-            </div>
-            <div class="col-3 col-sm-2 col-md-2 col-lg-2">
-              <button type="button" class="btn btn-secondary w-100" id="btn_download_test1">
-                <span>download_test1</span>
-              </button>
-            </div>
-          </div>
-          <input type="hidden" name="type" />
-          <img id="thumbnail" width="96" height="96" />
-          <input type="text" name="dummy" style="display:none;" /><!--/* 自動サブミット防止 */-->
-        </form>
-
-      </fieldset>
-      <!--/* -------------------------------------------------- */-->
-
-      <!--/* -------------------------------------------------- */-->
-      <fieldset>
         <legend>テーブル</legend>
 
         <div class="form-group row">
           <label for="" class="control-label col-sm-12 col-md-2 col-lg-2">枠有り</label>
           <div class="col-sm-12 col-md-10 col-lg-10">
-            <table class="table table-bordered table-hover">
+            <table class="table table-bordered">
               <thead>
                 <tr>
                   <th>Firstname</th>
@@ -455,7 +441,7 @@
         <div class="form-group row">
           <label for="" class="control-label col-sm-12 col-md-2 col-lg-2">枠無し</label>
           <div class="col-sm-12 col-md-10 col-lg-10">
-            <table class="table table-striped table-hover">
+            <table class="table table-striped">
               <thead>
                 <tr>
                   <th>Firstname</th>
@@ -513,7 +499,6 @@
                 </tr>
               </tbody>
             </table>            
-            <button type="button" class="btn btn-primary" id="btn_get_row">選択行</button>
           </div>
         </div>
 
@@ -620,6 +605,7 @@
 
 <script>
   $('#sidenavToggler').click();
+
   // 画面サイズ表示.
   $(window).on('load resize', function(){
       var size = '[ w' + window.innerWidth + ' * h' + window.innerHeight + ' ]';
@@ -781,6 +767,8 @@
           ,focusButton: ModalConfirm.BTN_CANCE
       });
   });
+
+  // 項目活性化 テスト.
   $('#btn_select_test').on('click', function (event) {
       Commons.closeMessage();
       Commons.disabled('select[name="sel_test3"]', !$('select[name="sel_test3"]').prop('disabled'));
@@ -793,7 +781,14 @@
       Commons.closeMessage();
       Commons.disabled('input[name="rdo_test2"]', !$('input[name="rdo_test2"]').prop('disabled'));
   });
-  
+
+  // テーブル テスト.
+  Commons.setSelectTable({ tbl:'#selected_table', selectFunc:doSelect });
+  function doSelect(row,col,e) {
+      alert(row)
+  }
+
+  // アクション テスト.
   $('#btn_action_test1').on('click', function (event) {
       Commons.closeMessage();
       Commons.action({ url: '/test_action'
@@ -803,11 +798,11 @@
                         }
               });
   });
-
   $('input[type="file"][name="file"]').change(function(){
       Commons.thumbnail(this, '#thumbnail');
   });
 
+  // アップロード・ダウンロード テスト.
   $('#btn_upload_test1').on("click", function (event) {
       Commons.closeMessage();
 
@@ -838,7 +833,6 @@
                   });
       }
   });
-
   $('#btn_download_test1').on("click", function (event) {
       Commons.changeScreenNoLock('/test_download/test');
   });
