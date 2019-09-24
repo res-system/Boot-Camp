@@ -1,7 +1,35 @@
 1.0.0 
   2018.01.31
     新規作成.
+※ (1).(2).(3)
+  (1)：大幅修正.
+  (2)：機能追加.
+  (3)：バグ修正.
 
-1.1.0
+
+1.0.1 
+  2018.02.09
+    MvcUtilクラスとReThHelperクラスにID用のisEmpty()を追加。.
+
+
+1.1.1 
+  2018.04.25
+    ClassLoaderTemplateResolverの文字コードとキャッシュの設定をプロパティファイルで設定できるように修正.
+
+1.2.0 
   2018.06.29
     multipart対応.
+
+1.2.1 
+  2019.06.07
+    FormUtil.setPostData()でリストサイズが空文字だった時にエラーが出ないように修正.
+
+1.2.2 
+  2019.09.24
+    フォーム系タグのThymeleaf拡張を非推奨に変更.
+      re-th:checkbox
+      re-th:input
+      re-th:radio
+      re-th:option
+      re-th:select
+      re-th:textarea
