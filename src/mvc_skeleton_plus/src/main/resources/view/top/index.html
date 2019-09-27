@@ -1,0 +1,68 @@
+<!--/* ////////////////////////////////////////////////// */-->
+<!--/*                                                    */-->
+<!--/* top/index.html */-->
+<!--/*                                                    */-->
+<!--/* ////////////////////////////////////////////////// */-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja" th:with="screen_name=TOP">
+
+<!--/* ================================================== */-->
+<!--/* ページヘッダー. */-->
+<head th:replace="_layout/default_layout::page_header(~{::title},~{::link.target})">
+  <title th:remove="tag" th:text="${screen_name}">xxx</title>
+  <link class="target" />
+</head>
+<!--/* ================================================== */-->
+
+<body>
+
+  <!--/* ================================================== */-->
+  <!--/* コンテンツヘッダー（簡易）. */-->
+  <div th:replace="_layout/default_layout::page_contents_header()" th:remove="tag" ></div>
+  <!--/* ================================================== */-->
+  
+  <!--/* ================================================== */-->
+  <!--/* メインコンテンツ（簡易）. */-->
+  <div th:replace="_layout/default_layout::main_contents('myform',~{::div#form_header},~{::div#main_form},~{::#main_footer})" th:remove="tag">
+
+    <!--/* フォームヘッダー. */-->
+    <div id="form_header" th:remove="tag">
+    </div>
+
+    <!--/* メインフォーム. */-->
+    <div id="main_form" th:remove="tag">
+
+      <div class="mx-auto" style="width: 320px;">
+        <a th:href="@{/crud_sample}" class="link">
+          <i class="fa fa-fw fa-arrow-circle-right"></i>
+          <span class="">CRUDサンプルへ</span>
+        </a>
+      </div>
+
+      <div class="mx-auto" style="width: 320px;">
+        <a th:href="@{/crud_sample_list}" class="link">
+          <i class="fa fa-fw fa-arrow-circle-right"></i>
+          <span class="">CRUD一覧サンプルへ</span>
+        </a>
+      </div>
+
+    </div>
+
+    <!--/* 画面固有 フッター設定. */-->
+    <div id="main_footer" th:remove="tag"> </div>
+
+  </div>
+  <!--/* ================================================== */-->
+
+  <!--/* ================================================== */-->
+  <!--/* ページフッター. */-->
+  <div th:replace="_layout/default_layout::page_footers(~{::div.modals},~{::script.target})" th:remove="tag">
+    <!--/* 画面固有 ダイアログ設定. */-->
+    <div class="modals" th:remove="tag"></div>
+    <!--/* 画面固有 スクリプト設定. */-->
+    <script type="text/javascript" class="target"></script>
+  </div>
+  <!--/* ================================================== */-->
+  
+</body>
+</html>

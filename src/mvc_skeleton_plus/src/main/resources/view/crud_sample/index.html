@@ -1,0 +1,206 @@
+<!--/* ////////////////////////////////////////////////// */-->
+<!--/*                                                    */-->
+<!--/* crud_sample/index.html */-->
+<!--/*                                                    */-->
+<!--/* ////////////////////////////////////////////////// */-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja" th:with="screen_name=CRUDサンプル">
+
+<!--/* ================================================== */-->
+<!--/* ページヘッダー. */-->
+<head th:replace="_layout/default_layout::page_header(~{::title},~{::link.target})">
+  <title th:remove="tag" th:text="${screen_name}">xxx</title>
+  <link class="target" />
+</head>
+<!--/* ================================================== */-->
+
+<body>
+
+  <!--/* ================================================== */-->
+  <!--/* コンテンツヘッダー（簡易）. */-->
+  <div th:replace="_layout/default_layout::page_contents_header()" th:remove="tag" ></div>
+  <!--/* ================================================== */-->
+  
+  <!--/* ================================================== */-->
+  <!--/* メインコンテンツ（簡易）. */-->
+  <div th:replace="_layout/default_layout::main_contents('myform',~{::div#form_header},~{::div#main_form},~{::#main_footer})" th:remove="tag">
+
+    <!--/* フォームヘッダー. */-->
+    <div id="form_header" th:remove="tag">
+      <h1 th:text="${screen_name}">xxx</h1>
+    </div>
+
+    <!--/* メインフォーム. */-->
+    <div id="main_form" th:remove="tag">
+      <div class="row pb-5">
+        <a th:href="@{/}" class="link">
+          <i class="fa fa-fw fa-arrow-circle-left"></i>
+          <span class="">戻る</span>
+        </a>
+      </div>
+
+      <!--/* 新規追加ボタン. */-->
+      <div class="form-group row pr-2">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+          <button type="button" class="btn btn-outline-primary w-100 btn_add" >
+            <i class="fa fa-fw fa-plus"></i>&nbsp;<span>新規追加</span>
+          </button>
+        </div>
+      </div>
+
+      <!--/* 一覧. */-->
+      <div class="row">
+        <div class="col-12">
+          <!--/* 明細. */-->
+          <table class="table table-striped table-hover layout-fixed tbl_main">
+            <thead>
+              <tr>
+                <th class="container-fluid">
+                  <div class="row">
+                    <div class="th col-4  col-sm-2 "><span class="font-sm" data-toggle="tooltip" title="コード">コード</span></div>
+                    <div class="th col-8  col-sm-4 "><span class="font-sm" data-toggle="tooltip" title="名称">名称</span></div>
+                    <div class="th col-12 col-sm-6 "><span class="font-sm" data-toggle="tooltip" title="備考">備考</span></div>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody tabindex="-1">
+            </tbody>
+          </table>
+        </div>
+      </div><!--/* /一覧. */-->
+      <div class="row pt-3">
+        <div class="col text-center">
+          <a href="javascript:void(0)" class="color-gray btn_reload"><i class="fa fa-sync"></i></a>
+        </div>
+      </div>
+
+      <!--/* 保存項目. */-->
+      <input type="hidden" class="form-control list_size" name="list_size" th:value="${form.list_size}" />
+
+    </div>
+
+    <!--/* 画面固有 フッター設定. */-->
+    <div id="main_footer" th:remove="tag"> </div>
+
+  </div>
+  <!--/* ================================================== */-->
+
+  <!--/* ================================================== */-->
+  <!--/* ページフッター. */-->
+  <div th:replace="_layout/default_layout::page_footers(~{::div.modals},~{::script.target})" th:remove="tag">
+    <!--/* 画面固有 ダイアログ設定. */-->
+    <div class="modals" th:remove="tag">
+      <!--/* -------------------------------------------------- */-->
+      <!--/* 入力ダイアログ. */-->
+      <div th:replace="_layout/modal_layout::modal_input('modal_input', ${screen_title}, ~{::#modal_input_header},~{::div#modal_input_contents})" th:remove="tag">
+        <!--/* ダイアログ固有 ヘッダー設定. */-->
+        <div id="modal_input_header" th:remove="tag">
+
+          <div class="form-group row text-right font-sm ">
+            <div class="col-12  ">
+              <a href="javascript:void(0)" class="btn-input-ctrl link color-darkgray btn_copy ">
+                <i class="fa fa-copy"></i>&nbsp;<span>コピー</span>
+              </a>
+              <a href="javascript:void(0)" class="btn-input-ctrl link color-red btn_delete ">
+                <i class="fa fa-trash"></i>&nbsp;<span>削除</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+        <!--/* ダイアログ固有 コンテンツ設定. */-->
+        <div id="modal_input_contents" th:remove="tag">
+          <fieldset>
+
+            <!--/* コード. */-->
+            <div class="form-group">
+              <label for="" class="control-label">コード<span class="required" /></span></label>
+              <div class="input-group col-12 col-sm-8 col-md-6 col-lg-4">
+                <input type="text" class="form-control code " name="data.code" value="" maxlength="10" />
+              </div>
+            </div>
+
+            <!--/* 名称. */-->
+            <div class="form-group">
+              <label for="" class="control-label">名称<span class="required" /></span></label>
+              <input type="text" class="form-control name " name="data.name" value="" maxlength="40" />
+            </div>
+
+            <!--/* 備考. */-->
+            <div class="form-group">
+              <label for="" class="control-label">備考</label>
+              <textarea class="form-control memo"  name="data.memo" rows="4" ></textarea>
+            </div>
+
+            <!--/* チェックボックス. */-->
+            <div class="form-group">
+              <label for="" class="control-label">チェックボックス</label>
+              <div class="form-group">
+                <label class="checkbox"><input type="checkbox" class="form-control check" name="data.check" value="1" />
+                    <span class="indicator">チェックボックス</span></label>
+              </div>
+            </div>
+
+            <!--/* ラジオボタン. */-->
+            <div class="form-group">
+              <label for="" class="control-label">ラジオボタン</label>
+              <div class="form-inline">
+                <label class="radio"><input type="radio" class="form-control radio" name="data.radio" value="1" />
+                      <span class="indicator color-green"><i class="fa fa-fw fa-check-circle font-md"></i><span class="" title="">可</span></span>
+                    </label>
+                <label class="radio"><input type="radio" class="form-control radio" name="data.radio" value="2" />
+                      <span class="indicator color-gray" ><i class="fa fa-fw fa-times font-md"></i><span class="" title="">不可</span></span>
+                    </label>
+              </div>
+            </div>
+
+            <!--/* コンボボックス. */-->
+            <div class="form-group">
+              <label for="" class="control-label">コンボボックス</label>
+              <div class="form-group">
+                <select class="form-control select" name="data.select" >
+                  <option value="1">選択1</option>
+                  <option value="2">選択2</option>
+                  <option value="3">選択3</option>
+                  <option value="4">選択4</option>
+                </select>
+              </div>
+            </div>
+
+            <!--/* 更新日時. */-->
+            <div class="form-group item_upd">
+              <label for="" class="control-label">更新日時</label>
+              <p class="form-control-static updated" ></p>
+            </div>
+
+            <!--/* 保存項目. */-->
+            <input type="hidden" class="form-control id" name="data.id" value="" />
+ 
+          </fieldset>
+
+          <!--/* メンテナンスボタン(bottom). */-->
+          <div class="row">
+            <div class="col-12">
+              <button type="button" class="btn btn-lg btn-primary w-100 btn_add">
+                <i class="fa fa-fw fa-edit"></i>&nbsp;<span>追加する</span>
+              </button>
+            </div>
+            <div class="col-12">
+              <button type="button" class="btn btn-lg btn-primary w-100 btn_update">
+                <i class="fa fa-fw fa-edit"></i>&nbsp;<span>変更する</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <!--/* -------------------------------------------------- */-->
+    </div>
+    <!--/* 画面固有 スクリプト設定. */-->
+    <script type="text/javascript" src="../contents/scripts/crud_sample.js" re-th:uqsrc="@{/contents/scripts/crud_sample.js}" class="target" ></script>
+  </div>
+  <!--/* ================================================== */-->
+  
+</body>
+</html>

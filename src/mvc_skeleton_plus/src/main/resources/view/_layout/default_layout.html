@@ -1,0 +1,190 @@
+<!--/* ////////////////////////////////////////////////// */-->
+<!--/*                                                    */-->
+<!--/* _layout/default_layout.html */-->
+<!--/*                                                    */-->
+<!--/* ////////////////////////////////////////////////// */-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+
+<!--/* ================================================== */-->
+<!--/* ページヘッダー. */-->
+<head th:fragment="page_header(title,links)">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0 shrink-to-fit=no">
+  <meta name="description" content="mvc_skeleton">
+  <meta name="author" content="株式会社リスタート" />
+  
+  <title >mvc_skeleton <th:block th:replace="${title}" /></title>
+
+  <!--/* アイコン設定. */-->
+  <link rel="shortcut icon"    href="contents/images/favicon.ico" re-th:uqhref="@{/contents/images/favicon.ico}" />
+  <link rel="apple-touch-icon" href="contents/images/apple-touch-icon.png" re-th:uqhref="@{/contents/images/apple-touch-icon.png}" />
+  <!--/* jquery. */-->
+  <link rel="stylesheet" href="contents/vendor/jquery-ui/css/jquery-ui.min.css" re-th:uqhref="@{/contents/vendor/jquery-ui/css/jquery-ui.min.css}" />
+  <!--/* bootstrap. */-->
+  <link rel="stylesheet" href="contents/vendor/bootstrap/css/bootstrap.min.css" re-th:uqhref="@{/contents/vendor/bootstrap/css/bootstrap.min.css}" />
+  <link rel="stylesheet" href="contents/vendor/sb-admin/css/sb-admin.css" re-th:uqhref="@{/contents/vendor/sb-admin/css/sb-admin.css}" />
+  <link rel="stylesheet" href="contents/vendor/font-awesome/css/font-awesome.min.css" re-th:uqhref="@{/contents/vendor/font-awesome/css/font-awesome.min.css}" />
+  <!--/* tempusdominus-datetimepicker. */-->
+  <link rel="stylesheet" href="contents/vendor/tempusdominus-datetimepicker/css/tempusdominus-datetimepicker.css" re-th:uqhref="@{/contents/vendor/tempusdominus-datetimepicker/css/tempusdominus-datetimepicker.css}" />
+  <!--/* システム. */-->
+  <link rel="stylesheet" href="contents/styles/style.css" re-th:uqhref="@{/contents/styles/style.css}" />
+  <link rel="stylesheet" href="contents/styles/biz_style.css" re-th:uqhref="@{/contents/styles/biz_style.css}" />
+  <!--/* 画面固有 スタイル設定. */-->
+  <th:block th:replace="${links}" />
+</head>
+<!--/* ================================================== */-->
+
+<body>
+
+
+<!--/* ================================================== */-->
+<!--/* コンテンツヘッダー. */-->
+<div th:fragment="page_contents_header()" th:remove="tag">
+  <nav class="navbar navbar-expand-lg navbar-ez bg-ez fixed-top" id="mainNav">
+    <a class="navbar-brand link omit font-md login-logo">skeleton</a>
+  </nav>
+</div>
+<!--/* ================================================== */-->
+<!--/* ================================================== */-->
+<!--/* メインコンテンツ. */-->
+<div th:fragment="main_contents(form_id,headers_body,contents_body,footers_body)" th:remove="tag">
+  <div class="main-contents-style">
+    <!--/* コンテンツ. */-->
+    <div id="main_contents" class="container-fluid visibility-hidden px-3 px-sm-4 px-md-5 pb-5" >
+      <th:block th:if="${headers_body != null}">
+
+      <!--/* フォームヘッダー. */-->
+      <th:block th:replace="${headers_body}" />
+      </th:block>
+
+      <!--/* メッセージ. */-->
+      <div th:replace="_layout/default_layout::contents_message()" ></div>
+
+      <!--/* メインフォーム. */-->
+      <form class="form-horizontal" th:id="${form_id}" autocomplete="off">
+        <div class="pb-5 pt-3">
+          <!--/* 固有のコンテンツ. */-->
+          <th:block th:replace="${contents_body}" />
+        </div>
+        <!--/* 共通hidden. */-->
+        <input type="text" name="dummy" style="display:none;" />
+      </form><!--/* /メインフォーム. */-->
+    </div>
+
+    <!--/* コンテンツフッター. */-->
+    <footer class="sticky-footer-plain">
+      <div class="container-fluid">
+        <div class="text-right">
+          <small>Copyright &copy; 2019 株式会社リスタート.</small>
+        </div>
+        <!--/* 画面固有 フッター設定. */-->
+        <th:block th:replace="${footers_body}" />
+      </div>
+    </footer>
+
+  </div>
+</div>
+<!--/* ================================================== */-->
+
+<!--/* ================================================== */-->
+<!--/* メッセージ. */-->
+<div th:fragment="contents_message()" th:remove="tag">
+  <div class="message">
+    <!--/* 警告. */-->
+    <div class="alert alert-danger message-box" role="alert"><p></p></div>
+    <!--/* 注意. */-->
+    <div class="alert alert-warning message-box" role="alert"><p></p></div>
+    <!--/* 情報. */-->
+    <div class="alert alert-info message-box" role="alert"><p></p></div>
+  </div>
+</div>
+<!--/* ================================================== */-->
+
+
+<!--/* ================================================== */-->
+<!--/* タブ. */-->
+<div th:fragment="contents_tab(tabDataList)" th:remove="tag">
+  <div class="row">
+    <div class="col pt-3">
+      <div class="pull-right" th:with="root_url=@{/}">
+        <div class="pl-2 pt-2" th:utext="${#exh.tab(tabDataList, root_url, request_controller)}" th:remove="tag"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/* ================================================== */-->
+
+
+<!--/* ================================================== */-->
+<!--/* ページフッター. */-->
+<div th:fragment="page_footers(modals,scripts)" th:remove="tag">
+  <div class="page-footer">
+
+    <!--/* 共通hidden項目. */-->
+    <input type="hidden" id="root_url" th:value="@{/}" value=".." />
+    <input type="hidden" id="ajax_error_url" th:value="@{/show_message/session_error}" value=".." />
+    <input type="hidden" id="conversation_id" />
+
+    <!--/* jquery. */-->
+    <script src="contents/vendor/jquery/jquery.min.js" re-th:uqsrc="@{/contents/vendor/jquery/jquery.min.js}"></script>
+    <!--/* bootstrap. */-->
+    <script src="contents/vendor/bootstrap/js/bootstrap.bundle.min.js" re-th:uqsrc="@{/contents/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <script src="contents/vendor/sb-admin/js/sb-admin.js" re-th:uqsrc="@{/contents/vendor/sb-admin/js/sb-admin.js}"></script>
+    <!--/* tempusdominus-datetimepicker. */-->
+    <script src="contents/vendor/tempusdominus-datetimepicker/js/moment.min.js" re-th:uqsrc="@{/contents/vendor/tempusdominus-datetimepicker/js/moment.min.js}"></script>
+    <script src="contents/vendor/tempusdominus-datetimepicker/js/moment.js-2.22.2-locale-ja.js" re-th:uqsrc="@{/contents/vendor/tempusdominus-datetimepicker/js/moment.js-2.22.2-locale-ja.js}"></script>
+    <script src="contents/vendor/tempusdominus-datetimepicker/js/popper.min.js" re-th:uqsrc="@{/contents/vendor/tempusdominus-datetimepicker/js/popper.min.js}"></script>
+    <script src="contents/vendor/tempusdominus-datetimepicker/js/tempusdominus-datetimepicker.kai.js" re-th:uqsrc="@{/contents/vendor/tempusdominus-datetimepicker/js/tempusdominus-datetimepicker.kai.js}"></script>
+    <!--/* markdown-it. */-->
+    <script src="contents/vendor/markdown-it/markdown-it.min.js" re-th:uqsrc="@{/contents/vendor/markdown-it/markdown-it.min.js}"></script>
+    <!--/* システム. */-->
+    <script src="contents/vendor/com-res_system-commons/com-res_system-commons.js" re-th:uqsrc="@{/contents/vendor/com-res_system-commons/com-res_system-commons.js}"></script>
+    <script src="contents/scripts/common/commons.js" re-th:uqsrc="@{/contents/scripts/common/commons.js}"></script>
+    <script src="contents/scripts/common/biz_commons.js" re-th:uqsrc="@{/contents/scripts/common/biz_commons.js}"></script>
+
+    <!--/* 初期化処理. */-->
+    <script>
+    <!-- 
+    (function () {
+        // 画面で使用するメッセージ.
+        Commons.commonMessages = {[(${#exh.commonMessages(
+               'E_COMMON_0001'
+            + ',E_COMMON_0002'
+            + ',E_COMMON_0003'
+            )})]};
+        Commons.setConversationId('[(${conversation_id})]');
+        Commons.setPageTopBottom();
+        Commons.resetChangeInput();
+    }());
+    -->
+    </script>
+
+    <!--/* 画面固有 ダイアログ設定. */-->
+    <th:block th:replace="${modals}" />
+    <!--/* 確認ダイアログ設定. */-->
+    <div th:replace="_modal/modal_confirm_layout::layout()" th:remove="tag"></div>
+
+    <!--/* 画面固有 スクリプト設定. */-->
+    <th:block th:replace="${scripts}" />
+    <!--/* 画面共通 スクリプト. */-->
+    <script>
+    <!-- 
+    (function () {
+        Commons.openScreen(Commons.afterLoad);
+        Commons.showMessages('#main_contents', $ReC.parseJSON('[(${#exh.jsonMsg(messageList)})]'));
+    }());
+    -->
+    </script>
+
+    <!--/* スクロールボタン. */-->
+    <div id="to_page_top"    class="scroll-button color-white"><i class="fa fa-fw fa-angle-up"></i></div>
+    <div id="to_page_bottom" class="scroll-button color-white"><i class="fa fa-fw fa-angle-down"></i></div>
+
+  </div>
+</div>
+<!--/* ================================================== */-->
+
+</body>
+</html>

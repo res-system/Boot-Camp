@@ -1,0 +1,178 @@
+<!--/* ////////////////////////////////////////////////// */-->
+<!--/*                                                    */-->
+<!--/* _layout/modal_layout.html */-->
+<!--/*                                                    */-->
+<!--/* ////////////////////////////////////////////////// */-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<body>
+
+<!--/* ================================================== */-->
+<!--/* 選択ダイアログ. */-->
+<div th:fragment="modal_select(modal_id, modal_title, modal_input_header_body, modal_input_contents_body)" th:remove="tag">
+  <div class="modal fade" th:id="${modal_id}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title"th:text="${modal_title}">xxx</h6>
+          <button type="button" class="close" data-dismiss="modal" aria-label="閉じる" tabindex="-1"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body px-1 px-sm-2 px-md-3">
+          <!--/* メインフォーム. */-->
+          <form class="container modal-form" autocomplete="off">
+            <!--/* ヘッダー設定. */-->
+            <th:block th:replace="${modal_input_header_body}" />
+            <!--/* メッセージ. */-->
+            <div th:replace="_layout/default_layout::contents_message()" ></div>
+            <!--/* コンテンツ. */-->
+            <th:block th:replace="${modal_input_contents_body}" />
+            <!--/* 共通hidden. */-->
+            <input type="hidden" class="form-control mode" name="mode" value="" />
+            <input name="dummy" style="display:none;" value="" type="text" />
+          </form><!--/* /メインフォーム. */-->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-none btn_scroll_top font-md color-gray" tabindex="-1"><i class="fa fa-arrow-circle-up"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/* ================================================== */-->
+
+
+<!--/* ================================================== */-->
+<!--/* 情報表示ダイアログ. */-->
+<div th:fragment="modal_show(modal_id, modal_title, modal_input_header_body, modal_input_contents_body)" th:remove="tag">
+  <div class="modal fade" th:id="${modal_id}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title"th:text="${modal_title}">xxx</h6>
+          <button type="button" class="close" data-dismiss="modal" aria-label="閉じる" tabindex="-1"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body px-1 px-sm-2 px-md-3">
+          <!--/* メインフォーム. */-->
+          <form class="container modal-form" autocomplete="off">
+            <!--/* ヘッダー設定. */-->
+            <th:block th:replace="${modal_input_header_body}" />
+            <!--/* メッセージ. */-->
+            <div th:replace="_layout/default_layout::contents_message()" ></div>
+            <!--/* コンテンツ. */-->
+            <th:block th:replace="${modal_input_contents_body}" />
+            <!--/* 共通hidden. */-->
+            <input type="hidden" class="form-control mode" name="mode" value="" />
+            <input name="dummy" style="display:none;" value="" type="text" />
+          </form><!--/* /メインフォーム. */-->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-none btn_scroll_top font-md color-gray" tabindex="-1"><i class="fa fa-arrow-circle-up"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/* ================================================== */-->
+
+
+<!--/* ================================================== */-->
+<!--/* 入力ダイアログ. */-->
+<div th:fragment="modal_input(modal_id, modal_title, modal_input_header_body, modal_input_contents_body)" th:remove="tag">
+  <div class="modal fade" th:id="${modal_id}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title"th:text="${modal_title}">xxx</h6>
+          <button type="button" class="close" data-dismiss="modal" aria-label="閉じる" tabindex="-1"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body px-1 px-sm-2 px-md-3">
+          <!--/* メインフォーム. */-->
+          <form class="container modal-form" autocomplete="off">
+            <!--/* ヘッダー設定. */-->
+            <th:block th:replace="${modal_input_header_body}" />
+            <!--/* メッセージ. */-->
+            <div th:replace="_layout/default_layout::contents_message()" ></div>
+            <!--/* コンテンツ. */-->
+            <th:block th:replace="${modal_input_contents_body}" />
+            <!--/* 共通hidden. */-->
+            <input type="hidden" class="form-control mode" name="mode" value="" />
+            <input name="dummy" style="display:none;" value="" type="text" />
+          </form><!--/* /メインフォーム. */-->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-none btn_scroll_top font-md color-gray" tabindex="-1"><i class="fa fa-arrow-circle-up"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/* ================================================== */-->
+
+<!--/* ================================================== */-->
+<!--/* 入力ダイアログ(m). */-->
+<div th:fragment="modal_input_m(modal_id, modal_title, modal_input_header_body, modal_input_contents_body)" th:remove="tag">
+  <div class="modal fade" th:id="${modal_id}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title"th:text="${modal_title}">xxx</h6>
+          <button type="button" class="close" data-dismiss="modal" aria-label="閉じる" tabindex="-1"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body px-1 px-sm-2 px-md-3">
+          <!--/* メインフォーム. */-->
+          <form class="container modal-form" autocomplete="off">
+            <!--/* ヘッダー設定. */-->
+            <th:block th:replace="${modal_input_header_body}" />
+            <!--/* メッセージ. */-->
+            <div th:replace="_layout/default_layout::contents_message()" ></div>
+            <!--/* コンテンツ. */-->
+            <th:block th:replace="${modal_input_contents_body}" />
+            <!--/* 共通hidden. */-->
+            <input type="hidden" class="form-control mode" name="mode" value="" />
+            <input name="dummy" style="display:none;" value="" type="text" />
+          </form><!--/* /メインフォーム. */-->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-none btn_scroll_top font-md color-gray" tabindex="-1"><i class="fa fa-arrow-circle-up"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/* ================================================== */-->
+
+<!--/* ================================================== */-->
+<!--/* 入力ダイアログ(S). */-->
+<div th:fragment="modal_input_s(modal_id, modal_title, modal_input_header_body, modal_input_contents_body)" th:remove="tag">
+  <div class="modal fade" th:id="${modal_id}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title"th:text="${modal_title}">xxx</h6>
+          <button type="button" class="close" data-dismiss="modal" aria-label="閉じる" tabindex="-1"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body px-1 px-sm-2 px-md-3">
+          <!--/* メインフォーム. */-->
+          <form class="container modal-form" autocomplete="off">
+            <!--/* ヘッダー設定. */-->
+            <th:block th:replace="${modal_input_header_body}" />
+            <!--/* メッセージ. */-->
+            <div th:replace="_layout/default_layout::contents_message()" ></div>
+            <!--/* コンテンツ. */-->
+            <th:block th:replace="${modal_input_contents_body}" />
+            <!--/* 共通hidden. */-->
+            <input type="hidden" class="form-control mode" name="mode" value="" />
+            <input name="dummy" style="display:none;" value="" type="text" />
+          </form><!--/* /メインフォーム. */-->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-none btn_scroll_top font-md color-gray" tabindex="-1"><i class="fa fa-arrow-circle-up"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/* ================================================== */-->
+
+</body>
+</html>
