@@ -1,12 +1,14 @@
 /**
  * @file commons.js
  * @author res.
- * @version 1.5.0 (2019.09.25)
+ * @version 1.5.3 (2019.11.15)
  * <pre>
  * 「JavaScript Standard Style」の規約に基本的に則りますが、以下の項目は変更します。
  *  ・文の最後は必ず「;」とする。
  *  ・見易くする為の1行以上の改行も容認する。
  *  ・処理の途中の改行の場合、インデントは2つ取る。
+ * 「jQuery JavaScript Library v3.3.1」を使用しています。
+ * 「com-res_system-commons.js @version 1.1.2」を前提に作成しています。
  * </pre>
  */
 var Commons = { };
@@ -512,12 +514,13 @@ Commons.hasScrollBar = function (selector) {
  * スクロールボタン表示.
  */
 Commons.showPageTopBottom = function () {
-      if (!$('body').hasClass('no-scroll') 
-          && (Commons.hasScrollBar('body') || Commons.hasScrollBar('html'))) {
+      if (!$('body').hasClass('no-scroll') && (Commons.hasScrollBar('body') || Commons.hasScrollBar('html'))) {
         $('#to_page_top').fadeIn('fast');
         $('#to_page_bottom').fadeIn('fast');
-        $('#to_page_top').on('click', function () { Commons.scrollTop(); });
-        $('#to_page_bottom').on('click', function () { Commons.scrollBottom(); });
+        $('#to_page_top').off('click.Commons_showPageTopBottom');
+        $('#to_page_top').on( 'click.Commons_showPageTopBottom', function () { Commons.scrollTop(); });
+        $('#to_page_bottom').off('click.Commons_showPageTopBottom');
+        $('#to_page_bottom').on( 'click.Commons_showPageTopBottom', function () { Commons.scrollBottom(); });
       } else {
         $('#to_page_top').fadeOut('fast');
         $('#to_page_bottom').fadeOut('fast');
@@ -693,7 +696,8 @@ Commons.showMessage = function (selector, msgData) {
             } else {
               msgBox.html(messageTag);
             }
-            $('.message-focus').on('click', function (e) {
+            $('.message-focus').off('click.Commons_showMessage');
+            $('.message-focus').on( 'click.Commons_showMessage', function (e) {
                   var selector = $(this).attr('data-selector');
                   Commons.focus(selector);
                 });
@@ -704,7 +708,8 @@ Commons.showMessage = function (selector, msgData) {
             // 閉じるボタン設定.
             var msgClose = $(messageAreaSelector + ' button.close');
             if (msgClose.length > 0) {
-              msgClose.on('click', function (event) {
+              msgClose.off('click.Commons_showMessage');
+              msgClose.on( 'click.Commons_showMessage', function (event) {
                     msgArea.fadeOut('fast');
                     msgBox.html('');
                   });
@@ -815,6 +820,18 @@ Commons.removeErrorItem = function () {
 
 //-------------------- 項目処理.
 /**
+ * タブレット判定.
+ */
+Commons.isTablet = function () {
+      if (navigator.userAgent.match(/(iPhone|iPad|iPod|Android)/i)) {
+        // スマホ・タブレット（iOS・Android）の場合の処理を記述
+        return true;
+      } else {
+        return false;
+      }
+    };
+
+/**
  * フォーカス処理.
  * @param {string} selector - セレクタ.
  */
@@ -826,7 +843,21 @@ Commons.focus = function (selector) {
         }
       }
       if (target.length > 0) {
-        $(target[0]).focus();
+        if (Commons.isTablet()) {
+          // スマホ・タブレット（iOS・Android）の場合の処理を記述
+          if (target.prop('tagName') === 'INPUT' 
+              || target.prop('tagName') === 'SELECT' 
+              || target.prop('tagName') === 'TEXTAREA') {
+            if (target.prev('label').length > 0) {
+              target.prev('label').focus();
+            }
+          } else {
+            $(target[0]).focus();
+          }
+        } else {
+          // PCの場合の処理を記述
+          $(target[0]).focus();
+        }
       }
     };
 
@@ -943,7 +974,8 @@ Commons.checkChangedInput = function (title, msg, yesFunc, noFunc) {
  * スクロールボタン表示制御設定.
  */
 Commons.setPageTopBottom = function () {
-      $(window).on('load resize', function () { Commons.showPageTopBottom(); });
+      $(window).off('load.Commons_setPageTopBottom resize.Commons_setPageTopBottom');
+      $(window).on( 'load.Commons_setPageTopBottom resize.Commons_setPageTopBottom', function () { Commons.showPageTopBottom(); });
     };
 
 /**
@@ -953,8 +985,8 @@ Commons.setPageTopBottom = function () {
 Commons.setChangeInput = function (selector) {
       var target = '';
       if (selector) { target = selector + ' '; }
-
-      $(target + '.form-control').on('change', function (event) { Commons.ChangeInputOn(); });
+      $(target + '.form-control').off('change.Commons_setChangeInput');
+      $(target + '.form-control').on( 'change.Commons_setChangeInput', function (event) { Commons.ChangeInputOn(); });
     };
 
 /**
@@ -964,8 +996,8 @@ Commons.setChangeInput = function (selector) {
 Commons.setATagLink = function (selector) {
       var target = '';
       if (selector) { target = selector + ' '; }
-
-      $(target + '.link').on('click', function (event) {
+      $(target + '.link').off('click.Commons_setATagLink');
+      $(target + '.link').on( 'click.Commons_setATagLink', function (event) {
             // URL.
             var actionUrl = $(this).attr('data-action');
             if ($ReC.isStrBlk(actionUrl)) {
@@ -999,8 +1031,8 @@ Commons.setATagLink = function (selector) {
 Commons.setPostLink = function (selector) {
       var target = '';
       if (selector) { target = selector + ' '; }
-
-      $(target + '.postlink').on('click', function (event) {
+      $(target + '.postlink').off('click.Commons_setPostLink');
+      $(target + '.postlink').on( 'click.Commons_setPostLink', function (event) {
             // URL.
             var actionUrl = $(this).attr('data-action');
             if ($ReC.isStrBlk(actionUrl)) {
@@ -1056,8 +1088,8 @@ Commons.setPostLink = function (selector) {
 Commons.setAccordionMenu = function (selector) {
       var target = '';
       if (selector) { target = selector + ' '; }
-
-      $(target + '.accordion-menu-title').on('click', function (){
+      $(target + '.accordion-menu-title').off('click.Commons_setAccordionMenu');
+      $(target + '.accordion-menu-title').on( 'click.Commons_setAccordionMenu', function (){
             Commons.ctrlAccordionMenu($(this));
           });
     };
@@ -1086,8 +1118,8 @@ Commons.ctrlAccordionMenu = function (target) {
 Commons.setFile = function (selector) {
       var target = '';
       if (selector) { target = selector + ' '; }
-
-      $(target + 'input[type=file]').on('change', function (){
+      $(target + 'input[type=file]').off('change.Commons_setFile');
+      $(target + 'input[type=file]').on( 'change.Commons_setFile', function (){
             Commons.setFileName(this);
             var thumbnail = $(this).nextAll('img.thumbnail');
             if (thumbnail.length > 0) {
@@ -1226,7 +1258,8 @@ Commons.setSelectTable = function (args) {
       if (listRow.length > 0) {
 
         // クリック時設定.
-        listRow.on('click', function (event) {
+        listRow.off('click.Commons_setSelectTable');
+        listRow.on( 'click.Commons_setSelectTable', function (event) {
               // 選択解除.
               Commons.clearSelectedRow($(args.tbl + ' tbody').find('tr'));
               // 行選択.
@@ -1249,7 +1282,8 @@ Commons.setSelectTable = function (args) {
         // ヘッダクリック時選択全解除.
         var hdRow = $(args.tbl + ' thead tr th');
         if (hdRow.length > 0) {
-          hdRow.on('click', function (e) {
+          hdRow.off('click.Commons_setSelectTable');
+          hdRow.on( 'click.Commons_setSelectTable', function (e) {
                 Commons.clearSelectedRow($(args.tbl + ' tbody').find('tr'));
               });
         }
@@ -1659,7 +1693,8 @@ Commons.formatDate = function (date, format) {
  */
 Commons.setModalEvent = function (targetMain, showFunc, shownFunc, hideFunc, hiddenFunc) {
       //-- ダイアログ 表示前処理. --//
-      $(targetMain).on('show.bs.modal', function (event) {
+      $(targetMain).off('show.bs.modal');
+      $(targetMain).on( 'show.bs.modal', function (event) {
             if (event.namespace === 'bs.modal') { 
               $(targetMain).data('is_open', true);
               $(targetMain).data('is_init', true);
@@ -1667,7 +1702,8 @@ Commons.setModalEvent = function (targetMain, showFunc, shownFunc, hideFunc, hid
             }
           });
       //-- ダイアログ 表示時処理. --//
-      $(targetMain).on('shown.bs.modal', function (event) {
+      $(targetMain).off('shown.bs.modal');
+      $(targetMain).on( 'shown.bs.modal', function (event) {
             if ($(targetMain).data('is_open') === false) {
               $(targetMain).modal('hide');
             } else {
@@ -1677,7 +1713,8 @@ Commons.setModalEvent = function (targetMain, showFunc, shownFunc, hideFunc, hid
             }
           });
       //-- ダイアログ 閉じる前処理. --//
-      $(targetMain).on('hide.bs.modal', function (event) {
+      $(targetMain).off('hide.bs.modal');
+      $(targetMain).on( 'hide.bs.modal', function (event) {
             if ($(targetMain).data('is_open') === true) {
               if (Commons.isChangedInput) {
                 Commons.checkChangedInput('閉じる', 'ダイアログを閉じます', 
@@ -1714,7 +1751,8 @@ Commons.setModalEvent = function (targetMain, showFunc, shownFunc, hideFunc, hid
             }
           });
       //-- ダイアログ 閉じた後処理. --//
-      $(targetMain).on('hidden.bs.modal', function (event) {
+      $(targetMain).off('hidden.bs.modal');
+      $(targetMain).on( 'hidden.bs.modal', function (event) {
             $('body').addClass('modal-open');
             $(targetMain).data('is_open', false);
             $(targetMain).data('is_init', false);
@@ -1722,7 +1760,8 @@ Commons.setModalEvent = function (targetMain, showFunc, shownFunc, hideFunc, hid
           });
 
       //-- ダイアログ TOPへスクロール処理. --//
-      $(targetMain + ' .btn_scroll_top').on('click', function (event) {
+      $(targetMain + ' .btn_scroll_top').off('click.Commons_setModalEvent');
+      $(targetMain + ' .btn_scroll_top').on( 'click.Commons_setModalEvent', function (event) {
             $(targetMain).animate({ scrollTop: 0 }, 'fast');
           });
     };
