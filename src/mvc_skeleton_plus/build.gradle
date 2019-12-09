@@ -45,6 +45,11 @@ dependencies {
     // lombok.
     providedCompile(group: 'org.projectlombok', name: 'lombok', version: '1.18.+')
 
+    // apache.commons(commons-lang3).
+    compile("org.apache.commons:commons-lang3:3.+")
+    // apache.commons(commons-email).
+    compile("org.apache.commons:commons-email:1.+")
+
     // ./main/lib配下の全てのjarファイルをコンパイル時のクラスパスに追加
     compile fileTree(dir: './src/main/webapp/WEB-INF/lib', includes: ['*.jar'])
 
@@ -57,3 +62,23 @@ dependencies {
     testCompile 'org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld:1.+'
     testCompile 'org.jboss.weld.se:weld-se-core:3.+'
 }
+
+/*/////////////////////////////////////////////////////////////////////////////
+    warファイルコピー.
+/////////////////////////////////////////////////////////////////////////////*/
+task copy_war(type: Copy) {
+    from './build/libs'
+    into '/opt/lampp/tomcat8/webapps'
+    include '**/*.war'
+}
+copy_war.description = '開発用実行環境にwarファイルをコピーします。'
+
+/*/////////////////////////////////////////////////////////////////////////////
+    デプロイ.
+/////////////////////////////////////////////////////////////////////////////*/
+task deploy {
+    dependsOn 'build'
+    dependsOn 'copy_war'
+    tasks.findByName('copy_war').mustRunAfter 'build'
+}
+deploy.description = '開発用実行環境にデプロイします。'

@@ -137,8 +137,6 @@
     <script src="contents/vendor/tempusdominus-datetimepicker/js/moment.js-2.22.2-locale-ja.js" re-th:uqsrc="@{/contents/vendor/tempusdominus-datetimepicker/js/moment.js-2.22.2-locale-ja.js}"></script>
     <script src="contents/vendor/tempusdominus-datetimepicker/js/popper.min.js" re-th:uqsrc="@{/contents/vendor/tempusdominus-datetimepicker/js/popper.min.js}"></script>
     <script src="contents/vendor/tempusdominus-datetimepicker/js/tempusdominus-datetimepicker.kai.js" re-th:uqsrc="@{/contents/vendor/tempusdominus-datetimepicker/js/tempusdominus-datetimepicker.kai.js}"></script>
-    <!--/* markdown-it. */-->
-    <script src="contents/vendor/markdown-it/markdown-it.min.js" re-th:uqsrc="@{/contents/vendor/markdown-it/markdown-it.min.js}"></script>
     <!--/* システム. */-->
     <script src="contents/vendor/com-res_system-commons/com-res_system-commons.js" re-th:uqsrc="@{/contents/vendor/com-res_system-commons/com-res_system-commons.js}"></script>
     <script src="contents/scripts/common/commons.js" re-th:uqsrc="@{/contents/scripts/common/commons.js}"></script>
@@ -155,6 +153,7 @@
             + ',E_COMMON_0003'
             )})]};
         Commons.setConversationId('[(${conversation_id})]');
+        BizCommons.initFormControl();
         Commons.setPageTopBottom();
         Commons.resetChangeInput();
     }());
@@ -172,8 +171,10 @@
     <script>
     <!-- 
     (function () {
-        Commons.openScreen(Commons.afterLoad);
-        Commons.showMessages('#main_contents', $ReC.parseJSON('[(${#exh.jsonMsg(messageList)})]'));
+      // 画面表示.
+      Commons.openScreen(Commons.afterLoad);
+      // デフォルトメッセージ表示.
+      Commons.showMessages('#main_contents', $ReC.parseJSON('[(${#exh.jsonMsg(messageList)})]'));
     }());
     -->
     </script>

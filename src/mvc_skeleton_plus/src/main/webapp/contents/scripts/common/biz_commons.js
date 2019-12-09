@@ -49,10 +49,23 @@ BizCommons.initFormControl = function (selector) {
       var target = '';
       if (selector) { target = selector + ' '; }
 
+      // チェックボックス.
+      BizCommons.checkbox(target + 'input[type="checkbox"].form-control');
+      // ラジオボタン.
+      BizCommons.radio(target + 'input[type="radio"].form-control');
       // ドロップダウン.
       BizCommons.dropdownSelect(target + ' .dropdown-select');
       // 日付入力.
       BizCommons.setDatetimePicker(target);
+
+      // フォーカス.
+      $(target + 'input.form-control').focus(function (){ $(this).select(); });
+
+      Commons.setFile(target);
+      Commons.setATagLink(target);
+      Commons.setPostLink(target);
+      Commons.setAccordionMenu(target);
+      Commons.setChangeInput(target);
 
       BizCommons.refreshScreen(target);
     };
