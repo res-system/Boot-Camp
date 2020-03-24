@@ -19,3 +19,29 @@
 1.2.0 
   2018.06.29
     multipart対応.
+
+1.2.1 
+  2019.06.07
+    FormUtil.setPostData()でリストサイズが空文字だった時にエラーが出ないように修正.
+
+1.2.2 
+  2019.09.24
+    フォーム系タグのThymeleaf拡張を非推奨に変更.
+      re-th:checkbox
+      re-th:input
+      re-th:radio
+      re-th:option
+      re-th:select
+      re-th:textarea
+
+2.0.0 
+  2020.03.31
+    MvcUtilクラスのtoBigDecimal()、toLong()、toBoolean()、isEmpty()を修正.
+    MvcUtilクラスのtoInteger()を削除.
+    CheckboxProcessorを削除.
+    InputProcessorを削除.
+    RadioProcessorを削除.
+    SelectOptionProcessorを削除.
+    SelectProcessorを削除.
+    TextareaProcessorを削除.
+    

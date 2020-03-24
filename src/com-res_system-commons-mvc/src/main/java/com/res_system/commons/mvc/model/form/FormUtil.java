@@ -26,6 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.MultivaluedMap;
 
+import com.res_system.commons.mvc.MvcUtil;
+
 /**
  * <pre>
  * フォームクラス用共通処理クラス.
@@ -154,7 +156,7 @@ public final class FormUtil {
                     } else if (listParamAnn != null) {
                         if (field.get(target) != null) {
                             if (params.get(paramName + "_size") != null) {
-                                int listSize = Integer.valueOf(params.get(paramName + "_size").get(0));
+                                int listSize = MvcUtil.toInt(params.get(paramName + "_size").get(0), 0);
                                 if (listSize > 0) {
                                     // リストの値設定.
                                     Class<?> dataType = listParamAnn.value();

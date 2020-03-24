@@ -22,14 +22,8 @@ import org.thymeleaf.dialect.AbstractProcessorDialect;
 import org.thymeleaf.processor.IProcessor;
 import org.thymeleaf.standard.StandardDialect;
 
-import com.res_system.commons.mvc.view.thprocessors.CheckboxProcessor;
 import com.res_system.commons.mvc.view.thprocessors.ClTextAttrProcessor;
-import com.res_system.commons.mvc.view.thprocessors.InputProcessor;
 import com.res_system.commons.mvc.view.thprocessors.ListSizeProcessor;
-import com.res_system.commons.mvc.view.thprocessors.RadioProcessor;
-import com.res_system.commons.mvc.view.thprocessors.SelectOptionProcessor;
-import com.res_system.commons.mvc.view.thprocessors.SelectProcessor;
-import com.res_system.commons.mvc.view.thprocessors.TextareaProcessor;
 import com.res_system.commons.mvc.view.thprocessors.UqHrefProcessor;
 import com.res_system.commons.mvc.view.thprocessors.UqSrcProcessor;
 
@@ -58,14 +52,8 @@ public class ReThProcessorDialect extends AbstractProcessorDialect {
     @Override
     public Set<IProcessor> getProcessors(final String dialectPrefix) {
         final Set<IProcessor> processors = new HashSet<IProcessor>();
-        processors.add(new CheckboxProcessor(dialectPrefix));
         processors.add(new ClTextAttrProcessor(dialectPrefix));
-        processors.add(new InputProcessor(dialectPrefix));
         processors.add(new ListSizeProcessor(dialectPrefix));
-        processors.add(new RadioProcessor(dialectPrefix));
-        processors.add(new SelectOptionProcessor(dialectPrefix));
-        processors.add(new SelectProcessor(dialectPrefix));
-        processors.add(new TextareaProcessor(dialectPrefix));
         processors.add(new UqHrefProcessor(dialectPrefix));
         processors.add(new UqSrcProcessor(dialectPrefix));
         return processors;

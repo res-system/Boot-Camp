@@ -15,6 +15,7 @@
  */
 package com.res_system.commons.mvc;
 
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -413,14 +414,14 @@ public final class MvcUtil {
 
 
 
-    //---------------------------------------------- static [public] 共通処理.
+    //---------------------------------------------- [public] チェック共通処理.
     /**
      * 値がNULL又は空である事を確認します.
-     * @param id 確認対象の値(ID).
+     * @param value 確認対象の値.
      * @return 確認結果(true:OK, false:NG).
      */
-    public static final boolean isEmpty(Long id) {
-        if (id == null || id <= 0L) {
+    public static boolean isEmpty(Integer value) {
+        if (value == null || value == 0) {
             return true;
         }
         return false;
@@ -431,7 +432,31 @@ public final class MvcUtil {
      * @param value 確認対象の値.
      * @return 確認結果(true:OK, false:NG).
      */
-    public static final boolean isEmpty(String value) {
+    public static boolean isEmpty(Long value) {
+        if (value == null || value == 0L) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 値がNULL又は空である事を確認します.
+     * @param value 確認対象の値.
+     * @return 確認結果(true:OK, false:NG).
+     */
+    public static boolean isEmpty(BigDecimal value) {
+        if (value == null || value.compareTo(new BigDecimal(0)) == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 値がNULL又は空である事を確認します.
+     * @param value 確認対象の値.
+     * @return 確認結果(true:OK, false:NG).
+     */
+    public static boolean isEmpty(String value) {
         if (value == null || value.length() == 0) {
             return true;
         }
@@ -443,7 +468,7 @@ public final class MvcUtil {
      * @param value 確認対象の値.
      * @return 確認結果(true:OK, false:NG).
      */
-    public static final boolean isEmpty(StringBuilder value) {
+    public static boolean isEmpty(StringBuilder value) {
         if (value == null || value.length() == 0) {
             return true;
         }
@@ -455,7 +480,7 @@ public final class MvcUtil {
      * @param value 確認対象の値.
      * @return 確認結果(true:OK, false:NG).
      */
-    public static final boolean isEmpty(String[] values) {
+    public static boolean isEmpty(String[] values) {
         if (values == null || values.length == 0) {
             return true;
         }
@@ -467,7 +492,7 @@ public final class MvcUtil {
      * @param value 確認対象の値.
      * @return 確認結果(true:OK, false:NG).
      */
-    public static final boolean isEmpty(List<?> values) {
+    public static boolean isEmpty(List<?> values) {
         if (values == null || values.size() == 0) {
             return true;
         }
@@ -479,7 +504,7 @@ public final class MvcUtil {
      * @param value 確認対象の値.
      * @return 確認結果(true:OK, false:NG).
      */
-    public static final boolean isEmpty(Map<?,?> values) {
+    public static boolean isEmpty(Map<?,?> values) {
         if (values == null || values.size() == 0) {
             return true;
         }
@@ -487,6 +512,8 @@ public final class MvcUtil {
     }
 
 
+
+    //---------------------------------------------- [public] 文字列編集共通処理.
     /**
      * 前後の空白を削除します.(nullの場合は、空文字を返却します)
      * @param value 対象の値.
@@ -498,5 +525,161 @@ public final class MvcUtil {
         }
         return "";
     }
+
+    /**
+     * 文字列が空の場合に空文字を返却します.
+     * @param str 対象文字列.
+     * @return 編集後の値.
+     */
+    public static String toEmpty(String str) {
+        return toDefault(str, "");
+    }
+
+    /**
+     * 文字列が空の場合にNullを返却します.
+     * @param str 対象文字列.
+     * @return 編集後の値.
+     */
+    public static String toNull(String str) {
+        return toDefault(str, null);
+    }
+
+    /**
+     * 
+     * 文字列が空の場合にデフォルトの値を返却します.
+     * @param str 対象文字列.
+     * @param defaultValue デフォルトの値.
+     * @return 編集後の値.
+     */
+    public static String toDefault(String str, String defaultValue) {
+        if (isEmpty(str)) {
+            return defaultValue;
+        }
+        return str;
+    }
+
+
+
+    //---------------------------------------------- static [public] 文字列型変換処理.
+    /**
+     * intを返却します.
+     * @param str 対象文字列.
+     * @return 変換後の値.
+     */
+    public static int toInt(String str) {
+        return toInt(str, 0);
+    }
+
+    /**
+     * intを返却します.
+     * @param str 対象文字列.
+     * @param defaultValue デフォルト値.
+     * @return 変換後の値.
+     */
+    public static int toInt(String str, int defaultValue) {
+        if (isEmpty(str)) {
+            return defaultValue;
+        }
+        try {
+            return Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
+
+
+    /**
+     * longを返却します.
+     * @param str 対象文字列.
+     * @return 変換後の値.
+     */
+    public static long toLong(String str) {
+        return toLong(str, 0L);
+    }
+
+    /**
+     * longを返却します.
+     * @param str 対象文字列.
+     * @param defaultValue デフォルト値.
+     * @return 変換後の値.
+     */
+    public static long toLong(String str, long defaultValue) {
+        if (isEmpty(str)) {
+            return defaultValue;
+        }
+        try {
+            return Long.parseLong(str);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
+
+
+    /**
+     * BigDecimalを返却します.
+     * @param str 対象文字列.
+     * @return 変換後の値.
+     */
+    public static BigDecimal toBigDecimal(String str) {
+        BigDecimal defaultValue = null;
+        return toBigDecimal(str, defaultValue);
+    }
+
+    /**
+     * BigDecimalを返却します.
+     * @param str 対象文字列.
+     * @param defaultValue デフォルト値.
+     * @return 変換後の値.
+     */
+    public static BigDecimal toBigDecimal(String str, String defaultValue) {
+        return toBigDecimal(str, new BigDecimal(defaultValue));
+    }
+
+    /**
+     * BigDecimalを返却します.
+     * @param str 対象文字列.
+     * @param defaultValue デフォルト値.
+     * @return 変換後の値.
+     */
+    public static BigDecimal toBigDecimal(String str, BigDecimal defaultValue) {
+        if (isEmpty(str)) {
+            return defaultValue;
+        }
+        try {
+            return new BigDecimal(str);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
+
+
+    /**
+     * booleanを返却します.
+     * @param str 対象文字列.
+     * @return 変換後の値.
+     */
+    public static boolean toBoolean(String str) {
+        return toBoolean(str, false);
+    }
+
+    /**
+     * booleanを返却します.
+     * @param str 対象文字列.
+     * @param defaultValue デフォルト値.
+     * @return 変換後の値.
+     */
+    public static boolean toBoolean(String str, boolean defaultValue) {
+        if (!isEmpty(str)) {
+            String value = str.toLowerCase();
+            if ("true".equals(value)) {
+                return new Boolean(value);
+            } else if ("false".equals(value)) {
+                return new Boolean(value);
+            }
+        }
+        return defaultValue;
+    }
+
+
 
 }
