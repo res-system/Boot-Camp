@@ -44,4 +44,8 @@
     SelectOptionProcessorを削除.
     SelectProcessorを削除.
     TextareaProcessorを削除.
-    
+
+2.0.1 
+  2020.05.31
+    MvcUtilクラスのTrim()を廃止。
+    MvcUtilクラスに全角スペース対応の「trim(),rTrim(),lTrim(),lTrim(),isTrimEmpty()」を追加.

@@ -24,12 +24,25 @@ import com.res_system.commons.mvc.model.IListItem;
  * @author res.
  */
 public interface IKind {
-    /** 値 を取得します. */
+    /** 
+     * 値 を取得します.
+     * @return 値.
+     */
     String getValue();
-    /** 表示文字 を取得します. */
+    /** 
+     * 表示文字 を取得します.
+     * @return 表示文字.
+     */
     String getText();
-    /** 値のチェックします. */
+    /** 
+     * 値のチェックします.
+     * @param code チェックする値.
+     * @return チェック結果.
+     */
     boolean equals(final String code);
-    /** リストオブジェクトに変換します. */
+    /** 
+     * リストオブジェクトに変換します.
+     * @return リストオブジェクト.
+     */
     IListItem toItem();
 }

@@ -48,21 +48,19 @@ public final class FormUtil {
 
     //---------------------------------------------- static [public] フォームクラス作成処理.
     /**
-     * <pre>
      * フォームクラスを作成します.
-     *
+     * <pre>
      * ※
      * 「@Param」の項目を対象にparamsより取得データを設定します。
      * データクラスを対象とする場合は「@DataParam」を指定します。
      *  （データクラスで取得対象とする各項目に「@Param」が必要です）
      * リストを対象とする場合は「@ListParam」を指定します。
      *  （リストに設定されるクラスにも「@Param」が必要です）
-     *
      * </pre>
+     * @param <T> 対象のフォームクラス.
      * @param clazz 対象フォームクラス型.
-     * @param params POSTデータ.
      * @return フォームクラス.
-     * @throws Exception
+     * @throws Exception 例外.
      */
     public static <T> T make(Class<T> clazz) throws Exception {
         T form = null;
@@ -75,8 +73,8 @@ public final class FormUtil {
     }
 
     /**
-     * <pre>
      * フォームクラスを作成し、POSTデータを設定します.
+     * <pre>
      * ※フォームクラスの階層は2~3層位にしてください。
      * ※
      * 「@Param」の項目を対象にparamsより取得データを設定します。
@@ -84,13 +82,12 @@ public final class FormUtil {
      *  （データクラスで取得対象とする各項目に「@Param」が必要です）
      * リストを対象とする場合は「@ListParam」を指定します。
      *  （リストに設定されるクラスにも「@Param」が必要です）
-     *
      * </pre>
+     * @param <T> 対象のフォームクラス.
      * @param clazz 対象フォームクラス型.
      * @param params POSTデータ.
-     * @param steIndex スタックトレースインデックス(アクションメソッドからの呼び出し元の深さ).
      * @return フォームクラス.
-     * @throws Exception
+     * @throws Exception 例外.
      */
     public static <T> T make(Class<T> clazz, MultivaluedMap<String, String> params) throws Exception {
         T form = null;
@@ -107,18 +104,17 @@ public final class FormUtil {
 
     //---------------------------------------------- static [public] POSTデータ設定処理.
     /**
-     * <pre>
      * POSTデータを取得する.
+     * <pre>
      * ※フォームクラスの階層は2~3層位にしてください。
-     *
      * ※
      * 「@Param」の項目を対象にparamsより取得データを設定します。
      * データクラスを対象とする場合は「@DataParam」を指定します。
      *  （データクラスで取得対象とする各項目に「@Param」が必要です）
      * リストを対象とする場合は「@ListParam」を指定します。
      *  （リストに設定されるクラスにも「@Param」が必要です）
-     *
      * </pre>
+     * @param <T> 対象のフォームクラス.
      * @param form データを受け取るフォームクラス.
      * @param params POSTデータ.
      * @return フォームクラス.
@@ -133,6 +129,7 @@ public final class FormUtil {
     //---------------------------------------------- static [private] POSTデータ設定処理.
     /**
      * POSTデータを設定します(再帰).
+     * @param <T> 設定対象のデータクラス.
      * @param params POSTデータ.
      * @param target 設定先のクラス.
      * @param prefix プレフィックス.
@@ -200,7 +197,7 @@ public final class FormUtil {
      * (getDeclaredFields()が順番を保証しないので注意する！)
      * </pre>
      * @param clazz 対象のクラス.
-     * @param fields 取得したフィールドを格納するMap<フィールド名,フィールド>.
+     * @param fields 取得したフィールドを格納するMap＜フィールド名,フィールド＞.
      */
     public static void getAllFields(Class<?> clazz, Map<String, Field> fields) {
         if (clazz != null && fields != null) {
@@ -220,6 +217,7 @@ public final class FormUtil {
     //---------------------------------------------- static [public] セッションデータ処理.
     /**
      * 指定の名称のセッションデータを取得します.
+     * @param <T> セッション保持する対象のデータクラス.
      * @param request HttpServletRequest.
      * @param name セッションデータ名.
      * @return セッションデータ.
@@ -235,6 +233,7 @@ public final class FormUtil {
 
     /**
      * 指定の名称でセッションデータを保存します.
+     * @param <T> セッション保持する対象のデータクラス.
      * @param request HttpServletRequest.
      * @param name セッションデータ名.
      * @param target 保存するセッションデータ.
@@ -317,7 +316,7 @@ public final class FormUtil {
 
     /**
      * Cookieの値を設定します.
-     * <br />パスは"/"で設定します.
+     * <br>パスは"/"で設定します.
      * @param request HttpServletRequest.
      * @param response HttpServletResponse.
      * @param name Cookieの名前.
@@ -332,7 +331,7 @@ public final class FormUtil {
 
     /**
      * Cookieの値を設定します.
-     * <br />最長存続期間は2週間.
+     * <br>最長存続期間は2週間.
      * @param request HttpServletRequest.
      * @param response HttpServletResponse.
      * @param path パス.
@@ -347,7 +346,7 @@ public final class FormUtil {
 
     /**
      * Cookieの値を設定します.
-     * <br />最長存続期間は2週間.パスは"/"で設定します.
+     * <br>最長存続期間は2週間.パスは"/"で設定します.
      * @param request HttpServletRequest.
      * @param response HttpServletResponse.
      * @param name Cookieの名前.

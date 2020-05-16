@@ -70,7 +70,6 @@ public final class KindUtil {
     /**
      * リスト を取得します.
      * @param values 種別リスト.
-     * @param code 対象のコード.
      * @return 表示文字.
      */
     public static List<IListItem> toItemList(IKind[] values) {

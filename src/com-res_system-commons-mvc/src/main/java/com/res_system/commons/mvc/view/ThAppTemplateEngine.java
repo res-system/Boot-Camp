@@ -57,7 +57,10 @@ public class ThAppTemplateEngine {
 
 
     //---------------------------------------------- properies [private].
-    /** Thymeleaf 文字コード設定 を取得します. */
+    /** 
+     * Thymeleaf 文字コード設定 を取得します. 
+     * @return Thymeleaf 文字コード設定.
+     */
     public String getCharsetName() { return thAppSetting.getCharsetName(); }
 
 
@@ -88,6 +91,7 @@ public class ThAppTemplateEngine {
     //---------------------------------------------- instance method [public] 初期化処理.
     /**
      * 初期化します.
+     * @return テンプレートエンジン処理クラス.
      */
     public TemplateEngine getTemplateEngine() {
         //
@@ -114,7 +118,7 @@ public class ThAppTemplateEngine {
      * HTMLテキストを出力します(Context).
      * @param response HtmlResponse.
      * @param writer Writer.
-     * @throws IOException
+     * @throws IOException IO例外.
      */
     public void flushHtmlText(HtmlResponse response, Writer writer) throws IOException {
 
@@ -138,7 +142,7 @@ public class ThAppTemplateEngine {
      * @param req HttpServletRequest.
      * @param res HttpServletResponse.
      * @param con ServletContext.
-     * @throws IOException
+     * @throws IOException IO例外.
      */
     public void flushHtmlText(HtmlResponse response, Writer writer,
             HttpServletRequest req, HttpServletResponse res, ServletContext con) throws IOException {
@@ -160,7 +164,7 @@ public class ThAppTemplateEngine {
      * HTMLテキストを作成します(Context).
      * @param response HtmlResponse.
      * @return HTMLテキスト.
-     * @throws IOException
+     * @throws IOException IO例外.
      */
     public String makeHtmlText(HtmlResponse response) throws IOException {
 
@@ -183,7 +187,7 @@ public class ThAppTemplateEngine {
      * @param req HttpServletRequest.
      * @param res HttpServletResponse.
      * @param con ServletContext.
-     * @throws IOException
+     * @throws IOException IO例外.
      */
     public String makeHtmlText(HtmlResponse response,
             HttpServletRequest req, HttpServletResponse res, ServletContext con) throws IOException {

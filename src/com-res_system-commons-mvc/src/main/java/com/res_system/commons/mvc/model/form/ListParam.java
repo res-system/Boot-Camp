@@ -33,6 +33,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface ListParam {
-    /** リストの型. */
+    /** 
+     * リストの型.
+     * @return リストの型.
+     */
     Class<?> value();
 }

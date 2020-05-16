@@ -68,11 +68,20 @@ public class ThymeleafAppSetting {
     private String charsetName;
 
     //-- setter / getter. --//
-    /** ClassLoaderTemplateResolver を取得します. */
+    /** 
+     * ClassLoaderTemplateResolver を取得します.
+     * @return ClassLoaderTemplateResolver.
+     */
     public ClassLoaderTemplateResolver getTemplateResolver() { return templateResolver; }
-    /** Thymeleaf 拡張クラス設定 を取得します. */
+    /**
+     * Thymeleaf 拡張クラス設定 を取得します.
+     * @return Thymeleaf 拡張クラス設定.
+     */
     public Map<String, IDialect> getDialects() { return dialects; }
-    /** Thymeleaf 文字コード設定 を取得します. */
+    /** 
+     * Thymeleaf 文字コード設定 を取得します.
+     * @return Thymeleaf 文字コード設定.
+     */
     public String getCharsetName() { return charsetName; }
 
 
@@ -158,7 +167,7 @@ public class ThymeleafAppSetting {
             for (String className : classNames) {
                 if (!MvcUtil.isEmpty(className)) {
                     try {
-                        String newClassName = MvcUtil.Trim(className);
+                        String newClassName = MvcUtil.trim(className);
                         if (!MvcUtil.isEmpty(newClassName)) {
                             if (!dialects.containsKey(newClassName)) {
                                 Class<?> myClass = Class.forName(newClassName);

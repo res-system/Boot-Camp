@@ -37,15 +37,30 @@ public class HtmlResponse {
     private String redirectUrl;
 
     //-- setter / getter. --//
-    /** テンプレート を取得します. */
+    /** 
+     * テンプレート を取得します.
+     * @return テンプレート.
+     */
     public String getTemplate() { return template; }
-    /** テンプレート を設定します. */
+    /** 
+     * テンプレート を設定します.
+     * @param template テンプレート.
+     */
     public void setTemplate(String template) { this.template = template; }
-    /** パラメタ を取得します. */
+    /** 
+     * パラメタ を取得します.
+     * @return パラメタ.
+     */
     public Map<String, Object> getParams() { return params; }
-    /** パラメタ を設定します. */
+    /** 
+     * パラメタ を設定します.
+     * @param params パラメタ.
+     */
     public void setParams(Map<String, Object> params) { this.params = params; }
-    /** 遷移先URL を取得します. */
+    /** 
+     * 遷移先URL を取得します.
+     * @return 遷移先URL.
+     */
     public String getRedirectUrl() { return redirectUrl; }
 
 

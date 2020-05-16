@@ -22,10 +22,19 @@ package com.res_system.commons.mvc.model;
  * @author res.
  */
 public interface IListItem {
-    /** 値 を取得します. */
+    /** 
+     * 値 を取得します.
+     * @return 値.
+     */
     public String getValue();
-    /** 表示文字列 を取得します. */
+    /** 
+     * 表示文字列 を取得します.
+     * @return 表示文字列.
+     */
     public String getText();
-    /** 有効／無効 を取得します. */
+    /** 
+     * 有効／無効 を取得します.
+     * @return 有効／無効.
+     */
     public boolean getDisabled();
 }

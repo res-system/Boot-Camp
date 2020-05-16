@@ -189,7 +189,7 @@ public final class MvcUtil {
      * @return 項目名.
      */
     public static String getName(String fieldName) {
-        return Trim(fieldName);
+        return trim(fieldName);
     }
 
     /**
@@ -199,7 +199,7 @@ public final class MvcUtil {
      * @return 項目名.
      */
     public static String getName(String dataName, String fieldName) {
-        return String.format("%s.%s", Trim(dataName), Trim(fieldName));
+        return String.format("%s.%s", trim(dataName), trim(fieldName));
     }
 
     /**
@@ -210,7 +210,7 @@ public final class MvcUtil {
      * @return 項目名.
      */
     public static String getName(String listName, String listIndex, String fieldName) {
-        return String.format("%s[%s].%s", Trim(listName), Trim(listIndex), Trim(fieldName));
+        return String.format("%s[%s].%s", trim(listName), trim(listIndex), trim(fieldName));
     }
 
 
@@ -220,7 +220,7 @@ public final class MvcUtil {
      * @return 項目ID.
      */
     public static String getId(String fieldName) {
-        String id = Trim(fieldName);
+        String id = trim(fieldName);
         return id.replaceAll("\\.", "_");
     }
 
@@ -231,7 +231,7 @@ public final class MvcUtil {
      * @return 項目ID.
      */
     public static String getId(String dataName, String fieldName) {
-        String id = String.format("%s_%s", Trim(dataName), Trim(fieldName));
+        String id = String.format("%s_%s", trim(dataName), trim(fieldName));
         return id.replaceAll("\\.", "_");
     }
 
@@ -243,7 +243,7 @@ public final class MvcUtil {
      * @return 項目ID.
      */
     public static String getId(String listName, String listIndex, String fieldName) {
-        String id = String.format("%s_%s_%s", Trim(listName), Trim(listIndex), Trim(fieldName));
+        String id = String.format("%s_%s_%s", trim(listName), trim(listIndex), trim(fieldName));
         return id.replaceAll("\\.", "_");
     }
 
@@ -255,7 +255,7 @@ public final class MvcUtil {
      * @return 項目ID.
      */
     public static String getIdWithValue(String fieldName, String value) {
-        String id = String.format("%s_%s", Trim(fieldName), Trim(value));
+        String id = String.format("%s_%s", trim(fieldName), trim(value));
         return id.replaceAll("\\.", "_");
     }
 
@@ -267,7 +267,7 @@ public final class MvcUtil {
      * @return 項目ID.
      */
     public static String getIdWithValue(String dataName, String fieldName, String value) {
-        String id = String.format("%s_%s_%s", Trim(dataName), Trim(fieldName), Trim(value));
+        String id = String.format("%s_%s_%s", trim(dataName), trim(fieldName), trim(value));
         return id.replaceAll("\\.", "_");
     }
 
@@ -280,7 +280,7 @@ public final class MvcUtil {
      * @return 項目ID.
      */
     public static String getIdWithValue(String listName, String listIndex, String fieldName, String value) {
-        String id = String.format("%s_%s_%s_%s", Trim(listName), Trim(listIndex), Trim(fieldName), Trim(value));
+        String id = String.format("%s_%s_%s_%s", trim(listName), trim(listIndex), trim(fieldName), trim(value));
         return id.replaceAll("\\.", "_");
     }
 
@@ -324,7 +324,7 @@ public final class MvcUtil {
      }
 
     /**
-     * 改行を<br />に置換します.
+     * 改行を＜br /＞に置換します.
      * @param htmlText HTML文字列.
      * @return 編集後のHTML文字列.
      */
@@ -340,7 +340,7 @@ public final class MvcUtil {
      * JSON文字列に変換します.
      * @param target 対象オブジェクト.
      * @return JSON文字列.
-     * @throws JsonProcessingException
+     * @throws JsonProcessingException Json変換例外.
      */
     public static String toJson(Object target) throws JsonProcessingException {
         if (target != null) {
@@ -477,7 +477,7 @@ public final class MvcUtil {
 
     /**
      * 値がNULL又は空である事を確認します.
-     * @param value 確認対象の値.
+     * @param values 確認対象の値.
      * @return 確認結果(true:OK, false:NG).
      */
     public static boolean isEmpty(String[] values) {
@@ -489,7 +489,7 @@ public final class MvcUtil {
 
     /**
      * 値がNULL又は空である事を確認します.
-     * @param value 確認対象の値.
+     * @param values 確認対象の値.
      * @return 確認結果(true:OK, false:NG).
      */
     public static boolean isEmpty(List<?> values) {
@@ -501,7 +501,7 @@ public final class MvcUtil {
 
     /**
      * 値がNULL又は空である事を確認します.
-     * @param value 確認対象の値.
+     * @param values 確認対象の値.
      * @return 確認結果(true:OK, false:NG).
      */
     public static boolean isEmpty(Map<?,?> values) {
@@ -511,37 +511,76 @@ public final class MvcUtil {
         return false;
     }
 
+    /**
+     * 値がNULL又は空である事を確認します（trim有り）.
+     * @param value 確認対象の値.
+     * @return 確認結果(true:OK, false:NG).
+     */
+    public static boolean isTrimEmpty(String value) {
+        if (trim(value).length() == 0) {
+            return true;
+        }
+        return false;
+    }
+
 
 
     //---------------------------------------------- [public] 文字列編集共通処理.
     /**
-     * 前後の空白を削除します.(nullの場合は、空文字を返却します)
+     * 前後の空白を削除します(nullの場合は、空文字を返却します).
      * @param value 対象の値.
      * @return 編集後の値.
      */
-    public static final String Trim(String value) {
-        if (!isEmpty(value)) {
-            return value.trim();
+    public static final String trim(String value) {
+        if (isEmpty(value)) {
+            return "";
         }
-        return "";
+        int st = 0;
+        int len = value.length();
+        char[] val = value.toCharArray();
+        while ((st < len) && ((val[st] <= '\u0020') || (val[st] == '\u00A0') || (val[st] == '\u3000'))) {
+            st++;
+        }
+        while ((st < len) && ((val[len - 1] <= '\u0020') || (val[len - 1] == '\u00A0') || (val[len - 1] == '\u3000'))) {
+            len--;
+        }
+        return ((st > 0) || (len < value.length())) ? value.substring(st, len) : value;
     }
 
     /**
-     * 文字列が空の場合に空文字を返却します.
-     * @param str 対象文字列.
+     * 後の空白を削除します(nullの場合は、空文字を返却します).
+     * @param value 対象の値.
      * @return 編集後の値.
      */
-    public static String toEmpty(String str) {
-        return toDefault(str, "");
+    public static final String rTrim(String value) {
+        if (isEmpty(value)) {
+            return "";
+        }
+        int st = 0;
+        int len = value.length();
+        char[] val = value.toCharArray();
+        while ((st < len) && ((val[len - 1] <= '\u0020') || (val[len - 1] == '\u00A0') || (val[len - 1] == '\u3000'))) {
+            len--;
+        }
+        return ((st > 0) || (len < value.length())) ? value.substring(st, len) : value;
     }
 
     /**
-     * 文字列が空の場合にNullを返却します.
-     * @param str 対象文字列.
+     * 前の空白を削除します(nullの場合は、空文字を返却します).
+     * @param value 対象の値.
      * @return 編集後の値.
      */
-    public static String toNull(String str) {
-        return toDefault(str, null);
+    public static final String lTrim(String value) {
+        if (isEmpty(value)) {
+            return "";
+        }
+        int st = 0;
+        int len = value.length();
+        char[] val = value.toCharArray();
+        while ((st < len) && ((val[st] <= '\u0020') || (val[st] == '\u00A0') || (val[st] == '\u3000'))) {
+            st++;
+        }
+        return ((st > 0) || (len < value.length())) ? value.substring(st, len) : value;
     }
 
     /**
