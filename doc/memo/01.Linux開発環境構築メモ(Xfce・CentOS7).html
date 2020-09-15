@@ -15,7 +15,7 @@ Linux開発環境構築メモ(Xfce・CentOS7)
 
 ### ユーザ設定
 
-* ルートパスワード：***admin***
+* ROOTパスワード：admin
 
 * ユーザ作成
 
@@ -33,7 +33,7 @@ Linux開発環境構築メモ(Xfce・CentOS7)
 
 1. 下記の設定でVirtualBox(仮想環境)を作成します。
 
-    * 名前：linux_xfce_dev
+    * 名前：linux_python
 
     * タイプ：linux
 
@@ -51,24 +51,78 @@ Linux開発環境構築メモ(Xfce・CentOS7)
 
 2. CentOS7 インストール
 
-    * 「CentOS-7-x86_64-Everything-1708.iso」をダウンロードする。
+    * 「CentOS-7-x86_64-Everything-2003.iso」をダウンロードする。
       [ダウンロードサイト](http://ftp.jaist.ac.jp/pub/Linux/CentOS/7/isos/x86_64/)
 
     * 【VirtualBox】＞「設定」＞「ストレージ」＞「CD/DVDドライブ」
-        →「CentOS-7-x86_64-Everything-1708.iso」を設定し仮想環境を起動する。
+        →「CentOS-7-x86_64-Everything-2003.iso」を設定し仮想環境を起動する。
+
+
+    * 「Install CentOS 7」を選択する。
+
+    * 日付／時間 → Asia/Tokyo
+
+    * キーボード → 日本語
 
     * 言語 → 日本語
 
+    * インストールソース → ローカルメディア(CentOS-7-x86_64)
+    
     * ソフトウェアの選択 → 最小限
 
     * インストール先 → 作成したストレージ
 
     * ネットワークとホスト名 → オンにする
 
-    * ルートパス ※ルートパスは上記参照
+    * ROOTパスワード ※ROOTパスワードは上記参照
 
-    * ユーザ作成 ※ユーザ名とパスワードは上記参照
-        - 管理者にチェック
+    * ユーザの作成 ※ユーザ名とパスワードは上記参照
+        - 「このユーザーを管理者にする」にチェック
+
+
+
+
+### 基本設定を行う
+※suでrootに切り替えて行う
+
+1. アップデート
+
+    ```terminal
+    $ yum update -y
+    ```
+
+
+2. CUI上のsudoパスワード省略
+
+    ### visudoコマンドを実行する
+    ```terminal
+    $ visudo (/etc/sudoers)
+    ```
+
+    ```vi:/etc/sudoers
+    ## Allow root to run any commands anywhere (sudo権限を付与)
+    root    ALL=(ALL)       ALL
+    [ユーザ名]     ALL=(ALL)       ALL
+
+    …
+
+    ## Same thing without a password (パスワード不要設定)
+    # %wheel        ALL=(ALL)       NOPASSWD: ALL
+    %[ユーザ名]            ALL=(ALL)       NOPASSWD: ALL
+    ```
+
+3. epelのインストール
+
+    ```terminal
+    $ yum install -y epel-release
+    ```
+
+
+4. 再起動
+
+    ```terminal
+    $ reboot
+    ```
 
 
 
@@ -77,70 +131,111 @@ Linux開発環境構築メモ(Xfce・CentOS7)
 -------------------------------------------------------------------------------
 
 [参考(xfce)](https://xfce.org/?lang=ja)
-[参考(Xfceインストール)](https://www.hiroom2.com/2017/07/26/centos-7-xfce-ja/)
-[参考(Linux on the Desktop)](http://www.h7.dion.ne.jp/~greens/linux/de/xfce.html)
+[参考(Xfceインストール - 1)](https://www.hiroom2.com/2017/07/26/centos-7-xfce-ja/)
+[参考(Xfceインストール - 2)](https://qastack.jp/unix/181503/how-to-install-desktop-environments-on-centos-7)
+※suでrootに切り替えて行う
 
-1. epelのインストール
+
+1. Xfceをインストール
 
     ```terminal
-    $ sudo yum install -y epel-release
+    $ yum groupinstall -y "X Window System"
+    $ yum groupinstall -y "Xfce"
+    ```
+
+    ##### 起動確認（確認用 ※ログアウトで元に戻ります）
+    ```terminal
+    $ echo "exec /usr/bin/xfce4-session" >> ~/.xinitrc 
+    $ startx
     ```
 
 
-2. アップデート
+2. GUIツールキットをインストール
 
     ```terminal
-    $ sudo yum update -y
+    $ yum install -y gtk3-immodules
     ```
 
 
-3. X Window SystemとXfceをグループインストール
+3. その他必要なソフトウェアのインストール
 
     ```terminal
-    $ sudo yum groupinstall -y "X Window System"
-    $ sudo yum groupinstall -y "Xfce"
+    $ yum install -y gedit gedit-plugins (テキストエディタ)
+    $ yum install -y vlgothic-*          (フォント)
+    $ yum groupinstall -y "Fonts"
+    $ yum install -y beesu               (GUI上の管理権限実行用)
+    $ yum install -y wget                (wget)
+    $ yum install -y gcc                 (GNU Compiler Collection)
+    $ yum install -y dkms                (Dynamic Kernel Module Support)
+    $ yum install -y bzip2               (圧縮解凍)
+    $ yum install -y kernel-devel        (ビルドツール)
+
+    $ yum install -y firefox             (ブラウザ)
+    $ yum install -y thunderbird         (メーラー)
+    $ yum install -y libreoffice libreoffice-langpack-ja (office)
     ```
 
 
 4. ログイン画面を出す為、モードを変更
 
     ```terminal
-    $ sudo systemctl set-default graphical.target
+    $ systemctl set-default graphical.target
     ```
 
-
-5. インプットメソッドをインストール
-
+    #####  デフォルト起動設定確認　（確認用）
     ```terminal
-    $ sudo yum install -y gtk3-immodules
+    $ systemctl get-default
+    ( cui環境:multi-user.target / GUI環境:graphical.target )
     ```
 
 
-6. その他必要なソフトウェアのインストール
-
-    ```terminal
-    $ sudo yum install -y xfce4-terminal   (ターミナル)
-    $ sudo yum install -y gedit            (テキストエディタ)
-    $ sudo yum install -y gedit-plugins
-    $ sudo yum install -y vlgothic-fonts   (フォント)
-    $ sudo yum install -y vlgothic-p-fonts (フォント)
-    $ sudo yum install -y firefox          (ブラウザ)
-    $ sudo yum install -y thunderbird      (メーラー)
-    $ sudo yum install -y beesu            (GUI上の管理権限実行用)
-    $ sudo yum install -y wget             (wget)
-    $ sudo yum install -y gcc              (GNU Compiler Collection)
-    $ sudo yum install -y dkms             (Dynamic Kernel Module Support)
-    $ sudo yum install -y bzip2            (圧縮解凍)
-    $ sudo yum install -y libreoffice libreoffice-langpack-ja (office)
-    $ sudo yum install -y kernel-devel
-    ```
-
-
-7. 再起動
+5. 再起動
 
     ```terminal
     $ reboot
     ```
+    ※再起動後、サインイン横の歯車マークをクリックして「Xfceセッション」を選択する。
+
+
+
+
+## 日本語環境設定（mozc）
+-------------------------------------------------------------------------------
+[参考](http://note.kurodigi.com/centos7-ibusmozc/)
+[参考](https://blog.i-o.io/?id=1510324563)
+
+1. mozcインストール（※順番に注意）
+
+    ```terminal
+    $ sudo yum install -y protobuf
+    $ sudo yum install -y zinnia
+    $ sudo yum install -y zinnia-tomoe-ja
+    $ sudo yum install -y mozc
+    $ sudo yum install -y ibus-mozc
+    ```
+
+
+2. アイコン設定
+    * アプリケーションメニュー > 設定 > セッションと起動を選択。
+    * タブ「自動開始アプリケーション」を選択する
+    * 追加ボタン押下
+    * 下記の設定でアプリケーションを追加する
+        名前: iBus
+        コマンド: /bin/ibus-daemon
+    * 再起動する
+
+
+3. キーボード設定
+    * アプリケーション ＞ 設定 ＞ キーボードでレイアウトタブを選択。
+    * システムデフォルトを外して、「日本語」にする。※他は削除
+
+
+4. 設定
+
+    * 画面右上のキーボードのアイコンを「日本語 - Mozc」に設定する。
+
+     「半角／全角」ボタンで切り替え可能になる。
+
 
 
 
@@ -151,53 +246,9 @@ Linux開発環境構築メモ(Xfce・CentOS7)
 2. VBoxLinuxAdditionsを実行する。
 
     ```terminal
-    $ cd /run/media/[ユーザ]/VBOXADDITIONS_[バージョン]/
+    $ cd /run/media/[ユーザ(res)]/VBOXADDITIONS_[バージョン]/
     $ sudo ./VBoxLinuxAdditions.run
     $ reboot
-    ```
-
-    > ※注意
-    > Virtualbox5.2.0でGuestAdditionsが
-    > Virtualboxに含まれるISOでインストールが出来ない不具合が報告されています。
-    > インストールできない場合、下記の対応をお願いいたします。
-    > 
-    > 下記アドレスのページで「Update Nov 3 2017: ～」内の「this image」をクリックすると
-    > 修正版のISO(VBoxGuestAdditions_5.2.1-118918.iso)がダウンロード出来ます。
-    > 
-    > https://www.virtualbox.org/wiki/Downloads
-    > 
-    > 下記(Windowsのデフォルトでインストールした場合)のISOを修正版に置き換え
-    > 同じ名前にリネームし、インストールしてください。
-    > 
-    > C:\Program Files\Oracle\VirtualBox\VBoxGuestAdditions.iso
-    > 
-
-
-
-### CUI上のsudoパスワード省略
-
-1. visudoコマンドを実行する
-
-    ```terminal
-    $ sudo visudo
-    ```
-
-
-2. sudo権限を付与
-
-    ```vi:/etc/sudoers
-    ## Allow root to run any commands anywhere
-    root    ALL=(ALL)       ALL
-    [ユーザ名]     ALL=(ALL)       ALL
-    ```
-
-
-3. パスワード不要設定
-
-    ```vi:/etc/sudoers
-    ## Same thing without a password
-    # %wheel        ALL=(ALL)       NOPASSWD: ALL
-    %[ユーザ名]            ALL=(ALL)       NOPASSWD: ALL
     ```
 
 
@@ -210,13 +261,13 @@ Linux開発環境構築メモ(Xfce・CentOS7)
 1. VirtualBoxの共有フォルダ設定を行う。
 
     【VirtualBoxメニュー】＞「設定」＞「共有フォルダー」で共有フォルダ設定をする。
-    （フォルダパスと名称は任意。自動マウントと永続化はチェックする）
+    （フォルダパスと名称は任意。自動マウントはチェックする）
 
 
 2. アクセス権設定
 
     ```terminal
-    $ sudo gpasswd -a [ユーザ名] vboxsf
+    $ sudo gpasswd -a [ユーザ名(res)] vboxsf
     $ reboot
     ```
 
@@ -225,7 +276,8 @@ Linux開発環境構築メモ(Xfce・CentOS7)
 
 
 
-### その他設定
+
+### その他設定(任意)
 
 * パネルはデフォルト設定を使用する。
 
@@ -251,61 +303,11 @@ Linux開発環境構築メモ(Xfce・CentOS7)
 
 * 「/media/sf_public/」のショートカットを作成。（送る＞サイドペイン※名称は「Public」）※共有フォルダ設定後
 
-* 「/media/sf_public/」のショートカットを作成。（送る＞サイドペイン※名称は「Public」）※共有フォルダ設定後
-
 * 画面左上「アプリケーションメニュー」より、メーラー(thunderbird)とブラウザ(firefox)を選択する。
 
 * 画面左上「アプリケーションメニュー」＞「Settings」＞「外観」>フォントを『VLゴシック(regular)10p』にする。
 
-* 日本語設定（※下記参照）。
-
 * ファイルマネージャー(thunar)カスタマイズ（※下記参照）。
-
-
-
-### 不要ファイルを削除する。
-
-```terminal
-sudo yum clean all
-```
-
-
-
-
-## 日本語環境設定
--------------------------------------------------------------------------------
-[参考](http://note.kurodigi.com/centos7-ibusmozc/)
-
-1. ファイルのダウンロード
-    [ダウンロードサイト](http://rpm.pbone.net/)
-
-    - 対象ファイル
-        protobuf-2.5.0-4.fc19.x86_64.rpm
-        zinnia-0.06-16.fc19.x86_64.rpm
-        zinnia-tomoe-0.06-16.fc19.x86_64.rpm
-        mozc-1.10.1390.102-1.fc19.x86_64.rpm
-        ibus-mozc-1.10.1390.102-1.fc19.x86_64.rpm
-
-
-2. インストール（※順番に注意）
-
-    ```terminal
-    $ cd /home/[ユーザ名]/download/
-    $ sudo yum localinstall -y protobuf-2.5.0-4.fc19.x86_64.rpm
-    $ sudo yum localinstall -y zinnia-0.06-16.fc19.x86_64.rpm
-    $ sudo yum localinstall -y zinnia-tomoe-0.06-16.fc19.x86_64.rpm
-    $ sudo yum localinstall -y mozc-1.10.1390.102-1.fc19.x86_64.rpm
-    $ sudo yum localinstall -y ibus-mozc-1.10.1390.102-1.fc19.x86_64.rpm
-    $ reboot
-    ```
-
-
-3. 設定
-
-    * 画面右上のキーボードの設定を「日本語入力 - Mozc」に設定する。
-
-
-4. 「半角／全角」ボタンで切り替え可能になる。
 
 
 
@@ -358,6 +360,7 @@ sudo yum clean all
 
 
 
+
 ### その他アプリケーション
 -------------------------------------------------------------------------------
 
@@ -403,7 +406,7 @@ sudo yum clean all
 1. インストール
 
     ```terminal
-    $ sudo yum install meld
+    $ sudo yum install -y meld
     ```
 
 
@@ -412,15 +415,45 @@ sudo yum clean all
 
 
 #### chrome(ブラウザ)
+[参考](https://qiita.com/shadowhat/items/af6b973df43d75abfe8e)
 
-1. インストール（ダウンロードしたフォルダで実行）
+1. 設定
 
     ```terminal
-    $ sudo yum localinstall -y google-chrome-stable_current_x86_64.rpm
+    $ sudo vi /etc/yum.repos.d/google.chrome.repo
+    ```
+
+    ```vi:/etc/yum.repos.d/google.chrome.repo
+    [google-chrome]
+    name=google-chrome
+    baseurl=http://dl.google.com/linux/chrome/rpm/stable/$basearch
+    enabled=1
+    gpgcheck=1
+    gpgkey=https://dl-ssl.google.com/linux/linux_signing_key.pub
     ```
 
 
-2. ランチャーに追加する。
+2. インストール
+
+    ```terminal
+    $ sudo yum install -y google-chrome-stable --nogpgcheck
+    ```
+    ※「新しいキーリングの…」のダイアログが出た場合は空でパスを設定する。
+
+
+3. ランチャーに追加する。
+
+
+
+
+### 最後に
+-------------------------------------------------------------------------------
+
+### 不要ファイルを削除する。
+
+```terminal
+sudo yum clean all
+```
 
 
 

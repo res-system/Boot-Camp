@@ -1,0 +1,469 @@
+<!-- ※「_markdownmemo_data」フォルダと同じ階層でご使用ください。-->
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><link rel="stylesheet" href="_markdownmemo_data/markdownmemo.css?v=1.0.2"><title>
+Linux開発環境構築メモ(python)
+</title></head></head><body><textarea id="memo_body" style="display:none;" title="Markdow Memo" >
+
+# Linux開発環境構築メモ(python)
+
+## pythonのインストール
+-------------------------------------------------------------------------------
+[参考(python)](https://tsurezure-tech.net/entry/aws/amazon-linux-2-python2to3)
+
+1. アップデートと必須アプリインストール
+
+    ```terminal
+    $ sudo yum update -y
+    $ sudo yum install -y bzip2-devel gcc gcc-c++ git libffi-devel openssl-devel readline-devel sqlite-devel zlib-devel
+    ```
+
+
+2. pyenvをインストールする
+
+    ```terminal
+    $ sudo git clone https://github.com/yyuu/pyenv.git /usr/bin/.pyenv
+    ```
+
+
+3. pyenvの起動には必要だが、git cloneしても作成されないディレクトリを手動で作成
+
+    ```terminal
+    $ sudo mkdir /usr/bin/.pyenv/shims
+    $ sudo mkdir /usr/bin/.pyenv/versions
+    ```
+
+
+4. .pyenvのownerをresにする
+
+    ```terminal
+    $ sudo chown -R res:res /usr/bin/.pyenv/
+    ```
+
+
+5. pyenvのパス設定
+
+    ```terminal
+    $ echo 'export PYENV_ROOT="/usr/bin/.pyenv"' >> ~/.bash_profile
+    $ echo 'export PATH="${PYENV_ROOT}/bin:$PATH"' >> ~/.bash_profile
+    $ echo 'eval "$(pyenv init -)"' >> ~/.bash_profile
+    ```
+
+    ##### 確認
+    ```terminal
+    $ cat ~/.bash_profile
+    # .bash_profile
+
+    # Get the aliases and functions
+    if [ -f ~/.bashrc ]; then
+    	. ~/.bashrc
+    fi
+
+    # User specific environment and startup programs
+
+    PATH=$PATH:$HOME/.local/bin:$HOME/bin
+
+    export PATH
+    export PYENV_ROOT="/usr/bin/.pyenv"
+    export PATH="${PYENV_ROOT}/bin:$PATH"
+    eval "$(pyenv init -)"
+    ```
+
+
+6. 編集した.bash_profileを読み込む
+
+    ```terminal
+    $ source ~/.bash_profile
+    ```
+
+
+7. pyenvコマンドが認識されることを確認
+
+    ```terminal
+    $ pyenv --version
+    ```
+
+
+8. pythonをインストールする
+    ※最新版で行う（例：3.8.5）
+
+    ```terminal
+    $ pyenv install 3.8.5
+    ```
+
+
+9. pythonのバージョンを切り替える
+
+    ```terminal
+    $ pyenv global 3.8.5
+    ```
+
+
+10. リンクを張り替え
+
+    ```terminal
+    $ sudo ln -snf /bin/pip3.6 /bin/pip
+    ```
+
+
+11. 確認
+
+    ```terminal
+    $ python --version
+    $ pip --version
+    ```
+
+
+
+
+## Hello World
+-------------------------------------------------------------------------------
+
+1. ソースの作成。(場所は任意)
+
+    ```terminal
+    $ cd /home/res/work/
+    ```
+
+    ```python:/home/res/work/hello.py
+    print("Hello world - python3!")
+    ```
+
+
+2. 実行
+
+    ```terminal
+    $ python hello.py
+    >> Hello world!
+    ```
+
+
+
+
+## pythonでwebサーバー起動
+-------------------------------------------------------------------------------
+
+1. ディレクトリ作成
+
+    ```terminal
+    $ mkdir /home/res/www
+    $ cd /home/res/www
+    ```
+
+
+2. htmlファイル作成
+
+    ```html:/home/res/www/index.html
+    <html>hello world - www!</html>
+    ```
+
+
+3. webサーバー実行
+
+    ```terminal
+    $ python -m http.server 8080
+    ```
+
+
+4. 確認
+    ブラウザで下記のURLを参照
+    http://localhost:8080/
+
+
+
+
+## bottle(フレームワーク)でwebサーバー起動
+-------------------------------------------------------------------------------
+
+1. bottleのインストール
+
+    ```terminal
+    $ pip install bottle --user
+    ```
+
+
+2. ファイル作成
+
+    ```python:/home/res/www/hellobottle.py
+    from bottle import route, run
+
+    @route('/hello')
+    def hello():
+        return "Hello World - bottle!"
+
+    run(host='localhost', port=8080, debug=True)
+    ```
+
+
+3. webサーバー実行
+
+    ```terminal
+    $ python /home/res/www/hellobottle.py
+    ```
+
+
+4. 確認
+    ブラウザで下記のURLを参照
+    http://localhost:8080/hello
+
+
+
+
+## Flask(フレームワーク)でwebサーバー起動
+-------------------------------------------------------------------------------
+[参考(Flask)](https://qiita.com/t-iguchi/items/f7847729631022a5041f)
+[参考(Flask)](https://qiita.com/kiyokiyo_kzsby/items/0184973e9de0ea9011ed)
+
+1. 基本
+
+    1. Flaskのインストール
+
+        ```terminal
+        $ pip install Flask --user
+        ```
+
+
+    2. ファイル作成
+
+        ```python:/home/res/www/hello1/hello.py
+        from flask import Flask
+        app = Flask(__name__)
+
+        @app.route('/')
+        def hello():
+            return "Hello World flask !"
+
+        if __name__ == "__main__":
+            app.run(debug=True, port=8888, threaded=True)  
+        ```
+
+
+    3. webサーバー実行
+
+        ```terminal
+        $ python /home/res/www/hello1/hello.py
+        ```
+
+
+    4. 確認
+        ブラウザで下記のURLを参照
+        http://localhost:8888/
+
+
+
+2. Template Engine(jinja2)
+
+    1. インストール
+
+        ```terminal
+        $ pip install jinja2 --user
+        ```
+
+
+    2. ファイル作成
+        * フォルダ構成
+            hello2
+            │  hello.py
+            │  
+            └─templates
+                  hello.html
+                  layout.html            
+
+        * ファイル
+        ```python:/home/res/www/hello2/hello.py
+        from flask import Flask, render_template
+
+        app = Flask(__name__)
+
+        @app.route('/')
+        def hello():
+            name = "who"
+            #return name
+            return render_template('hello.html', title='hello2', name=name)
+
+        if __name__ == "__main__":
+            app.run(debug=True, port=8888, threaded=True) 
+        ```
+
+        ```html:/home/res/www/hello2/templates/hello.html
+        {% extends "layout.html" %}
+        {% block content %}
+        <h3>Hello</h3>
+        こんにちは。{{ name }}さん。
+        {% endblock %}
+        ```
+
+        ```html:/home/res/www/hello2/templates/layout.html
+        <!doctype html>
+        <html>
+        <head>
+        <title>{{ title }}</title>
+        </head>
+        <body>
+        {% block content %}
+        <!-- ここに個別のhtmlが入る -->
+        {% endblock %}
+        </body>
+        </html>
+        ```
+
+
+    3. webサーバー実行
+
+        ```terminal
+        $ python /home/res/www/hello2/hello.py
+        ```
+
+
+    4. 確認
+        ブラウザで下記のURLを参照
+        http://localhost:8888/
+
+
+
+3. static files
+
+    1. ファイル作成
+        * フォルダ構成
+            hello3
+              │  hello.py
+              │  
+              ├─static
+              │  ├─css
+              │  │    main.css
+              │  └─js
+              │        jquery-3.1.1.min.js
+              └─templates
+                    hello.html
+                    layout.html
+
+        * ファイル
+        ```python:/home/res/www/hello3/hello.py
+        ※「2. Template Engine(jinja2)」のhello.pyと同じ
+        ```
+
+        ```css:/home/res/www/hello3/static/css/main.css
+        body {background: #B2DFDB}
+        ```
+
+        ```js:/home/res/www/hello3/static/js/jquery-3.1.1.min.js
+        ※ネットからDL
+        ```
+
+        ```html:/home/res/www/hello3/templates/hello.html
+        {% extends "layout.html" %}
+        {% block content %}
+        <link href="/static/css/main.css" rel="stylesheet">
+
+        <h3>Hello</h3>
+        <p>こんにちは。{{ name }}さん。</p>
+
+        <script src="/static/js/jquery-3.1.1.min.js"></script>
+
+        <script>
+          $(function(){
+            // ここにプログラムを記述
+            alert($('p').text());
+          });
+        </script>
+
+        {% endblock %}
+        ```
+
+        ```html:/home/res/www/hello3/templates/layout.html
+        ※「2. Template Engine(jinja2)」のlayout.htmlと同じ
+        ```
+
+
+    2. webサーバー実行
+
+        ```terminal
+        $ python /home/res/www/hello3/hello.py
+        ```
+
+
+    3. 確認
+        ブラウザで下記のURLを参照
+        http://localhost:8888/
+
+
+
+
+## Djangoインストール
+-------------------------------------------------------------------------------
+[参考(Djangoインストール)](https://mebee.info/2020/02/10/post-4862/)
+https://qiita.com/TechAngel/items/eadbcf784710839d7c00
+
+1. Djangoインストール
+
+    ```terminal
+    $ pip install django --user
+    ```
+
+2. プロジェクト作成
+    ```terminal
+    $ cd /home/res/www
+    $ django-admin startproject hello
+    ```
+
+
+3. WEBサーバーを起動
+    ```terminal
+    $ cd /home/res/www/hello
+    $ python manage.py runserver localhost:8888
+    ```
+
+    ※「django.core.exceptions.ImproperlyConfigured: SQLite 3.8.3 or later is required」のエラーが出る場合、
+    SQLiteのバージョンが古いので下記の方法で解決する。
+    [参考(Djangoインストール)](https://qiita.com/rururu_kenken/items/8202b30b50e3bfa75821)
+        ```terminal
+
+        # SQLite3を最新化する
+        $ cd
+
+        # 最新バージョンは「https://www.sqlite.org/download.html」で確認
+        # 例）sqlite-autoconf-3330000.tar.gz
+        $ wget https://www.sqlite.org/2020/sqlite-autoconf-3330000.tar.gz
+        $ tar xvfz sqlite-autoconf-3330000.tar.gz
+
+        # ビルドしてインストール
+        $ cd sqlite-autoconf-3330000
+        $ ./configure --prefix=/usr/local
+        $ make
+        $ sudo make install
+        $ sudo find /usr/ -name sqlite3
+
+        # 不要なファイル、ディレクトリ削除
+        $ cd 
+        $ rm sqlite-autoconf-3330000.tar.gz
+        $ rm -rf ./sqlite-autoconf-3330000
+
+        # ファイル移動
+        $ sudo mv /usr/bin/sqlite3 /usr/bin/sqlite3_old
+        $ sudo ln -s /usr/local/bin/sqlite3 /usr/bin/sqlite3
+
+        # 共有ライブラリへパス(/usr/local/lib)を通す
+        $ sudo vi /etc/ld.so.conf.d/usr_lib.conf
+        /usr/local/lib
+        $ sudo ldconfig
+
+        # バージョン確認
+        $ /usr/local/bin/sqlite3 --version
+        $ /usr/bin/sqlite3 --version
+        $ sqlite3 --version
+
+        # PythonのSQLite3バージョン確認
+        $ python
+        >>> import sqlite3
+        >>> sqlite3.sqlite_version
+        '3.33.0'
+        >>> exit()
+        ```
+
+
+4. 確認
+    ブラウザで下記のURLを参照
+    http://localhost:8888/
+
+
+
+
+</textarea><script src="_markdownmemo_data/markdownmemo.js?v=1.0.2"></script></body></html>

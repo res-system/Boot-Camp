@@ -1,0 +1,98 @@
+<!-- ※「_markdownmemo_data」フォルダと同じ階層でご使用ください。-->
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><link rel="stylesheet" href="_markdownmemo_data/markdownmemo.css?v=1.0.2"><title>
+Linux開発環境構築メモ(vscode)
+</title></head></head><body><textarea id="memo_body" style="display:none;" title="Markdow Memo" >
+
+# Linux開発環境構築メモ(vscode)
+
+## vscodeのインストール
+-------------------------------------------------------------------------------
+[参考(vscode)](https://qiita.com/kusanoiskuzuno/items/c323446f2707f9950ebb)
+
+1. インストーラーのダウンロード
+    ブラウザを使用して下記のサイトからDLする
+    URL:https://code.visualstudio.com/#alt-downloads
+    1. 「.rpm」をダウンロードします。
+    2. ダウンロードしたファイルを「/home/res/work/tools/」へ移動する。
+
+
+2. インストール
+
+    ```terminal
+    $ cd /home/res/work/tools/
+    $ sudo yum localinstall -y code-1.49.0-1599744701.el7.x86_64.rpm
+    ```
+
+
+
+
+## vscodeの日本語化
+-------------------------------------------------------------------------------
+[参考(vscode日本語化)](https://www.karelie.net/vscode-visual-studio-code-japanese/)
+
+1. vscodeを立ち上げて、左端の「Extensions」のアイコンをクリックする。
+    
+2. 「japanese」で検索し、「Japanese Language Pack for Visual Studio Code」を選択し「Install」ボタンを押下します。
+
+3. vscodeを再起動します。
+
+
+
+
+## Git連携（GitHub）
+-------------------------------------------------------------------------------
+
+1. vscodeを開き、ターミナルから下記のコマンドを入力。
+
+    ```vscode:terminal
+    $ git clone https://github.com/res-system/python_test.git（例）
+    ```
+
+
+2. 「拡張機能'GitHub'・・・」のダイアログが出たら「許可」ボタンを押下する。
+
+3. ブラウザでGitHubのログイン画面が出るので、ログインする。
+    （FireFoxだと失敗するのでChromeで行う）
+
+4. 認証用のトークンが表示されるのでコピーします。
+
+5. vscodeのステータスバーの「github.comにサインインしています...」をクリックして、
+  表示される入力ダイアログに先ほどのトークンをコピーします。
+  ※認証後、複製が実行されていない場合は、再度「git clone ...」を実行する。
+  ※通常の操作は左メニューの「ソース管理」（アイコン上から3つ目の）を選択し、
+    その中で操作する。
+
+
+
+
+## プラグイン
+-------------------------------------------------------------------------------
+[参考(プラグイン)](https://qiita.com/sensuikan1973/items/74cf5383c02dbcd82234)
+[参考(プラグイン)](https://qiita.com/ucan-lab/items/e85931bf8276da43cc97)
+
+Bracket Pair Colorizer 2  [カッコの対応を色付きで表示]
+indent-rainbow            [インデントを虹色に表示]
+zenkaku                   [全角スペースを強調して表示]
+Auto Rename Tag           [ペアになっているHTML/XMLタグの名前を自動的に変更]
+Code Spell Checker        [スペルミスを検出]
+change-case               [単語の大文字・小文字変換]
+vscode-input-sequence     [連番入力をサポート]
+HTML CSS Support          [CSSのサポート]
+CSS Peek                  [CSSスタイル確認]
+Rainbow CSV               [csv列ごとに色分け]
+Json Editor               [JSON編集]
+Git Graph                 [コミット履歴をツリー形式で表示]
+Git History               [Git log確認]
+Git Lens                  [GITサポート]
+vscode-icons              [アイコン表示]
+Partial Diff              [選択範囲の差分を確認]
+
+
+
+※行末尾のスペースを削除する設定
+設定を開き「Trim Trailing Whitespace」設定を有効化する。
+
+<!--
+-->
+
+</textarea><script src="_markdownmemo_data/markdownmemo.js?v=1.0.2"></script></body></html>

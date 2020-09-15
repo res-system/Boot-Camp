@@ -1,0 +1,221 @@
+<!-- ※「_markdownmemo_data」フォルダと同じ階層でご使用ください。-->
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><link rel="stylesheet" href="_markdownmemo_data/markdownmemo.css?v=1.0.2"><title>
+Linux開発環境構築メモ(mysql)
+</title></head></head><body><textarea id="memo_body" style="display:none;" title="Markdow Memo" >
+
+# Linux開発環境構築メモ(mysql)
+
+## mysqlのインストール
+-------------------------------------------------------------------------------
+[参考(mysql)](https://qiita.com/nooboolean/items/7efc5c35b2e95637d8c1)
+
+1. rpmファイルをインストール
+
+    ```terminal
+    $ sudo yum localinstall -y http://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm
+    ```
+    ※https://dev.mysql.com/downloads/repo/yum/で最新のものを選択し
+      「http://dev.mysql.com/get/」の後ろにファイル名を指定する。
+
+
+2. リポジトリの確認
+
+    ```terminal
+    $ cd /etc/yum.repos.d/
+    $ ls
+    ```
+
+
+3. yumでインストール
+
+    1. リポジトリの反映の確認
+
+        ```terminal
+        $ yum info mysql-community-server
+        ```
+
+
+    2. インストール
+
+        ```terminal
+        $ sudo yum install -y mysql-community-server
+        ```
+
+
+3. MySQLのデーモンの起動と停止
+
+    1. 確認
+
+        ```terminal
+        $ mysqld --version
+        ```
+
+
+    2. 起動
+
+        ```terminal
+        $ sudo systemctl start mysqld
+        ```
+
+
+    3. 起動の確認
+
+        ```terminal
+        $ systemctl status mysqld
+        ```
+
+
+    4. 停止
+
+        ```terminal
+        $ sudo systemctl stop mysqld
+        ```
+
+
+4. 自動起動の設定(CentOSの起動・再起動の際に一緒にmysqldも起動するようにする設定です。)
+
+    ```terminal
+    $ sudo systemctl enable mysqld
+    ```
+
+
+
+
+## MySQLの初期設定
+-------------------------------------------------------------------------------
+[参考(mysql)](https://qiita.com/nooboolean/items/7efc5c35b2e95637d8c1)
+
+1. 初期パスワードの確認
+
+    ```terminal
+    $ sudo cat /var/log/mysqld.log | grep root
+    $ mysql -u root -p //上記のパスワードでログイン
+    ```
+
+
+2. パスワードの変更
+
+    ```mysql
+    $ SET PASSWORD = 'mysql_Admin1234';
+    ```
+    ※開発用なので「mysql_Admin1234」
+    ※8文字以上かつ英大文字・小文字・数字・記号を含めないとエラーで返されます。
+
+
+3. 文字コードの確認と変更
+
+    ```mysql
+    $ show variables like "chara%";
+    ```
+    ※utf8mb4なら問題なし。
+    変更する場合は、ターミナルから下記の変更を行う。
+    ↓
+    ```terminal
+    $ vi /etc/my.cnf
+    # 以下をファイルの末尾に追記
+    character_set_server=utf8
+    skip-character-set-client-handshake
+
+    # 再起動させて変更を反映させる
+    $ sudo systemctl restart mysqld
+    ```
+
+
+
+
+## workbenchのインストール
+-------------------------------------------------------------------------------
+[参考(workbench)](https://proengineer.internous.co.jp/content/columnfeature/6605)
+
+1. インストーラーのダウンロード
+    ブラウザを使用して下記のサイトからDLする
+    URL:https://www.mysql.com/jp/products/workbench/
+    
+    1. 「ダウンロードはこちら」ボタンを押下します。
+    2. 「Select Operating System:」は「Red Hat Enterprise Linux / Oracle Linux」を選択します。
+    3. 「Red Hat Enterprise Linux 7 / Oracle Linux 7 (x86, 64-bit), RPM Package」をダウンロード。
+    4. ダウンロードしたファイルを「/home/res/work/tools/」へ移動する。
+
+
+2. インストール
+
+    ```terminal
+    $ cd /home/res/work/tools/
+    $ sudo yum localinstall -y mysql-workbench-community-8.0.21-1.el7.x86_64.rpm
+    ```
+
+
+
+
+## workbenchの日本語化
+-------------------------------------------------------------------------------
+[参考(workbench日本語化)](https://style.potepan.com/articles/17598.html)
+
+1. 日本語化ファイルのダウンロード
+    ブラウザを使用して下記のサイトからDLする
+    URL:http://pcboy.dip.jp/xoopscube/modules/d3downloads/
+    
+2. ダウンロードしたファイル「Workbench_jp」を「Workbench_jp.zip」へリネームして展開する。
+
+3. 展開したフォルダ「MySQL_Workbench_6.3.6_CE_(win32)」の
+    ファイル「MySQL_Workbench_6.3.6_CE_(win32)/data/main_menu_jpn.xml」を
+    「main_menu.xml」にリネームします。
+
+4. 「/usr/share/mysql-workbench/data/main_menu.xml」と差し替える。
+    ※rootで行う。
+
+
+
+
+## ユーザーの作成
+-------------------------------------------------------------------------------
+
+1. ユーザーの作成
+
+    ```terminal
+    # rootログイン
+    $ mysql --user=root --password=mysql_Admin1234
+    ```
+
+    ```mysql
+    -- 作成
+    CREATE USER 'test_db'@'localhost' IDENTIFIED BY 'test_db_Pass1';
+    GRANT USAGE ON *.* TO 'test_db'@'localhost' REQUIRE NONE WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;
+    CREATE DATABASE IF NOT EXISTS `test_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+    GRANT ALL PRIVILEGES ON `test_db`.* TO 'test_db'@'localhost';
+
+    -- (確認)
+    SELECT Host, User FROM mysql.user;
+    
+    -- (破棄)
+    DROP DATABASE `test_db`;
+    DROP USER `test_db`;
+
+    ```
+
+    ```terminal
+    # test_dbログイン
+    mysql --user=test_db --password=test_db_Pass1
+    ```
+
+
+2. workbenchから接続
+    1. HOME画面の「MySQL Connections」の「+」ボタンを押下します。
+    2. 下記の項目を入力します。
+        Connection Name: test_db
+        Connection Method: Standard(TCP/IP)
+        Hostname: localhost
+        Port: 3306
+        Username: test_db
+        Password: test_db_Pass1
+    3. 「Test Connection」で確認します。
+    4. 上記で「Successfully」が出たら「OK」ボタンを押下します。
+
+
+
+
+<!--
+centos mysql workbench
+-->
+
+</textarea><script src="_markdownmemo_data/markdownmemo.js?v=1.0.2"></script></body></html>
