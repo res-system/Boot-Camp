@@ -22,7 +22,7 @@ Linux開発環境構築メモ(mysql)
 
     ```terminal
     $ cd /etc/yum.repos.d/
-    $ ls
+    $ ls -l
     ```
 
 
@@ -42,9 +42,9 @@ Linux開発環境構築メモ(mysql)
         ```
 
 
-3. MySQLのデーモンの起動と停止
+4. MySQLのデーモンの起動と停止
 
-    1. 確認
+    1. versionの確認
 
         ```terminal
         $ mysqld --version
@@ -65,14 +65,13 @@ Linux開発環境構築メモ(mysql)
         ```
 
 
-    4. 停止
-
+        ※停止
         ```terminal
         $ sudo systemctl stop mysqld
         ```
 
 
-4. 自動起動の設定(CentOSの起動・再起動の際に一緒にmysqldも起動するようにする設定です。)
+5. 自動起動の設定(CentOSの起動・再起動の際に一緒にmysqldも起動するようにする設定です。)
 
     ```terminal
     $ sudo systemctl enable mysqld
@@ -89,7 +88,8 @@ Linux開発環境構築メモ(mysql)
 
     ```terminal
     $ sudo cat /var/log/mysqld.log | grep root
-    $ mysql -u root -p //上記のパスワードでログイン
+      (XXXX-XX-XXT06:33:21.692692Z 6 [Note] [MY-010454] [Server] A temporary password is generated for root@localhost: ※パスワード)
+    $ mysql -u root -p # 上記のパスワードでログイン
     ```
 
 
@@ -100,10 +100,14 @@ Linux開発環境構築メモ(mysql)
     ```
     ※開発用なので「mysql_Admin1234」
     ※8文字以上かつ英大文字・小文字・数字・記号を含めないとエラーで返されます。
-
+    
 
 3. 文字コードの確認と変更
 
+    ```terminal
+    # rootログイン(一度CTRL+Dでログアウトしてから)
+    $ mysql --user=root --password=mysql_Admin1234
+    ```
     ```mysql
     $ show variables like "chara%";
     ```
@@ -111,9 +115,9 @@ Linux開発環境構築メモ(mysql)
     変更する場合は、ターミナルから下記の変更を行う。
     ↓
     ```terminal
-    $ vi /etc/my.cnf
+    $ sudo vi /etc/my.cnf
     # 以下をファイルの末尾に追記
-    character_set_server=utf8
+    character_set_server=utf8mb4
     skip-character-set-client-handshake
 
     # 再起動させて変更を反映させる
@@ -170,37 +174,61 @@ Linux開発環境構築メモ(mysql)
 ## ユーザーの作成
 -------------------------------------------------------------------------------
 
-1. ユーザーの作成
-
+1. スキーマー作成
     ```terminal
     # rootログイン
     $ mysql --user=root --password=mysql_Admin1234
     ```
 
     ```mysql
-    -- 作成
-    CREATE USER 'test_db'@'localhost' IDENTIFIED BY 'test_db_Pass1';
-    GRANT USAGE ON *.* TO 'test_db'@'localhost' REQUIRE NONE WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;
+    -- データベース作成
+    CREATE DATABASE `test_db`;
+    -- データベース設定
     CREATE DATABASE IF NOT EXISTS `test_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
-    GRANT ALL PRIVILEGES ON `test_db`.* TO 'test_db'@'localhost';
-
-    -- (確認)
-    SELECT Host, User FROM mysql.user;
-    
-    -- (破棄)
-    DROP DATABASE `test_db`;
-    DROP USER `test_db`;
-
+    -- データベースユーザー作成
+    CREATE USER `test_db`@`localhost` IDENTIFIED WITH mysql_native_password BY 'test_db_Pass1';
+    -- データベースに対するユーザーのアクセス権限付与
+    GRANT ALL PRIVILEGES ON `test_db`.* TO `test_db`@`localhost`;
+     -- 確認
+    SELECT Host, User from mysql.user;
     ```
+
+    ※削除する場合
+    ```mysql
+    -- アクセス権限の剥奪
+    REVOKE ALL PRIVILEGES ON `test_db`.* FROM `test_db`@`localhost`;
+    -- 適用
+    FLUSH PRIVILEGES;
+    -- データベースユーザーの削除
+    DROP USER `test_db`@`localhost`;
+    -- データベースの削除
+    DROP DATABASE `test_db`;
+    ```
+
+
+2. function作成許可
+    [参考(function作成許可)](https://oboe2uran.hatenablog.com/entry/2017/08/22/001111)
+
+    ```mysql
+    -- 確認（OFFの場合に下記のコマンドを実行する）
+    SHOW VARIABLES LIKE 'log_bin_trust_function_creators';
+
+    set global log_bin_trust_function_creators=1;
+    ```
+
+
+3. ログイン確認 
 
     ```terminal
-    # test_dbログイン
-    mysql --user=test_db --password=test_db_Pass1
+    # test_dbログイン(一度CTRL+Dでログアウトしてから)
+    $ mysql --user=test_db --password=test_db_Pass1
     ```
 
 
-2. workbenchから接続
+
+4. workbenchから接続
     1. HOME画面の「MySQL Connections」の「+」ボタンを押下します。
+
     2. 下記の項目を入力します。
         Connection Name: test_db
         Connection Method: Standard(TCP/IP)
@@ -208,14 +236,35 @@ Linux開発環境構築メモ(mysql)
         Port: 3306
         Username: test_db
         Password: test_db_Pass1
+        Default Schema: test_db
+
     3. 「Test Connection」で確認します。
+
     4. 上記で「Successfully」が出たら「OK」ボタンを押下します。
 
 
 
 
+## workbenchでSSH接続
+-------------------------------------------------------------------------------
+[参考](https://dev.classmethod.jp/articles/mysql-workbench-rds/)
+
+1. 下記で設定する
+    Connection Name: test_db                    (任意)
+    Connection Method: Standard TCP/IP over SSH
+    SSH Hostname: xxx.xxx.xxx.xxx:22 (踏み台サーバIPアドレスとポート番号)
+    SSH Username: test_usr (踏み台サーバ接続ユーザー)
+    SSH Key File: test_usr.ppk (踏み台サーバ接続キーファイル)
+    MySQL Hostname: xxx.xxx.xxx.xxx (踏み台サーバからDBに接続する際のIPアドレス)
+    MySQL Server Port: 3306 (踏み台サーバからDBに接続する際のポート番号)
+    Username: test_db (DB接続ユーザー)
+    Password: test_db_Pass1 (DB接続パスワード)
+    Default Schema: test_db (対象スキーマー)
+
+
+
+
 <!--
-centos mysql workbench
 -->
 
 </textarea><script src="_markdownmemo_data/markdownmemo.js?v=1.0.2"></script></body></html>

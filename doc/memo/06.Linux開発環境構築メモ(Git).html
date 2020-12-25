@@ -32,13 +32,13 @@ Linux開発環境構築メモ(Git)
 
 3. GITのソースをダウンロードし、インストールする。
 
-    ※バージョンは下記で確認する。（下記は2020.09.14時点の最新）
+    ※バージョンは下記で確認する。（下記は2020.10.26時点の最新）
     [最新版チェック](https://github.com/git/git/releases)
 
     ```terminal
-    $ wget https://github.com/git/git/archive/v2.28.0.tar.gz
-    $ tar -zxf v2.28.0.tar.gz
-    $ cd git-2.28.0
+    $ wget https://github.com/git/git/archive/v2.29.1.tar.gz
+    $ tar -zxf v2.29.1.tar.gz
+    $ cd git-2.29.1
     $ make configure
     $ ./configure --prefix=/usr
     $ make all doc info
@@ -46,8 +46,8 @@ Linux開発環境構築メモ(Git)
 
     # 不要なファイル、ディレクトリ削除
     $ cd 
-    $ rm v2.28.0.tar.gz
-    $ rm -rf ./git-2.28.0
+    $ rm v2.29.1.tar.gz
+    $ rm -rf ./git-2.29.1
     ```
 
 
@@ -110,6 +110,14 @@ GIT GUIではpullやfetch、mergeが使い辛いので、CUIで行った方が�
     ※git対象のディレクトリで実行する。
 
 
+### clone
+
+    ```terminal
+    $ cd /home/res/work
+    $ git clone https://github.com/res-system/Boot-Camp
+    ```
+
+
 #### pull
 git pull
 ( fetch + merge )
@@ -124,9 +132,9 @@ git merge origin/master
 #### リモートの状態にしてから上書き
 git rebase origin/master
 
+
 #### 現在のHEADの状態
 git rev-parse HEAD
-
 
 
 </textarea><script src="_markdownmemo_data/markdownmemo.js?v=1.0.2"></script></body></html>

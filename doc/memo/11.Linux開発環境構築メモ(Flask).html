@@ -1,0 +1,785 @@
+<!-- ※「_markdownmemo_data」フォルダと同じ階層でご使用ください。-->
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><link rel="stylesheet" href="_markdownmemo_data/markdownmemo.css?v=1.0.2"><title>
+Linux開発環境構築メモ(Flask)
+</title></head></head><body><textarea id="memo_body" style="display:none;" title="Markdow Memo" >
+
+# Linux開発環境構築メモ(Flask)
+
+
+## Flask(フレームワーク)でwebサーバー起動
+-------------------------------------------------------------------------------
+[参考(Flask)](https://qiita.com/t-iguchi/items/f7847729631022a5041f)
+[参考(Flask)](https://qiita.com/kiyokiyo_kzsby/items/0184973e9de0ea9011ed)
+
+1. 基本
+
+    1. Flaskのインストール
+
+        ```terminal
+        $ pip install Flask
+        ```
+
+
+    2. ファイル作成
+
+        ```python:/home/res/www/hello1/hello.py
+        from flask import Flask
+        app = Flask(__name__)
+
+        @app.route('/')
+        def hello():
+            return "Hello World flask !"
+
+        if __name__ == "__main__":
+            app.run(debug=True, port=8888, threaded=True)  
+        ```
+
+
+    3. webサーバー実行
+
+        ```terminal
+        $ python /home/res/www/hello1/hello.py
+        ```
+
+
+    4. 確認
+        ブラウザで下記のURLを参照
+        http://localhost:8888/
+
+
+
+2. Template Engine(jinja2)
+
+    1. インストール
+
+        ```terminal
+        $ pip install jinja2
+        ```
+
+
+    2. ファイル作成
+        * フォルダ構成
+            hello2
+            │  hello.py
+            │  
+            └─templates
+                  hello.html
+                  layout.html            
+
+        * ファイル
+        ```python:/home/res/www/hello2/hello.py
+        from flask import Flask, render_template
+
+        app = Flask(__name__)
+
+        @app.route('/')
+        def hello():
+            name = "who"
+            #return name
+            return render_template('hello.html', title='hello2', name=name)
+
+        if __name__ == "__main__":
+            app.run(debug=True, port=8888, threaded=True) 
+        ```
+
+        ```html:/home/res/www/hello2/templates/hello.html
+        {% extends "layout.html" %}
+        {% block content %}
+        <h3>Hello</h3>
+        こんにちは。{{ name }}さん。
+        {% endblock %}
+        ```
+
+        ```html:/home/res/www/hello2/templates/layout.html
+        <!doctype html>
+        <html>
+        <head>
+        <title>{{ title }}</title>
+        </head>
+        <body>
+        {% block content %}
+        <!-- ここに個別のhtmlが入る -->
+        {% endblock %}
+        </body>
+        </html>
+        ```
+
+
+    3. webサーバー実行
+
+        ```terminal
+        $ python /home/res/www/hello2/hello.py
+        ```
+
+
+    4. 確認
+        ブラウザで下記のURLを参照
+        http://localhost:8888/
+
+
+
+3. static files
+
+    1. ファイル作成
+        * フォルダ構成
+            hello3
+              │  hello.py
+              │  
+              ├─static
+              │  ├─css
+              │  │    main.css
+              │  └─js
+              │        jquery-3.1.1.min.js
+              └─templates
+                    hello.html
+                    layout.html
+
+        * ファイル
+        ```python:/home/res/www/hello3/hello.py
+        ※「2. Template Engine(jinja2)」のhello.pyと同じ
+        ```
+
+        ```css:/home/res/www/hello3/static/css/main.css
+        body {background: #B2DFDB}
+        ```
+
+        ```js:/home/res/www/hello3/static/js/jquery-3.1.1.min.js
+        ※ネットからDL
+        ```
+
+        ```html:/home/res/www/hello3/templates/hello.html
+        {% extends "layout.html" %}
+        {% block content %}
+        <link href="/static/css/main.css" rel="stylesheet">
+
+        <h3>Hello</h3>
+        <p>こんにちは。{{ name }}さん。</p>
+
+        <script src="/static/js/jquery-3.1.1.min.js"></script>
+
+        <script>
+          $(function(){
+            // ここにプログラムを記述
+            alert($('p').text());
+          });
+        </script>
+
+        {% endblock %}
+        ```
+
+        ```html:/home/res/www/hello3/templates/layout.html
+        ※「2. Template Engine(jinja2)」のlayout.htmlと同じ
+        ```
+
+
+    2. webサーバー実行
+
+        ```terminal
+        $ python /home/res/www/hello3/hello.py
+        ```
+
+
+    3. 確認
+        ブラウザで下記のURLを参照
+        http://localhost:8888/
+
+
+
+
+## Flask(フレームワーク)でインストールすべきモジュール
+-------------------------------------------------------------------------------
+
+* Flaskのインストール
+
+    ```terminal
+    $ pip install Flask
+    ```
+
+
+* テンプレートエンジン
+
+    ```terminal
+    $ pip install jinja2
+    ```
+
+
+* Markdown
+
+    ```terminal
+    $ pip install Flask-Markdown
+    ```
+
+
+* DB接続（SQLAlchemy MySQL）
+
+    ```terminal
+    $ pip install SQLAlchemy flask-sqlalchemy PyMySQL
+    $ pip install Flask-Migrate
+    ```
+
+
+* CSRF対策
+
+    ```terminal
+    $ pip install Flask-WTF
+    ```
+
+
+* 文字列変換
+  [参考](https://sy-base.com/myrobotics/python/mojimoji/)
+
+    ```mojimoji
+    $ pip install mojimoji
+    ```
+
+    ```jaconv
+    $ pip install jaconv
+    ```
+
+
+* 暗号化
+
+    ```pycrypto
+    $ pip install pycrypto
+    ```
+
+
+
+
+## DB設定
+-------------------------------------------------------------------------------
+CRUDのサンプルを作成するにあたり以下のDB設定を行います。
+
+* ターミナルでMysqlを操作し、ユーザーとスキーマを作成します。
+
+    ```terminal
+    # rootログイン
+    $ mysql --user=root --password=mysql_Admin1234
+    ```
+
+    ```mysql
+    -- データベース作成
+    CREATE DATABASE `crud_db`;
+    -- データベース設定
+    CREATE DATABASE IF NOT EXISTS `crud_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+    -- データベースユーザー作成
+    CREATE USER `crud_db`@`localhost` IDENTIFIED WITH mysql_native_password BY 'crud_db_Pass1';
+    -- データベースに対するユーザーのアクセス権限付与
+    GRANT ALL PRIVILEGES ON `crud_db`.* TO `crud_db`@`localhost`;
+
+    -- 確認
+    SELECT Host, User from mysql.user;
+    ```
+
+  ※削除する場合
+    ```mysql
+    -- アクセス権限の剥奪
+    REVOKE ALL PRIVILEGES ON `crud_db`.* FROM `crud_db`@`localhost`;
+    -- 適用
+    FLUSH PRIVILEGES;
+    -- データベースユーザーの削除
+    DROP USER `crud_db`@`localhost`;
+    -- データベースの削除
+    DROP DATABASE `crud_db`;
+    ```
+
+
+
+
+## Flask-DB接続（SQLAlchemy）
+-------------------------------------------------------------------------------
+[参考](https://outputable.com/post/crud-sql-alchemy/)
+
+1. 「/home/res/www/」フォルダに以下に下記の構成でプロジェクトを作成します。
+
+    crud
+      │  app.py
+      │  database.py
+      │  
+      ├─settings
+      │    conf.py
+      │  
+      └─templates
+            base.html
+            index.html
+            update.html
+
+
+2. DBの設定を行って、テーブルを作成します。
+
+    1. 「conf.py」「database.py」ファイルを作成します。
+
+        ```python:/home/res/www/crud/settings/conf.py
+        """
+        conf.py
+
+        設定情報
+
+        """
+
+        """ データーベース情報 """
+        DATABASE_USR  = "crud_db"           # データーベースユーザー
+        DATABASE_PASS = "crud_db_Pass1"     # データーベースパスワード
+        DATABASE_URL  = "127.0.0.1:3306"    # データーベース接続先
+        DATABASE_NAME = "crud_db"           # データーベース名
+        ```
+
+        ```python:/home/res/www/crud/database.py
+        """
+        database.py
+
+        データーベース設定.
+
+        """
+        import sys
+        from sqlalchemy import *
+        from sqlalchemy.orm import *
+        from sqlalchemy.sql.functions import current_timestamp
+        from sqlalchemy.ext.declarative import declarative_base
+        from sqlalchemy import Column, Integer, String, TIMESTAMP
+        from settings import conf
+
+        DATABASE = 'mysql+pymysql://%s:%s@%s/%s?charset=utf8mb4' % (
+                    conf.DATABASE_USR,
+                    conf.DATABASE_PASS,
+                    conf.DATABASE_URL,
+                    conf.DATABASE_NAME,
+                )
+
+        # DB接続用のインスタンスを作成.
+        ENGINE = create_engine(
+                    DATABASE,
+                    convert_unicode=True,
+                    echo=True  # SQLをログに吐き出すフラグ.
+                )
+
+        # 上記のインスタンスを使って、MySQLとのセッションを張ります.
+        session = scoped_session(
+                    sessionmaker(
+                        autoflush = False,
+                        autocommit = False,
+                        bind = ENGINE,
+                    )
+                )
+
+
+        # 以下に書いていくDBモデルのベース部分を作ります.
+        Base = declarative_base()
+        Base.query = session.query_property()
+
+
+
+        # DBとデータをやり取りするためのモデルを定義.
+        class User(Base):
+            __tablename__ = 'users'
+            id = Column('id', Integer, primary_key = True)
+            name = Column('name', String(200))
+            age = Column('age', Integer)
+            created_at = Column('created_at', TIMESTAMP, server_default=current_timestamp())
+            updated_at = Column('updated_at', TIMESTAMP, nullable=False, server_default=text('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))
+
+
+
+        # このPythonスクリプトを実行したとき、テーブルを一旦削除して新規作成する.
+        def main(args):
+            Base.metadata.drop_all(bind=ENGINE)
+            Base.metadata.create_all(bind=ENGINE)
+
+        #このファイルを直接実行したとき、mainメソッドでテーブルを作成する.
+        if __name__ == "__main__":
+            main(sys.argv)
+        ```
+
+
+    2. ターミナルでdatabase.pyを実行してテーブルを作成する。
+
+        ```terminal(/home/res/www/crud)
+        $ python database.py
+        ```
+
+
+
+2. テンプレートを作成します。
+
+    ```python:/home/res/www/crud/templates/base.html
+    {#-
+
+        base.html
+
+    -#}
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset="utf-8"/>
+            <title>{{ title }}</title>
+        </head>
+        <body>
+            <h1>CRUD SAMPLE</h1>
+        {% block content %}
+        <!--ここに部品としてのHTMLを入れることになります-->
+        {% endblock %}
+        </body>
+    </html>
+    ```
+
+    ```python:/home/res/www/crud/templates/index.html
+    {#-
+
+        index.html
+
+    -#}
+    {% extends "base.html" %}
+    {% block content %}
+
+        <h2>ユーザー登録フォーム</h2>
+        <form style="line-height: 14px;" action="/" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <p><label>名前: </label><input type="text" name="name" value=""></p>
+            <p><label>年齢: </label><input type="number" name="age" value=""></p>
+            <p><button type="submit">新規登録</button></p>
+        </form>
+
+        <h2>{{ title }}</h2>
+        {% for name in names %}
+        <div style="line-height: 12px;">
+            <p>id:   {{ name.id }}</p>
+            <p>name: {{ name.name }}</p>
+            <p>age:  {{ name.age }}</p>
+            <p>created_at: {{ name.created_at }}</p>
+            <p>updated_at: {{ name.updated_at }}</p>
+        </div>
+        <div style="margin-bottom: 40px;">
+            <a href="/{{ name.id }}"><button type="button">編集</button></a>
+            <form action="/delete" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="hidden" name="_method" value="DELETE"/>
+                <input type="hidden" name="id" value="{{ name.id }}">
+                <button type="submit">削除</button>
+            </form>
+        </div>
+        {% endfor %}
+
+    {% endblock %}
+    ```
+
+    ```python:/home/res/www/crud/templates/update.html
+    {#-
+
+        update.html
+
+    -#}
+    {% extends "base.html" %}
+    {% block content %}
+
+        <h2>{{ title }}</h2>
+        <form action="/{{ name.id }}/update" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input type="hidden" name="_method" value="PUT"/>
+            <p>id: {{ name.id }}</p>
+            <p><label>name: </label><input type="text" name="name" value="{{ name.name }}"></p>
+            <p><label>age: </label><input type="number" name="age" value="{{ name.age }}"></p>
+            <p>created_at: {{ name.created_at }}</p>
+            <p>updated_at: {{ name.updated_at }}</p>
+            <p><button type="submit">保存</button></p>
+        </form>
+        <form action="/delete" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input type="hidden" name="_method" value="DELETE"/>
+            <input type="hidden" name="id" value="{{ name.id }}"/>
+            <p><button type="submit">削除</button></p>
+        </form>
+
+    {% endblock %}
+    ```
+
+
+
+3. メイン処理を作成します。
+
+    ```python:/home/res/www/crud/app.py
+    """
+    app.py
+
+    メイン処理.
+
+    """
+    from flask import Flask, render_template, request, redirect, url_for
+    from flask_wtf.csrf import CSRFProtect
+    import os
+    from database import *
+
+
+    app = Flask(__name__)
+    app.config['SECRET_KEY'] = os.urandom(24)
+    csrf = CSRFProtect(app)
+
+
+    @app.route('/', methods=['GET'])
+    def index():
+        title = "ユーザー一覧"
+        names = session.query(User).order_by(desc(User.updated_at)).all()
+        return render_template('index.html', names=names, title=title)
+
+
+    @app.route('/', methods=['POST'])
+    def insert():
+        try:
+            user = User()
+            user.id = 0
+            user.age = request.form.get('age', None)
+            user.name = request.form.get('name', None)
+            session.add(user)
+            session.flush()
+            session.commit()
+            return redirect(url_for('index'))
+        except Exception as e:
+            session.rollback()
+            return redirect(url_for('index'))
+
+
+    @app.route('/<int:id>', methods=['GET'])
+    def edit(id):
+        try:
+            title = '編集画面'
+            name = User.query.filter(User.id == id).one()
+            return render_template('update.html', name=name, title=title)
+        except Exception as e:
+            return redirect(url_for('index'))
+
+
+    @app.route('/<int:id>/update', methods=['POST'])
+    def update(id):
+        try:
+            if request.form.get('_method', '') == 'PUT':
+                user = User.query.filter(User.id == id).one()
+                user.age = request.form.get('age', None)
+                user.name = request.form.get('name', None)
+                session.commit()
+                return redirect(url_for('one_user', id=int(id)))
+            else:
+                return redirect(url_for('index'))
+        except Exception as e:
+            session.rollback()
+            print("Failed to update user")
+            print(e)
+            return redirect(url_for('index'))
+
+    @app.route('/delete', methods=['POST'])
+    def delete():
+        try:
+            if request.form.get('_method', '') == 'DELETE':
+                id = request.form['id']
+                user = User.query.filter(User.id == id).one()
+                session.delete(user)
+                session.commit()
+            return redirect(url_for('index'))
+        except Exception as e:
+            session.rollback()
+            return redirect(url_for('index'))
+
+    if __name__ == "__main__":
+        # webサーバー立ち上げ
+        app.run()
+    ```
+
+
+
+4. 確認。
+
+    1. app.pyをデバッグ実行します。
+
+    2. ブラウザで下記のURLを実行します。
+      URL：http://localhost:5000/
+
+
+
+
+## Flask-DB接続（SQLAlchemy）[SQL直接実行]
+-------------------------------------------------------------------------------
+
+1. 「/home/res/www/」フォルダに以下に下記の構成でプロジェクトを作成します。
+
+    py_test
+      │  app.py
+      │  dao.py
+      │  logger.py
+      │  
+      └─templates
+            index.html
+
+
+2. スキーマー「crud_db」にテーブルとデータを作成します。
+    ```mysql
+    DROP TABLE IF EXISTS `tbl_test`;
+    CREATE TABLE `tbl_test` (
+     `id` INT UNSIGNED AUTO_INCREMENT NOT NULL COMMENT 'ID'
+    ,`code` CHAR(10) NOT NULL COMMENT 'コード'
+    ,`name` TEXT NULL COMMENT '名前'
+    ,`status` CHAR(1) DEFAULT '0' NOT NULL COMMENT '状態'
+    ,`memo` TEXT NULL COMMENT '備考'
+    ,`updated` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '更新日時'
+    ,PRIMARY KEY(`id`)
+    ) COMMENT='テストテーブル';
+    INSERT INTO `tbl_test` (`code`, `name`, `status`, `memo`) VALUES ('test001', 'テストレコード１', '0', 'テスト用');
+    INSERT INTO `tbl_test` (`code`, `name`, `status`, `memo`) VALUES ('test002', 'テストレコード２', '1', 'テスト用');
+    INSERT INTO `tbl_test` (`code`, `name`, `status`, `memo`) VALUES ('test003', 'テストレコード３', '0', 'テスト用');
+    ```
+
+
+3. ロガー「logger.py」を作成します。
+    ```python:/home/res/www/py_test/logger.py
+    from logging import getLogger, handlers, Formatter
+
+    def setup(name: str):
+        logger = getLogger(name)
+        handler = handlers.RotatingFileHandler(
+                '/var/log/www/py_test_log.log',
+                maxBytes=10000000,
+                backupCount=10,
+                encoding='utf-8')
+        formatter = Formatter(
+                  ('%(asctime)s.%(msecs)d,%(levelname)s,'
+                  '%(process)d,%(thread)d,'
+                  '%(module)s:%(lineno)d,%(funcName)s,"%(message)s"'),
+                  '%Y/%m/%d %H:%M:%S')
+        handler.setFormatter(formatter)
+        handler.setLevel(10)
+        logger.setLevel(10)
+        logger.addHandler(handler)
+        logger.propagate = False
+        return logger
+    ```
+
+
+4. DAO「dao.py」を作成します。
+    ```python:/home/res/www/py_test/dao.py
+    from sqlalchemy import create_engine
+    from sqlalchemy.pool import QueuePool
+    from sqlalchemy.orm import sessionmaker, scoped_session
+    from sqlalchemy.ext.declarative import declarative_base
+
+    import logger
+    log = logger.setup(__name__)
+
+    class Dao():
+        def __init__(self):
+            DATABASE = 'mysql+pymysql://%s:%s@%s/%s?charset=utf8mb4' % (
+                'crud_db',
+                'crud_db_Pass1',
+                'localhost:3306',
+                'crud_db',
+            )
+            self.engine = create_engine(
+                DATABASE,
+                convert_unicode=True,
+                echo=False,
+                poolclass=QueuePool,
+                pool_size=20,
+                max_overflow=0,
+            )
+            self.dbconnection = self.engine.connect()
+            self.dbsession = scoped_session(
+                sessionmaker(
+                    autoflush=False,
+                    autocommit=False,
+                    bind=self.engine,
+                )
+            )
+            self.base = declarative_base()
+            self.base.query = self.dbsession.query_property()
+            log.debug('Dao.open()')
+
+        def __del__(self):
+            self.dbsession().close()
+
+        def close(self):
+            self.dbsession().close()
+            self.dbconnection.close()
+            log.debug('Dao.close()')
+
+        def execute(self, sql, params=None):
+            log.debug(sql)
+            if params is not None:
+                log.debug(params)
+                return self.dbsession().execute(sql, params)
+            else:
+                return self.dbsession().execute(sql)
+
+        def findlist(self, sql, params= None):
+            recordset = self.execute(sql, params)
+            if recordset is not None and recordset.rowcount > 0:
+                lst = []
+                for record in recordset:
+                    dct = {}
+                    for item in record.items():
+                        dct[item[0]] = item[1]
+                    lst.append(dct)
+                return lst
+            else:
+                return []
+    ```
+
+
+5. Flaskアプリケーションファイル「app.py」を作成します。
+    ```python:/home/res/www/py_test/app.py
+    from flask import Flask, render_template
+    from dao import Dao
+    import logger
+    log = logger.setup(__name__)
+    app = Flask(__name__)
+
+    @app.route('/')
+    def do_index():
+        dao = Dao()
+        try:
+            log.debug('/debug ')
+            lst = dao.findlist(
+                """SELECT * FROM `tbl_test` WHERE `status` = :status""",
+                {'status': '0'})
+            return render_template('index.html', lst = lst)
+        except Exception as e:
+            log.exception(e)
+        finally:
+            dao.close()
+
+    if __name__ == "__main__":
+        app.run()
+    ```
+
+
+6. テンプレート「index.html」を作成します。
+    ```python:/home/res/www/py_test/templates/index.html
+    <!DOCTYPE html>
+    <html lang="ja">
+    <head>
+        <title>hello</title>
+    </head>
+    <body>
+        <p>hello!</p>
+        {% for dat in lst %}
+            <p><span>{{ dat.code }}</span>:<span>{{ dat.name }}</span></p>
+        {% endfor %}
+    </body>
+    </html>
+    ```
+
+
+
+7. 確認。
+
+    1. app.pyをデバッグ実行します。
+
+    2. ブラウザで下記のURLを実行します。
+        URL：http://localhost:5000/
+
+    3. ログでの確認（ターミナルで下記のコマンドを実行）
+        ```terminal
+        $ tail -f /var/log/www/py_test_log.log
+        ```
+
+
+
+
+<!--
+-->
+</textarea><script src="_markdownmemo_data/markdownmemo.js?v=1.0.2"></script></body></html>

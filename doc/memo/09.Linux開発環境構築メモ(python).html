@@ -32,7 +32,7 @@ Linux開発環境構築メモ(python)
     ```
 
 
-4. .pyenvのownerをresにする
+4. .pyenvのownerをログインユーザー(例：res)にする
 
     ```terminal
     $ sudo chown -R res:res /usr/bin/.pyenv/
@@ -50,6 +50,8 @@ Linux開発環境構築メモ(python)
     ##### 確認
     ```terminal
     $ cat ~/.bash_profile
+    ```
+    ```txt:.bash_profile(確認内容)
     # .bash_profile
 
     # Get the aliases and functions
@@ -86,7 +88,7 @@ Linux開発環境構築メモ(python)
     ※最新版で行う（例：3.8.5）
 
     ```terminal
-    $ pyenv install 3.8.5
+    $ env PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.8.5
     ```
 
 
@@ -176,7 +178,7 @@ Linux開発環境構築メモ(python)
 1. bottleのインストール
 
     ```terminal
-    $ pip install bottle --user
+    $ pip install bottle
     ```
 
 
@@ -217,7 +219,7 @@ Linux開発環境構築メモ(python)
     1. Flaskのインストール
 
         ```terminal
-        $ pip install Flask --user
+        $ pip install Flask
         ```
 
 
@@ -254,7 +256,7 @@ Linux開発環境構築メモ(python)
     1. インストール
 
         ```terminal
-        $ pip install jinja2 --user
+        $ pip install jinja2
         ```
 
 
@@ -395,7 +397,7 @@ https://qiita.com/TechAngel/items/eadbcf784710839d7c00
 1. Djangoインストール
 
     ```terminal
-    $ pip install django --user
+    $ pip install django
     ```
 
 2. プロジェクト作成
@@ -465,5 +467,457 @@ https://qiita.com/TechAngel/items/eadbcf784710839d7c00
 
 
 
+
+## Apacheインストール
+-------------------------------------------------------------------------------
+[参考(Apacheインストール)](https://weblabo.oscasierra.net/apache-installing-apache24-yum-centos7-1/)
+
+1. Apacheインストール
+    ```terminal
+    $ sudo yum -y install httpd
+    ```
+
+
+2. 確認
+    ```terminal
+    $ httpd -version
+    ```
+
+
+3. 実行ユーザーの変更
+    ```terminal
+    $ sudo vi /etc/httpd/conf/httpd.conf
+    （httpd.confがない場合は下記で検索する）
+    $ sudo find / -name httpd.conf
+    ```
+    ↓変更(例：res)
+    ```vi:/etc/httpd/conf/httpd.conf
+    User res
+    Group res
+    ```
+    (グループがない場合は作成する)
+    ```terminal
+    $ sudo groupadd res
+    ```
+
+4. 自動起動の設定をする
+    ```terminal
+    $ sudo systemctl enable httpd.service
+    ```
+
+
+4. 起動の確認
+    ```terminal
+    $ sudo systemctl status httpd.service
+    ```
+
+5. 起動
+    ```terminal
+    $ sudo systemctl start httpd.service
+    ```
+
+   * 停止
+        ```terminal
+        $ sudo systemctl stop httpd.service
+        ```
+
+    * 再起動
+        ```terminal
+        $ sudo systemctl restart httpd.service
+        ```
+
+
+6. ブラウザから確認
+    http://localhost/
+
+
+
+
+## Apache上で動作
+-------------------------------------------------------------------------------
+[参考(Apachi上で動作)](https://qiita.com/yoshizaki_kkgk/items/3cd785b4a670deec0685)
+[参考(wsgi.conf)](https://www.yoheim.net/blog.php?q=20170206)
+
+1. CentOSで必要なパッケージをインストール
+    ```terminal
+    $ sudo yum groupinstall- y "development tools"
+    $ sudo yum install -y zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel
+    $ sudo yum install -y  httpd-devel python-devel
+    ```
+
+
+2. mod_wsgi もインストール
+    ```terminal
+    $ pip install mod-wsgi
+    ```
+
+
+3. wsgi.conf追加
+    ```terminal
+    $ sudo vi /etc/httpd/conf.d/wsgi.conf
+    ```
+    ↓新規
+    ```vi:/etc/httpd/conf.d/wsgi.conf
+    # wsgi.conf
+    LoadModule wsgi_module /usr/bin/.pyenv/versions/3.8.5/lib/python3.8/site-packages/mod_wsgi/server/mod_wsgi-py38.cpython-38-x86_64-linux-gnu.so
+
+    WSGIDaemonProcess myapp user=res_python_usr group=res_python_usr
+    WSGIProcessGroup myapp
+    WSGISocketPrefix /var/run/wsgi
+    WSGIScriptAlias /py_test /var/www/py_test/app.wsgi
+
+    <Directory /var/www/py_test/>
+
+      Options ExecCGI MultiViews Indexes
+      MultiViewsMatch Handlers
+
+      AddHandler wsgi-script .py
+      AddHandler wsgi-script .wsgi
+
+      DirectoryIndex index.html index.py app.wsgi
+
+      Order allow,deny
+      Allow from all
+
+    </Directory>
+    ```
+
+4. 開発環境はwwwやwsgi.confはresユーザーでアクセスできるようにする。
+    ```terminal
+    $ mkdir /home/res/src
+    $ sudo chmod 777 /var/www/
+    $ sudo mkdir /var/log/www/
+    $ sudo chmod 777 /var/log/www/
+    $ sudo mkdir /var/bat/
+    $ sudo chmod 777 /var/bat/
+    $ sudo mkdir /var/log/bat/
+    $ sudo chmod 777 /var/log/bat/
+    ```
+
+
+5. wsgiファイルを編集
+    ※フォルダが無い場合「mkdir /var/www/py_test」
+    ```terminal
+    $ vi /var/www/py_test/app.wsgi
+    ```
+    ↓新規
+    ```vi:/var/www/py_test/app.wsgi
+    # coding: utf-8
+    import sys
+    sys.path.insert(0, '/var/www/py_test')
+
+    from app import app as application
+    ```
+
+
+6. アプリケーションを作成
+    ※Flaskを使用する
+
+    ```terminal
+    $ vi /var/www/py_test/app.py
+    ```
+    ↓新規
+    ```python:/var/www/py_test/app.py
+    # coding: utf-8
+    from flask import Flask
+
+    app = Flask(__name__)
+
+    @app.route("/")
+    def hello():
+        return "Hello, Flask!"
+
+    if __name__ == "__main__":
+        app.run()
+    ```
+
+
+8. Apacheの再起動
+    ```terminal
+    $ sudo systemctl restart httpd.service
+    # 起動確認
+    $ sudo systemctl status httpd.service
+    ```
+
+
+9. 確認
+    http://localhost/py_test/
+
+
+
+※ アプリケーションの追加は「wsgi.conf」に設定「WSGIScriptAlias」と「Directory」を追加する。
+例) 「/hello」を追加した例
+```vi:/etc/httpd/conf.d/wsgi.conf
+# wsgi.conf
+LoadModule wsgi_module /usr/bin/.pyenv/versions/3.8.5/lib/python3.8/site-packages/mod_wsgi/server/mod_wsgi-py38.cpython-38-x86_64-linux-gnu.so
+
+WSGIDaemonProcess myapp user=res group=res
+WSGIProcessGroup myapp
+WSGISocketPrefix /var/run/wsgi
+WSGIScriptAlias /py_test /var/www/py_test/app.wsgi
+WSGIScriptAlias /hello /var/www/hello/app.wsgi
+
+<Directory /var/www/py_test/>
+
+  Options ExecCGI MultiViews Indexes
+  MultiViewsMatch Handlers
+
+  AddHandler wsgi-script .py
+  AddHandler wsgi-script .wsgi
+
+  DirectoryIndex index.html index.py app.wsgi
+
+  Order allow,deny
+  Allow from all
+
+</Directory>
+
+<Directory /var/www/hello/>
+
+  Options ExecCGI MultiViews Indexes
+  MultiViewsMatch Handlers
+
+  AddHandler wsgi-script .py
+  AddHandler wsgi-script .wsgi
+
+  DirectoryIndex index.html index.py app.wsgi
+
+  Order allow,deny
+  Allow from all
+
+</Directory>
+```
+
+
+
+
+## Apache サービスセキュリティの強化
+-------------------------------------------------------------------------------
+[参考](https://www.rem-system.com/apache-security01/)
+
+* デフォルトコンテンツ存在への対策 [http://localhost/]
+    ```terminal
+    $ cd /etc/httpd/conf.d/
+    $ sudo mv welcome.conf welcome.conf.org
+    ```
+    (Apache再起動で反映[sudo systemctl restart httpd.service])
+
+
+* iconsフォルダへの対策 [http://localhost/icons/README]
+    ```terminal
+    $ cd /etc/httpd/conf.d/
+    $ sudo mv autoindex.conf autoindex.conf.org
+    ```
+    (Apache再起動で反映[sudo systemctl restart httpd.service])
+
+
+* ディレクトリ内容一覧表示無効化
+    ```terminal
+    $ sudo vi /etc/httpd/conf/httpd.conf
+    ```
+    ↓変更
+    ```vi:/etc/httpd/conf/httpd.conf
+    Options Indexes FollowSymLinks
+    ↓に変更
+    Options FollowSymLinks
+    ```
+    (Apache再起動で反映[sudo systemctl restart httpd.service])
+
+
+* X-Frame-Optionsヘッダの設定手順
+    ```terminal
+    $ sudo vi /etc/httpd/conf/httpd.conf
+    ```
+    ↓追加
+    ```vi:/etc/httpd/conf/httpd.conf
+    LoadModule headers_module modules/mod_headers.so
+    ```
+    (Apache再起動で反映[sudo systemctl restart httpd.service])
+
+
+* Apacheバージョン表示への対策
+    ```terminal
+    $ sudo vi /etc/httpd/conf/httpd.conf
+    ```
+    ↓追加
+    ```vi:/etc/httpd/conf/httpd.conf
+    ServerTokens ProductOnly
+    ServerSignature off
+    ```
+    (Apache再起動で反映[sudo systemctl restart httpd.service])
+
+
+* HTTP TRACEメソッドへの対応
+    ```terminal
+    $ sudo vi /etc/httpd/conf/httpd.conf
+    ```
+    ↓追加
+    ```vi:/etc/httpd/conf/httpd.conf
+    ## HTTP TRACE off
+    TraceEnable off
+    ```
+    (Apache再起動で反映[sudo systemctl restart httpd.service])
+
+
+
+
+## ロギング
+-------------------------------------------------------------------------------
+[参考(クックブック)](https://docs.python.org/ja/3/howto/logging-cookbook.html#logging-cookbook)
+[参考(基本)](https://qiita.com/__init__/items/91e5841ed53d55a7895e)
+[参考(ローテーション)](https://qiita.com/shotakaha/items/0fa2db1dc8253c83e2bb)
+[参考(フォーマット)](https://www.python.ambitious-engineer.com/archives/693)
+[参考(loggingよりlogger)](https://qiita.com/amedama/items/b856b2f30c2f38665701)
+
+1. ログの出力
+
+    ```python:
+    import logging
+
+    # ログレベルを DEBUG に変更
+    logging.basicConfig(level=logging.DEBUG)
+
+    logging.critical('critical')
+    logging.error('error')
+    logging.warning('warning')
+    logging.info('info')
+    logging.debug('debug')
+    ```
+
+2. ロガー取得
+    loggingよりloggerを使用した方がよいので。
+
+    ```python:
+    from logging import getLogger, handlers, Formatter, DEBUG, WARNING, INFO, ERROR, CRITICAL
+    from settings import conf
+
+    def setup(name, file='log.log', level=DEBUG):
+        logger = getLogger(name)
+
+        handler = handlers.RotatingFileHandler(file, maxBytes=1000, backupCount=10)
+        formatter = Formatter('%(asctime)s.%(msecs)d,%(levelname)s,%(process)d,%(thread)d,' \
+                + '%(module)s:%(lineno)d,%(funcName)s,"%(message)s"', '%Y/%m/%d %H:%M:%S')
+        handler.setFormatter(formatter)
+        handler.setLevel(level)
+
+        logger.setLevel(level)
+        logger.addHandler(handler)
+        logger.propagate = False
+
+        return logger
+    ```
+
+    ```python:
+    log = logger.setup(__name__)
+
+    log.critical('/critical ')
+    log.error('/error ')
+    log.warning('/warning ')
+    log.info('/info ')
+    log.debug('/debug ')
+
+    ```
+
+
+
+
+## Blackインストール
+-------------------------------------------------------------------------------
+[参考(Blackインストール)](https://qiita.com/tsu_0514/items/2d52c7bf79cd62d4af4a)
+
+1. Blackインストール
+
+    ```terminal
+    $ pip install black
+    $ pip install flake8
+    $ pip install --upgrade autopep8
+    ```
+
+2. VSCodeの設定
+    python.linting.enabled	Lint機能を有効にするかどうか	true
+    python.linting.pylintEnabled	Linterにpylintを使用するかどうか	false
+    python.linting.flake8Enabled	Linterにflake8を使用するかどうか	true
+    python.linting.lintOnSave	ファイル保存時にLintを実行するか	true
+    python.formatting.provider	Pythonコードの整形に何を使用するか	black
+    editor.formatOnSave	ファイル保存時に自動整形するかどうか	true
+
+    ```vscode:settings.json（追加）
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": false,
+    "python.linting.flake8Enabled": true,
+    "python.linting.lintOnSave": true,
+    "python.formatting.provider": black,
+    "editor.formatOnSave": true,
+    ```
+
+
+
+
+## 型指定
+-------------------------------------------------------------------------------
+[参考(型指定)](https://techacademy.jp/magazine/38219)
+
+from typing import 使用するもの
+
+型	説明	例
+List[X]	要素の型がXのリスト	x: List[float]
+Union[X, Y]	XかYのいずれかの型	x:Union[str, int]
+Any	任意の型	x:Any
+Callable[[X . . . .],  Y]	引数に指定する型のリストが[X …. ] で戻り値がY	x:Callable[[int, float], str]
+Dict[X, Y]	辞書でキーの型がX, 値がY	x:Dict[str, int]
+
+
+
+
+## 暗号化
+-------------------------------------------------------------------------------
+  [参考(pycrypto)](https://qiita.com/tomipetit/items/3e478d1559e13d832486)
+  [参考(pycrypto)](https://qiita.com/penta2019/items/a500630608960752a914)
+  [参考(pycrypto)](https://noknow.info/it/python/implemented_encryption_decryption_library?lang=ja)
+
+    ```terminal
+    # インストール.
+    $ pip install pycrypto
+    ```
+
+    ※python3.8では「Random.new().read()」が使えないので注意。
+
+
+
+
+## その他
+-------------------------------------------------------------------------------
+
+* どこのPythonが実行されるか確認。
+    ```terminal
+    $ which python
+    ```
+
+* コーディング規約確認。
+    [参考(pep8)](https://techacademy.jp/magazine/20627)
+    [参考(pycodestyle)](https://qiita.com/HyunwookPark/items/b54baf66710ca5fa647a)
+  
+
+    ```terminal
+    # インストール.
+    $ pip install pep8
+    ```
+
+    ```terminal
+    # ソース確認.
+    $ pep8 --show-source sample.py
+    ```
+
+    ↓pep8は古いみたいでpycodestyleを使用する
+
+    ```terminal
+    # インストール.
+    $ pip install pycodestyle
+    ```
+
+    ```terminal
+    # ソース確認.
+    $ pycodestyle --show-source sample.py
+    ```
 
 </textarea><script src="_markdownmemo_data/markdownmemo.js?v=1.0.2"></script></body></html>

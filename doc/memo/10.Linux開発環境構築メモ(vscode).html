@@ -23,6 +23,10 @@ Linux開発環境構築メモ(vscode)
     $ sudo yum localinstall -y code-1.49.0-1599744701.el7.x86_64.rpm
     ```
 
+    ※アップデート時(tab押下で指定のバージョンのrpmを指定して実行します。)
+    $ sudo yum localinstall -y /home/res/work/tools/code-
+    
+
 
 
 
@@ -65,16 +69,159 @@ Linux開発環境構築メモ(vscode)
 
 
 
+## インデント（タブ）設定
+-------------------------------------------------------------------------------
+[参考](https://qiita.com/riekure/items/2b344129dbe5e2507e48)
+
+1. Ctrl+Shift+Pでコマンドパレットを開きます。
+
+2. Preferences: Configure Language Specific Settingsを選択します。
+
+3. 言語ごとの設定に下記の設定を記述します。
+
+    ```vscode:settings.json（例）
+    {    
+        "[html]": {
+            "editor.suggest.insertMode": "replace",
+            "editor.tabSize": 2,
+            "editor.insertSpaces": true
+        },
+        "[css]": {
+            "editor.suggest.insertMode": "replace",
+            "editor.tabSize": 2,
+            "editor.insertSpaces": true
+        },
+        "[javascript]": {
+            "editor.tabSize": 2,
+            "editor.insertSpaces": true
+        },
+        "[xml]": {
+            "editor.tabSize": 2,
+            "editor.insertSpaces": true
+        },
+        "[json]": {
+            "editor.tabSize": 2,
+            "editor.insertSpaces": true,
+            "editor.quickSuggestions": {
+                "strings": true
+            },
+            "editor.suggest.insertMode": "replace"
+        },
+    }
+    ```
+
+
+
+
+## Python unittestデバッグ
+-------------------------------------------------------------------------------
+[参考](https://hiroronn.hatenablog.jp/entry/20180905/1536146652)
+※環境を下記のものを前提とします。
+  </home/res/www/crud/>
+    <commons>
+      resutils.py
+    <unittests>
+      test_resutils.py
+
+1. unittestクラス「test_resutils.py」を右クリックし、「すべての単体テストをデバッグ」を選択します。
+
+2. 右下のダイアログが表示されたら「Enabled and configure a Test Framework」を選択する。
+
+3. 上部のコマンドパレットが表示されたら「unittest Standard Python test framework」を選択します。
+
+4. 次にテストモジュールのフォルダ「unittests」を選択します。
+
+5. 次にテストモジュールのファイル名形式「test_*.py」を選択します。
+
+6. もう一度、unittestクラス「test_resutils.py」を右クリックし、「すべての単体テストをデバッグ」を選択しデバッグを実行します。
+
+※テストクラスやメソッド名の上に「Run Test / Debug Test」の表示が出るようになり、
+  クリックでクラス・メソッド単位で実行できるようになります。
+  （F5でWebのデバッグ実行をすると表示されなくなりますが、VSCode再起動で再び表示されます。）
+
+
+    ### Unittestの使い方（仮）
+    * unittest.TestCase（import unittest）を継承したTestクラスを作る。
+      [参照](https://qiita.com/aomidro/items/3e3449fde924893f18ca)
+
+    * 基本はVscodeのターミナルで実行する。
+      （コマンド例：python -m unittests.test_resutils）
+
+    * ステップ実行が必要な場合は、Vscodeの「すべての単体テストをデバッグ」を
+      使用するか、テストクラスやメソッドの上に表示される「Debug Test」をクリックする。
+        [VsCodeの設定参考](https://hiroronn.hatenablog.jp/entry/20180905/1536146652)
+        （VsCodeの設定を行っても「Debug Test」の表示が行われない場合は、VsCodeを再起動）
+
+
+
+
+## Python importエラー解消
+-------------------------------------------------------------------------------
+
+### 1.
+[参考](https://teratail.com/questions/137869)
+    1. 「/home/res/www/crud/.vscode/settings.json」を開きます。（なければ作成）
+
+    2. 下記の設定を記述します。
+
+        ```vscode:settings.json
+        {
+           "python.linting.enabled": false,
+        }
+        ```
+    3. VSCODEを再起動。
+        ※他のPythonエラーも表示されない。
+
+
+### 2.
+[参考](https://qiita.com/dynamonda/items/5a8129cd6e9cc139d94a)
+    1. 「/home/res/www/crud/.vscode/settings.json」を開きます。（なければ作成）
+
+    2. 下記の設定を記述します。
+    {
+        "python.pythonPath": "/usr/bin/.pyenv/shims/python"
+    }
+    ※which pythonで出力されるパスを設定します。
+
+
+### 3.
+[参考](https://qiita.com/kurikou02/items/beb3d638f93cc372b3c3)
+
+    1. 「/home/res/www/crud/.vscode/settings.json」を開きます。（なければ作成）
+
+    2. 下記の設定を記述します。
+    {
+        "python.autoComplete.extraPaths": ["/home/res/www"],
+    }
+    
+※１の方法以外効果はありませんでしたが、1の方法だと他のエラーも表示されなくなり使い辛いです。
+
+
+### 4.
+[参考](https://qiita.com/New_enpitsu_15/items/c1e680cc0c24cf87c581)
+
+    1. 「/home/res/www/crud/pylintrc」を開きます。（なければ作成）
+
+    2. 下記の設定を記述します。
+    init-hook="./commons"
+
+    
+※ 1の方法以外効果はありませんでしたが、1の方法だと他のエラーも表示されなくなり使い辛いです。
+※ 4の方法で問題なさそうですが、様子見です。
+
+
+
+
 ## プラグイン
 -------------------------------------------------------------------------------
 [参考(プラグイン)](https://qiita.com/sensuikan1973/items/74cf5383c02dbcd82234)
 [参考(プラグイン)](https://qiita.com/ucan-lab/items/e85931bf8276da43cc97)
 
+ms-python.python          [python]
 Bracket Pair Colorizer 2  [カッコの対応を色付きで表示]
 indent-rainbow            [インデントを虹色に表示]
 zenkaku                   [全角スペースを強調して表示]
 Auto Rename Tag           [ペアになっているHTML/XMLタグの名前を自動的に変更]
-Code Spell Checker        [スペルミスを検出]
 change-case               [単語の大文字・小文字変換]
 vscode-input-sequence     [連番入力をサポート]
 HTML CSS Support          [CSSのサポート]
@@ -84,13 +231,30 @@ Json Editor               [JSON編集]
 Git Graph                 [コミット履歴をツリー形式で表示]
 Git History               [Git log確認]
 Git Lens                  [GITサポート]
-vscode-icons              [アイコン表示]
 Partial Diff              [選択範囲の差分を確認]
+Pyright                   [静的型チェック]
+※自作変数名にチェックがかかるので入れない。
+Code Spell Checker        [スペルミスを検出]
 
-
+※任意
+vscode-icons              [アイコン表示]
 
 ※行末尾のスペースを削除する設定
-設定を開き「Trim Trailing Whitespace」設定を有効化する。
+設定(strl+,)を開き以下の設定を有効化する。
+  「Files:Trim Trailing Whitespace」
+  「Files:Trim Final Newlines」
+
+
+
+
+## ショートカット
+-------------------------------------------------------------------------------
+[参考(ショートカット)](https://qiita.com/12345/items/64f4372fbca041e949d0)
+
+Ctrl + K Ctrl + 0　すべてのインデントを折りたたむ
+Ctrl + K Ctrl + 1　1段目のインデントをすべて折りたたむ(同様に9段目まで指定可)
+Ctrl + K Ctrl + J　すべてのインデントを展開する
+
 
 <!--
 -->
